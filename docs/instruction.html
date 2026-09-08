@@ -2,27 +2,22 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Инструкция кассира: Регистрация и привязка браслетов RFID</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обучающая инструкция для кассира: Работа с RFID-панелью</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        
+
         :root {
             --orange: #ff5a28;
-            --orange-hover: #e64a1c;
-            --orange-light: #fff3ef;
+            --orange-light: #fff5f2;
             --purple: #5123d4;
-            --purple-light: #f0ebff;
-            --blue: #1ba0f2;
-            --blue-light: #eaf6ff;
-            --green: #22c55e;
-            --green-light: #ecfdf5;
-            --text-dark: #1f2937;
-            --text-muted: #4b5563;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
-            --border-light: #f3f4f6;
-            --bg: #ffffff;
-            --card-bg: #f9fafb;
+            --purple-light: #f5f2ff;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --text-dark: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
         }
 
         * {
@@ -32,686 +27,799 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text-dark);
-            line-height: 1.5;
-            padding: 20px;
-            font-size: 13px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #ffffff;
+            color: var(--text-body);
+            line-height: 1.7;
+            font-size: 15px;
+            padding: 40px 20px 80px 20px;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 820px;
             margin: 0 auto;
         }
 
-        /* Header styling */
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid var(--orange);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+        /* Header */
+        .doc-header {
+            border-bottom: 3px solid var(--orange);
+            padding-bottom: 24px;
+            margin-bottom: 36px;
         }
 
-        .header-logo {
-            height: 50px;
+        .doc-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .doc-logo img {
+            height: 44px;
+            object-fit: contain;
+        }
+
+        .doc-badge {
+            display: inline-block;
+            background: var(--orange-light);
+            color: var(--orange);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--purple);
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .doc-subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Intro banner */
+        .intro-box {
+            background: var(--purple-light);
+            border-left: 4px solid var(--purple);
+            padding: 18px 22px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 40px;
+        }
+
+        .intro-box h2 {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--purple);
+            margin-bottom: 6px;
+        }
+
+        .intro-box p {
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        /* Sections and Headings */
+        h2.section-heading {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+            margin: 48px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .header-logo img {
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .header-title {
-            text-align: right;
-        }
-
-        .header-title h1 {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--purple);
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-        }
-
-        .header-title p {
-            font-size: 11px;
-            color: var(--text-light);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 4px;
-        }
-
-        /* Section divider */
-        .section-title {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--purple);
-            margin: 35px 0 20px 0;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-            text-transform: uppercase;
-            letter-spacing: 0.02em;
-            page-break-after: avoid;
-        }
-
-        /* Intro Stage 1 card */
-        .intro-card {
-            background: var(--purple-light);
-            border-left: 4px solid var(--purple);
-            padding: 16px;
+        .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--purple);
+            color: #ffffff;
             border-radius: 8px;
-            margin-bottom: 30px;
-            page-break-inside: avoid;
+            font-size: 15px;
+            font-weight: 900;
+            flex-shrink: 0;
         }
 
-        .intro-card h2 {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--purple);
-            margin-bottom: 8px;
-        }
+        h2.target .section-num { background: var(--green); }
+        h2.fallback .section-num { background: var(--orange); }
 
-        .intro-card p {
-            font-size: 12px;
+        h3.step-heading {
+            font-size: 18px;
+            font-weight: 800;
             color: var(--text-dark);
-            margin-bottom: 12px;
-        }
-
-        .intro-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .intro-opt {
-            background: #fff;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid rgba(81, 35, 212, 0.15);
-        }
-
-        .intro-opt strong {
-            display: block;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 4px;
-        }
-
-        .intro-opt.first strong { color: var(--orange); }
-        .intro-opt.repeat strong { color: var(--purple); }
-
-        .intro-opt p {
-            margin: 0;
-            font-size: 11.5px;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        /* Step layout */
-        .step-container {
-            margin-bottom: 25px;
-            page-break-inside: avoid;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
-
-        .step-header {
-            background: var(--card-bg);
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
+            margin: 36px 0 14px 0;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-        }
-
-        .step-number {
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--orange);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .step-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .step-content {
-            display: flex;
-            gap: 16px;
-            padding: 16px;
-        }
-
-        .step-details {
-            flex: 1.1;
-            display: flex;
-            flex-direction: column;
             gap: 10px;
         }
 
-        .step-image-box {
-            flex: 0.9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            background: #fafafa;
-            padding: 8px;
+        .step-tag {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
-        .step-image-box img {
-            max-width: 100%;
-            max-height: 200px;
-            object-fit: contain;
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        .step-tag.green { background: #dcfce7; color: #15803d; }
+        .step-tag.orange { background: #ffe4dc; color: #c2380d; }
+        .step-tag.purple { background: #f3f0ff; color: var(--purple); }
+
+        /* Action items list */
+        .step-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 14.5px;
+            line-height: 1.6;
+        }
+
+        .action-icon {
+            font-size: 16px;
+            line-height: 1.5;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-content strong {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        /* Speech Quotes */
+        .speech-box {
+            background: #fffbeb;
+            border-left: 3.5px solid #f59e0b;
+            padding: 12px 18px;
+            border-radius: 0 10px 10px 0;
+            font-size: 14px;
+            color: #78350f;
+            margin: 8px 0;
+            font-style: italic;
+            line-height: 1.55;
+        }
+
+        /* Tips */
+        .tip-box {
+            background: #f0f9ff;
+            border-left: 3.5px solid #0284c7;
+            padding: 12px 18px;
+            border-radius: 0 10px 10px 0;
+            font-size: 13.5px;
+            color: #0369a1;
+            margin: 8px 0;
+            line-height: 1.55;
+        }
+
+        .tip-box strong {
+            color: #0284c7;
+        }
+
+        /* Images - Large, clean, no outer box frames */
+        .image-block {
+            margin: 20px 0 32px 0;
+        }
+
+        .image-block img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            display: block;
+        }
+
+        .image-block.mobile-center {
+            text-align: center;
+            margin: 16px 0 24px 0;
+        }
+
+        .image-block.mobile-center img {
+            max-width: 330px;
+            margin: 0 auto;
+            border-radius: 0;
+            box-shadow: none;
+            display: block;
         }
 
         .image-caption {
-            font-size: 10px;
-            color: var(--text-light);
-            margin-top: 6px;
-            font-style: italic;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
             text-align: center;
+            font-weight: 500;
         }
 
-        /* Detail Badges & Blocks */
-        .badge-block {
+        /* Clean Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0 36px 0;
+            font-size: 13.5px;
+        }
+
+        .comparison-table th {
+            background: #f8fafc;
+            color: var(--text-dark);
+            font-weight: 800;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border);
+            font-size: 12.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .comparison-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+            line-height: 1.55;
+        }
+
+        .comparison-table tr:hover td {
+            background: #fbfcfe;
+        }
+
+        /* FAQ Q&A clean blocks */
+        .faq-list {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 16px;
+            margin: 20px 0 40px 0;
         }
 
-        .badge {
-            align-self: flex-start;
-            font-size: 9px;
+        .faq-item {
+            border-left: 3px solid var(--border);
+            padding: 6px 0 6px 18px;
+        }
+
+        .faq-item.alert {
+            border-left-color: var(--orange);
+        }
+
+        .faq-question {
+            font-size: 15px;
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .badge-cashier {
-            background: var(--orange-light);
-            color: var(--orange);
-        }
-
-        .badge-system {
-            background: var(--blue-light);
-            color: var(--blue);
-        }
-
-        .badge-nuance {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .badge-content {
-            font-size: 11.5px;
-            color: var(--text-muted);
-            line-height: 1.45;
-            padding-left: 2px;
-        }
-
-        .nuances-list {
-            list-style: none;
-            padding-left: 0;
-            margin-top: 4px;
-        }
-
-        .nuances-list li {
-            position: relative;
-            padding-left: 12px;
+            color: var(--text-dark);
             margin-bottom: 4px;
-            font-size: 11px;
-            color: var(--text-light);
-            line-height: 1.4;
         }
 
-        .nuances-list li::before {
-            content: "•";
-            position: absolute;
-            left: 0;
+        .faq-answer {
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        .faq-answer strong {
             color: var(--purple);
-            font-weight: bold;
         }
 
-        /* Footer styling for PDF print */
+        /* Print formatting */
         @media print {
-            body {
-                padding: 0;
-            }
-            .container {
-                max-width: 100%;
-            }
-            .step-container {
-                box-shadow: none;
-            }
+            body { padding: 0; font-size: 12px; }
+            .container { max-width: 100%; }
+            .image-block img { box-shadow: none; max-height: 360px; object-fit: contain; }
+            .image-block.mobile-center img { max-width: 240px; }
+            h2.section-heading { margin-top: 24px; }
+            h3.step-heading { margin-top: 18px; page-break-after: avoid; }
+            .image-block { page-break-inside: avoid; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class=container>
+
         <!-- Header -->
-        <div class="header">
-            <div class="header-logo">
+        <header class=doc-header>
+            <div class=doc-logo>
                 <img src="../assets/HPark Logo.png" alt="Hello Park Logo" onerror="this.style.display='none'">
+                <span class="doc-badge">Обучение кассиров</span>
             </div>
-            <div class="header-title">
-                <h1>ИНСТРУКЦИЯ КАССИРА</h1>
-                <p>Регистрация гостей и привязка RFID-браслетов</p>
-            </div>
+            <h1>Инструкция по работе с RFID-панелью и браслетами</h1>
+            <p class="doc-subtitle">Простое пошаговое руководство: регистрация по QR, Аватары, выдача призов и очистка</p>
+        </header>
+
+        <!-- Intro -->
+        <div class="intro-box">
+            <h2>👋 Зачем нужны RFID-браслеты?</h2>
+            <p>RFID-браслет — это персональный ключ ребенка в интерактивном парке Hello Park. Прикладывая его к RFID-считывателям на играх и аттракционах, ребенок запускает игры, развивает своего персонажа (<strong>Аватара</strong>), копит баллы за ловкость и получает классные подарки на кассе!</p>
         </div>
 
-        <!-- Glossary Card -->
-        <div class="glossary-card" style="background: var(--bg); border: 1px solid var(--border); padding: 18px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); page-break-inside: avoid;">
-            <h2 style="font-size: 14px; font-weight: 800; color: var(--purple); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.02em;">Словарь терминов</h2>
-            <dl style="display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: 11.5px; line-height: 1.4;">
-                <dt style="font-weight: 700; color: var(--text-dark); border-right: 2px solid var(--orange); padding-right: 8px; white-space: nowrap;">Профиль родителя</dt>
-                <dd style="color: var(--text-muted); margin: 0;">Учетная запись в RFID-панели кассира, привязанная к номеру телефона взрослого гостя. Служит для группировки детей и согласия с правилами парка.</dd>
-                
-                <dt style="font-weight: 700; color: var(--text-dark); border-right: 2px solid var(--orange); padding-right: 8px; white-space: nowrap;">Профиль ребенка</dt>
-                <dd style="color: var(--text-muted); margin: 0;">Индивидуальный аккаунт ребенка, привязанный к профилю его родителя. Содержит имя, дату рождения, уникальный UID и привязанный RFID-браслет.</dd>
-                
-                <dt style="font-weight: 700; color: var(--text-dark); border-right: 2px solid var(--orange); padding-right: 8px; white-space: nowrap;">RFID браслет</dt>
-                <dd style="color: var(--text-muted); margin: 0;">Физический браслет со встроенным бесконтактным RFID-чипом, который выдается ребенку для авторизации на игровых аттракционах парка.</dd>
-                
-                <dt style="font-weight: 700; color: var(--text-dark); border-right: 2px solid var(--orange); padding-right: 8px; white-space: nowrap;">RFID считыватель</dt>
-                <dd style="color: var(--text-muted); margin: 0;">Настольный сканер на кассе, предназначенный для считывания RFID-кода прикладываемого браслета и автоматической передачи его в систему.</dd>
-                
-                <dt style="font-weight: 700; color: var(--text-dark); border-right: 2px solid var(--orange); padding-right: 8px; white-space: nowrap;">RFID панель</dt>
-                <dd style="color: var(--text-muted); margin: 0;">Веб-интерфейс кассира для управления доступом гостей: регистрации профилей, проверки кодов браслетов и выдачи игровых призов.</dd>
-                
-                <dt style="font-weight: 700; color: var(--text-dark); border-right: 2px solid var(--orange); padding-right: 8px; white-space: nowrap;">Аватар</dt>
-                <dd style="color: var(--text-muted); margin: 0;">Виртуальный персонаж ребенка в игровой системе парка, который развивается по мере прохождения аттракционов и накапливает баллы для призов.</dd>
-            </dl>
-        </div>
+        <!-- Strategy choice -->
+        <h2 class="section-heading">Два способа регистрации гостей в парке</h2>
+        <p>Кассир встречает гостей и предлагает удобный способ регистрации в зависимости от ситуации:</p>
 
-        <!-- Stage 1 Intro -->
-        <div class="intro-card">
-            <h2>Этап 1: Приветствие и валидация гостя</h2>
-            <p>При входе гостя в парк кассир обязан поприветствовать его и уточнить формат посещения:</p>
-            <div class="intro-options">
-                <div class="intro-opt first">
-                    <strong>Первый визит</strong>
-                    <p>Кассир предлагает создать новые аккаунты родителя и ребенка, чтобы сохранять игровой прогресс аватаров и подтвердить согласие с правилами парка.</p>
-                </div>
-                <div class="intro-opt repeat">
-                    <strong>Повторный визит</strong>
-                    <p>Кассир выполняет быстрый поиск существующего аккаунта родителя по ФИО или номеру телефона для привязки новых браслетов к созданным Аватарам.</p>
-                </div>
-            </div>
-        </div>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th style="width: 30%;">Способ</th>
+                    <th style="width: 40%;">Как это работает</th>
+                    <th style="width: 30%;">Когда применять</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <strong style="color: var(--green); font-size: 14px;">⭐ 1. Саморегистрация по QR-коду</strong><br>
+                        <span style="font-size: 12px; color: var(--text-muted);">Основной целевой путь</span>
+                    </td>
+                    <td>
+                        Гость сканирует QR-код на стойке со своего смартфона, сам вводит телефон, СМС, ФИО и детей. Семья <strong>сразу появляется в панели кассира</strong> — остается только приложить браслеты.
+                    </td>
+                    <td>
+                        <strong>95% случаев.</strong> Основной стандарт парка. Нет очередей, кассир не тратит время на ручной ввод длинных имен.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong style="color: var(--orange); font-size: 14px;">🔄 2. Ручной ввод через панель</strong><br>
+                        <span style="font-size: 12px; color: var(--text-muted);">Запасной резервный путь</span>
+                    </td>
+                    <td>
+                        Кассир нажимает кнопку <code>+ Добавить аккаунт</code> на компьютере, заполняет данные семьи вручную и привязывает браслеты.
+                    </td>
+                    <td>
+                        <strong>Исключительные случаи:</strong> у гостя сел телефон, кнопочный аппарат или гостю трудно заполнить форму самому.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-        <!-- PATH 1: FIRST VISIT -->
-        <div class="section-title">Сценарий 1: Первый визит (Регистрация новых гостей)</div>
 
-        <!-- Step 1 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 1</div>
-                <div class="step-name">Создание аккаунтов родителя и ребенка</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            Нажимает кнопку <strong>«Добавить аккаунт»</strong>, инициирует верификацию номера телефона по СМС, указывает ФИО родителя, добавляет строки для детей, заполняет их данные (имя, дата рождения) и нажимает кнопку <strong>«Создать»</strong>.
+        <!-- ========================================================================= -->
+        <!-- СЦЕНАРИЙ 1: ОСНОВНОЙ ПУТЬ — САМОРЕГИСТРАЦИЯ ПО QR -->
+        <!-- ========================================================================= -->
+        <h2 class="section-heading target">
+            <span class="section-num">1</span>
+            Сценарий 1: Саморегистрация гостя по QR-коду (Основной путь)
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Рекомендуемый быстрый способ обслуживания семьи (занимает около 15–20 секунд на кассе).</p>
+
+        <!-- Step 1.1 -->
+        <h3 class="step-heading">
+            <span class="step-tag green">Шаг 1.1</span>
+            Приветствие гостя и главный вопрос кассира
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">💬</div>
+                <div class="action-content">
+                    <strong>1. Встретьте гостя с улыбкой и спросите:</strong>
+                    <div class="speech-box">
+                        «Здравствуйте! Добро пожаловать в Hello Park! Вы у нас впервые или уже были раньше?»
+                    </div>
+
+                    <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+                        <div>
+                            🟢 <strong>Если гость отвечает «Впервые / Первый раз»:</strong>
+                            <div class="speech-box" style="margin: 4px 0 0 0; background: #f0fdf4; border-left-color: #16a34a; color: #14532d;">
+                                «Отлично! Отсканируйте, пожалуйста, этот QR-код на стойке со своего телефона — там нужно буквально за полминуты ознакомиться с правилами безопасности парка и указать имена деток. Система создаст и сохранит для каждого личного персонажа (Аватара), чтобы они копили баллы за игры и получали подарки!»
+                            </div>
+                        </div>
+
+                        <div>
+                            🟣 <strong>Если гость отвечает «Уже были раньше»:</strong>
+                            <div class="speech-box" style="margin: 4px 0 0 0; background: #f5f2ff; border-left-color: #5123d4; color: #3b0764;">
+                                «Рады снова вас видеть! Назовите ваш номер телефона или фамилию — я найду игровых персонажей деток и привяжу новые браслеты, сохранив все баллы и уровень!»
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-muted); margin-top: 3px;">
+                                ↳ <em>В этом случае сразу переходите к <strong>Сценарию 3 (Повторный визит)</strong>.</em>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image1.png" alt="Форма заполнения аккаунта">
-                    <div class="image-caption">Рис. 1: Форма заполнения данных родителя и ребенка</div>
-                </div>
             </div>
-        </div>
-
-        <!-- Step 2 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 2</div>
-                <div class="step-name">Автоматическое открытие привязки для первого ребенка</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            Сразу после успешного создания аккаунта система автоматически открывает модальное окно привязки RFID-браслета для первого ребенка в очереди.
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image5.png" alt="Модальное окно привязки">
-                    <div class="image-caption">Рис. 2: Модальное окно привязки для первого ребенка</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 3</div>
-                <div class="step-name">Успешная привязка первого браслета</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            Прикладывает первый физический RFID-браслет к настольному считывателю.
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-nuance">Нюансы реализации</span>
-                        <div class="badge-content">
-                            <ul class="nuances-list">
-                                <li><strong>Автоматическое подтверждение:</strong> Сканирование браслета автоматически подтверждает и завершает его привязку. Кассиру больше не нужно вручную нажимать кнопку «ПОДТВЕРДИТЬ» на экране.</li>
-                                <li><strong>Визуальный оверлей:</strong> Показывается полноэкранный оверлей успеха с зеленой анимированной галочкой и текстом «БРАСЛЕТ УСПЕШНО ПРИВЯЗАН».</li>
-                                <li><strong>Таймаут перехода:</strong> Оверлей держится на экране ровно <strong>1.5 секунды</strong> перед переходом к следующему шагу.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image2.png" alt="Успешное подтверждение">
-                    <div class="image-caption">Рис. 3: Успешное подтверждение привязки первого ребенка</div>
+            <div class="action-item" style="margin-top: 6px;">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    <strong>2. Для новых гостей:</strong> укажите на тейбл-тент с QR-кодом на стойке кассы. Гость наводит камеру смартфона и попадает в мобильную анкету.
                 </div>
             </div>
         </div>
 
-        <!-- Step 4 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 4</div>
-                <div class="step-name">Автопереход ко второму ребенку</div>
+        <!-- Step 1.2 -->
+        <h3 class="step-heading">
+            <span class="step-tag green">Шаг 1.2</span>
+            Ввод телефона и подтверждение по СМС на смартфоне гостя
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">📱</div>
+                <div class="action-content">
+                    <strong>Что делает гость на своем телефоне:</strong><br>
+                    1. Вводит свой номер мобильного телефона.<br>
+                    2. Отмечает галочку согласия с правилами безопасности парка.<br>
+                    3. Нажимает кнопку «Отправить СМС-код», получает 4 цифры и нажимает «Подтвердить».
+                </div>
             </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            По истечении 1.5 секунд окно привязки автоматически обновляет данные для следующего ребенка в очереди (без закрытия модального окна).
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-nuance">Нюансы реализации</span>
-                        <div class="badge-content">
-                            <ul class="nuances-list">
-                                <li><strong>Плавность переходов:</strong> Смена имени ребенка происходит с плавной анимацией затухания и появления (Fade-In/Out).</li>
-                                <li><strong>Индикация очереди:</strong> Счетчик прогресса обновляется (например, на «Браслет 2 из 2»).</li>
-                                <li><strong>Фокусировка ввода:</strong> Поле ввода кода автоматически очищается и получает фокус для мгновенного считывания следующего RFID-метки.</li>
-                            </ul>
-                        </div>
+            <div class="tip-box">
+                💡 <strong>Подсказка для кассира:</strong> Если гость спросит, зачем телефон — поясните, что к номеру привязываются достижения и уровень ребенка, чтобы они не сгорели при следующем визите.
+            </div>
+        </div>
+        <div class="image-block mobile-center">
+            <img src="screenshots/cashier_guide/qr_1_guest_mobile_phone.png" alt="Ввод телефона и СМС гостем">
+            <div class="image-caption">Рис. 1: Шаг 1 на смартфоне гостя — ввод телефона и СМС-подтверждение</div>
+        </div>
+
+        <!-- Step 1.3 -->
+        <h3 class="step-heading">
+            <span class="step-tag green">Шаг 1.3</span>
+            Указание ФИО родителя и добавление детей
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">📱</div>
+                <div class="action-content">
+                    <strong>Что делает гость:</strong><br>
+                    1. Вводит свое ФИО (например, <em>Кузнецов Дмитрий Павлович</em>).<br>
+                    2. Вводит имя и дату рождения первого ребенка (например, <em>Артём</em>).<br>
+                    3. Если детей двое или трое — нажимает «+ Добавить ребёнка» и указывает остальных (например, <em>Полина</em>).<br>
+                    4. Нажимает кнопку <strong>[ Зарегистрироваться ]</strong>.
+                </div>
+            </div>
+        </div>
+        <div class="image-block mobile-center">
+            <img src="screenshots/cashier_guide/qr_2_guest_mobile_children.png" alt="Ввод ФИО и детей">
+            <div class="image-caption">Рис. 2: Шаг 2 на смартфоне гостя — имена и даты рождения детей</div>
+        </div>
+
+        <!-- Step 1.4 -->
+        <h3 class="step-heading">
+            <span class="step-tag green">Шаг 1.4</span>
+            Завершение регистрации на смартфоне
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">✓</div>
+                <div class="action-content">
+                    На экране гостя появляется подтверждение <strong>«Вы успешно зарегистрированы!»</strong> и QR-код карты лояльности. Гость подходит к кассиру за браслетами.
+                </div>
+            </div>
+        </div>
+        <div class="image-block mobile-center">
+            <img src="screenshots/cashier_guide/qr_3_guest_mobile_success.png" alt="Успешная регистрация на смартфоне">
+            <div class="image-caption">Рис. 3: Шаг 3 на смартфоне гостя — регистрация завершена</div>
+        </div>
+
+        <!-- Step 1.5 -->
+        <h3 class="step-heading">
+            <span class="step-tag green">Шаг 1.5</span>
+            Семья мгновенно появляется в панели кассира
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">🖥️</div>
+                <div class="action-content">
+                    В ту же секунду строка семьи Кузнецовых появляется вверху таблицы RFID-панели кассира!
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    Кассир нажимает оранжевую кнопку <strong>[ Привязать ]</strong> напротив первого ребенка (<em>Артём</em>).
+                </div>
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/qr_4_cashier_family_arrived.png" alt="Семья в панели кассира">
+            <div class="image-caption">Рис. 4: Зарегистрированная семья мгновенно появляется на экране кассира</div>
+        </div>
+
+        <!-- Step 1.6 -->
+        <h3 class="step-heading">
+            <span class="step-tag green">Шаг 1.6</span>
+            Потоковая привязка браслетов на RFID-считывателе и выдача детям
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    1. <strong>Приложите 1-й браслет</strong> к RFID-считывателю на кассе → система издаст звуковой сигнал и подтвердит привязку автоматически.<br>
+                    2. <strong>Через 1.5 секунды</strong> окно само переключится на 2-го ребенка → <strong>приложите 2-й браслет</strong> к RFID-считывателю.<br>
+                    3. Окно закроется, а браслеты активируются! Кликать мышкой не нужно.
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-icon">💬</div>
+                <div class="action-content">
+                    <strong>Наденьте браслеты на ручки детям и скажите:</strong>
+                    <div class="speech-box">
+                        «Готово! Браслеты привязаны. Прикладывайте их к RFID-считывателям на играх, зарабатывайте баллы и приходите за подарками!»
                     </div>
                 </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image7.png" alt="Второй ребенок привязка">
-                    <div class="image-caption">Рис. 4: Модальное окно привязки для второго ребенка</div>
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s1_3_bind_first_child.png" alt="Привязка браслета на RFID-считывателе">
+            <div class="image-caption">Рис. 5: Окно привязки браслета — достаточно просто приложить чип к RFID-считывателю</div>
+        </div>
+
+
+        <!-- ========================================================================= -->
+        <!-- СЦЕНАРИЙ 2: ЗАПАСНОЙ ПУТЬ — РУЧНАЯ РЕГИСТРАЦИЯ -->
+        <!-- ========================================================================= -->
+        <h2 class="section-heading fallback">
+            <span class="section-num">2</span>
+            Сценарий 2: Ручная регистрация через RFID-панель (Запасной путь)
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Используется только если у гостя сел телефон, нет камеры или кнопочный аппарат.</p>
+
+        <!-- Step 2.1 -->
+        <h3 class="step-heading">
+            <span class="step-tag orange">Шаг 2.1</span>
+            Открытие формы создания аккаунта
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">💬</div>
+                <div class="action-content">
+                    Гость говорит: <em>«У меня сел телефон / нет смартфона / не получается отсканировать QR»</em>.
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    Кассир нажимает оранжевую кнопку <strong>[ + Добавить аккаунт ]</strong> в правом верхнем углу интерфейса.
+                </div>
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s1_1_click_add_account.png" alt="Кнопка Добавить аккаунт">
+            <div class="image-caption">Рис. 6: Кнопка ручного добавления аккаунта на главной панели</div>
+        </div>
+
+        <!-- Step 2.2 -->
+        <h3 class="step-heading">
+            <span class="step-tag orange">Шаг 2.2</span>
+            Заполнение данных семьи на компьютере
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    1. Введите ФИО родителя и номер телефона.<br>
+                    2. Нажмите «Отправить СМС», спросите 4-значный код у гостя и введите его (тестовый: <code>1234</code>).<br>
+                    3. Нажмите «+ Добавить ребенка» и заполните имена и даты рождения всех пришедших детей.<br>
+                    4. Нажмите оранжевую кнопку <strong>[ Создать аккаунт ]</strong> → по очереди приложите браслеты к RFID-считывателю.
+                </div>
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s1_2_fill_form.png" alt="Форма создания аккаунта">
+            <div class="image-caption">Рис. 7: Форма ручного заполнения данных семьи на компьютере кассира</div>
+        </div>
+
+
+        <!-- ========================================================================= -->
+        <!-- СЦЕНАРИЙ 3: ПОВТОРНЫЙ ВИЗИТ (ИГРОВОЙ АВАТАР) -->
+        <!-- ========================================================================= -->
+        <h2 class="section-heading">
+            <span class="section-num">3</span>
+            Сценарий 3: Повторный визит (Игровой Аватар и перенос очков)
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Когда семья уже была в парке и ребенок продолжает развивать своего персонажа.</p>
+
+        <!-- Step 3.1 -->
+        <h3 class="step-heading">
+            <span class="step-tag purple">Шаг 3.1</span>
+            Быстрый поиск семьи в базе
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">💬</div>
+                <div class="action-content">
+                    <strong>Спросите у гостя:</strong>
+                    <div class="speech-box">
+                        «Рады снова вас видеть! Назовите ваш номер телефона или фамилию, я найду игровых персонажей деток!»
+                    </div>
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    Введите номер телефона или фамилию (например, <em>«Смирнова»</em>) в поле поиска. Список отфильтруется мгновенно.
+                </div>
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s2_1_search_parent.png" alt="Поиск родителя">
+            <div class="image-caption">Рис. 8: Мгновенный поиск по номеру телефона или фамилии</div>
+        </div>
+
+        <!-- Step 3.2 -->
+        <h3 class="step-heading">
+            <span class="step-tag purple">Шаг 3.2</span>
+            Привязка нового браслета к персонажу
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">🖥️</div>
+                <div class="action-content">
+                    В строке ребенка виден фиолетовый статус <strong>[ АВАТАР ]</strong> — значит, у него накоплены уровень и баллы.
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    Нажмите кнопку <strong>[ Новый браслет ]</strong> в строке ребенка (<em>Егор</em>) и приложите новый чистый браслет к RFID-считывателю.
+                </div>
+            </div>
+            <div class="tip-box">
+                ⭐ <strong>Важно:</strong> Все игровые очки, достижения и открытые призы переносятся на новый браслет автоматически!
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s2_2_find_avatar.png" alt="Статус Аватар и кнопка Новый браслет">
+            <div class="image-caption">Рис. 9: Профиль ребенка со статусом АВАТАР и кнопка привязки нового чипа</div>
+        </div>
+
+        <!-- Step 3.3 -->
+        <h3 class="step-heading">
+            <span class="step-tag purple">Шаг 3.3</span>
+            Просмотр баланса и истории визитов
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    Чтобы посмотреть баланс баллов или даты прошлых визитов — нажмите на бейдж <strong>[ АВАТАР ]</strong> и разверните блок <strong>«История посещений»</strong>.
+                </div>
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s2_5_visit_history.png" alt="История визитов и баланс">
+            <div class="image-caption">Рис. 10: Карточка Аватара с балансом баллов и календарем визитов</div>
+        </div>
+
+
+        <!-- ========================================================================= -->
+        <!-- СЦЕНАРИЙ 4: ВЫДАЧА ПРИЗОВ -->
+        <!-- ========================================================================= -->
+        <h2 class="section-heading">
+            <span class="section-num">4</span>
+            Сценарий 4: Проверка браслета и выдача призов
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Когда ребенок наиграл очки и пришел на кассу за заслуженным подарком.</p>
+
+        <!-- Step 4.1 -->
+        <h3 class="step-heading">
+            <span class="step-tag green">Шаг 4.1</span>
+            Сканирование браслета для проверки наград
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    Нажмите кнопку <strong>[ Проверить браслет ]</strong> в верхней панели интерфейса и приложите браслет ребенка к RFID-считывателю.
+                </div>
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s3_1_check_header_btn.png" alt="Кнопка Проверить браслет">
+            <div class="image-caption">Рис. 11: Кнопка быстрой проверки браслета в верхней панели</div>
+        </div>
+
+        <!-- Step 4.2 -->
+        <h3 class="step-heading">
+            <span class="step-tag green">Шаг 4.2</span>
+            Вручение подарка юному гостю
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    В открывшейся карточке наград найдите доступный подарок (например, <em>Стикерпак</em>), нажмите фиолетовую кнопку <strong>[ ВЫДАТЬ ]</strong> и вручите приз ребенку!
+                </div>
+            </div>
+            <div class="tip-box">
+                💡 <strong>Если ошиблись:</strong> На карточке выданного приза есть кнопка <em>«Отменить»</em> на случай случайного клика.
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s3_3_avatar_prizes.png" alt="Карточка наград Аватара">
+            <div class="image-caption">Рис. 12: Карточка наград с активной кнопкой «ВЫДАТЬ» на открытом призе</div>
+        </div>
+
+
+        <!-- ========================================================================= -->
+        <!-- СЦЕНАРИЙ 5: ОЧИСТКА БРАСЛЕТОВ -->
+        <!-- ========================================================================= -->
+        <h2 class="section-heading">
+            <span class="section-num">5</span>
+            Сценарий 5: Потоковая очистка сданных браслетов
+        </h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Быстрое освобождение браслетов при выходе гостей для повторной выдачи.</p>
+
+        <!-- Step 5.1 -->
+        <h3 class="step-heading">
+            <span class="step-tag">Шаг 5.1</span>
+            Очистка браслетов подряд один за другим
+        </h3>
+        <div class="step-actions">
+            <div class="action-item">
+                <div class="action-icon">👆</div>
+                <div class="action-content">
+                    1. Нажмите кнопку <strong>[ Очистить браслет ]</strong> в правом верхнем углу панели.<br>
+                    2. <strong>Прикладывайте сданные браслеты к RFID-считывателю подряд</strong> — окно не закрывается, можно быстро очистить всю корзину браслетов за полминуты!
+                </div>
+            </div>
+        </div>
+        <div class="image-block">
+            <img src="screenshots/cashier_guide/s4_2_clear_stream_modal.png" alt="Окно потоковой очистки">
+            <div class="image-caption">Рис. 13: Потоковый режим очистки сданных браслетов</div>
+        </div>
+
+
+        <!-- ========================================================================= -->
+        <!-- ШПАРГАЛКА КАССИРА -->
+        <!-- ========================================================================= -->
+        <h2 class="section-heading">
+            <span class="section-num">⚡</span>
+            Шпаргалка кассира: «Что делать, если...»
+        </h2>
+
+        <div class="faq-list">
+            <div class="faq-item alert">
+                <div class="faq-question">🔴 «Браслет уже привязан к другому ребенку»</div>
+                <div class="faq-answer">
+                    <strong>Причина:</strong> Браслет забыли очистить после прошлого гостя.<br>
+                    <strong>Решение:</strong> Нажмите «Очистить браслет» в шапке, приложите чип к RFID-считывателю на 1 секунду, затем вернитесь к привязке. Либо нажмите кнопку <em>«Перепривязать»</em> прямо в окне ошибки.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">📱 Гость не может отсканировать QR или сел телефон</div>
+                <div class="faq-answer">
+                    <strong>Решение:</strong> Перейдите на <strong>Сценарий 2 (Запасной путь)</strong> — нажмите кнопку <code>+ Добавить аккаунт</code> и зарегистрируйте семью вручную за компьютером.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">✏️ Опечатка в имени ребенка или дате рождения</div>
+                <div class="faq-answer">
+                    <strong>Решение:</strong> Найдите семью в поиске, раскройте список детей и нажмите иконку <strong>карандаша ✏️ (Редактировать)</strong>. Исправьте данные и сохраните.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">🏃‍♂️ Ребенок потерял браслет в игровой зоне</div>
+                <div class="faq-answer">
+                    <strong>Решение:</strong> Найдите семью по фамилии в поиске → нажмите <strong>«Новый браслет»</strong> напротив имени ребенка → приложите новый чип к RFID-считывателю. <strong>Все очки и Аватар сохранятся на 100%!</strong>
                 </div>
             </div>
         </div>
 
-        <!-- Step 5 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 5</div>
-                <div class="step-name">Успешная привязка второго браслета</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            Прикладывает второй физический браслет к считывателю.
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-nuance">Нюансы реализации</span>
-                        <div class="badge-content">
-                            <ul class="nuances-list">
-                                <li>Привязка второго браслета также срабатывает автоматически без клика.</li>
-                                <li>Отображается оверлей успеха на 1.5 секунды с именем второго ребенка.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image3.png" alt="Успешная привязка второго">
-                    <div class="image-caption">Рис. 5: Успешное подтверждение привязки второго ребенка</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 6 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 6</div>
-                <div class="step-name">Автоматическое завершение и обновление таблицы</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            Поскольку очередь детей у данного родителя закончилась, модальное окно привязки автоматически закрывается.
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-nuance">Нюансы реализации</span>
-                        <div class="badge-content">
-                            <ul class="nuances-list">
-                                <li>Главная таблица аккаунтов на экране кассира автоматически перезагружается с новыми данными.</li>
-                                <li>У созданного родителя в списке детей отображаются привязанные браслеты с соответствующими статусами активности.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image4.png" alt="Обновленная таблица">
-                    <div class="image-caption">Рис. 6: Обновленная таблица со статусами браслетов</div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- PATH 2: REPEAT VISIT -->
-        <div class="section-title">Сценарий 2: Повторный визит (Перенос Аватара на новый браслет)</div>
-
-        <!-- Step 7 / Repeat 1 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 1</div>
-                <div class="step-name">Поиск профиля родителя и раскрытие списка детей</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            Уточняет ФИО или номер телефона родителя и вводит его в поле поиска (например, «Смирнова»). Находит нужный профиль и раскрывает список детей.
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            <ul class="nuances-list">
-                                <li><strong>«Живой» поиск:</strong> Поиск по базе осуществляется мгновенно по мере ввода символов.</li>
-                                <li><strong>Обнаружение Аватара:</strong> У ребенка, который уже имеет игровой профиль, отображается фиолетовая плашка <strong>«АВАТАР»</strong>.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image9.png" alt="Поиск аккаунта">
-                    <div class="image-caption">Рис. 7: Поиск аккаунта и список детей с Аватаром</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 8 / Repeat 2 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 2</div>
-                <div class="step-name">Запуск привязки браслета для Аватара ребенка</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            Уточняет у ребенка, хочет ли он продолжить развивать своего Аватара. При согласии нажимает кнопку <strong>«Новый браслет»</strong> напротив его имени (например, «Егор»).
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            Открывается модальное окно «Привязка браслета» с именем ребенка (<strong>«ЕГОР»</strong>) и фокусом на поле ввода.
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image6.png" alt="Окно привязки Егор">
-                    <div class="image-caption">Рис. 8: Окно привязки браслета к ребенку</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 9 / Repeat 3 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 3</div>
-                <div class="step-name">Автоматическая привязка и перезапись Аватара</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            Прикладывает новый браслет к RFID-считывателю.
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            <ul class="nuances-list">
-                                <li><strong>Автоматическая привязка:</strong> Система считывает RFID-код и привязывает его к Егору автоматически без клика на подтверждение.</li>
-                                <li><strong>Перезапись Аватара:</strong> Игровой прогресс переносится на новый браслет. Модальное окно закрывается с отображением зеленого уведомления.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image8.png" alt="Подтверждение и тост">
-                    <div class="image-caption">Рис. 9: Успешное подтверждение привязки и тост-уведомление</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 10 / Repeat 4 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 4</div>
-                <div class="step-name">Фиксация повторного посещения</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            Чтобы посмотреть количество и историю посещений гостя, нажимает кнопку <strong>«Детали»</strong> (или кликает по фиолетовому статусу <strong>«АВАТАР»</strong>) в строке ребенка и разворачивает раздел <strong>«История посещений»</strong>.
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            Каждое повторное посещение (сканирование нового браслета на кассе при визите) автоматически регистрируется в системе и добавляет новую строчку с датой и точным временем в историю посещений.
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/returning_visit/step4_avatar_history.png" alt="История посещений">
-                    <div class="image-caption">Рис. 10: Раздел «История посещений» в профиле Аватара Егора</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PATH 3: PRIZE ISSUANCE -->
-        <div class="section-title">Сценарий 3: Выдача приза (Проверка браслета)</div>
-
-        <!-- Step 11 / Prize 1 -->
-        <div class="step-container">
-            <div class="step-header">
-                <div class="step-number">Шаг 1</div>
-                <div class="step-name">Проверка браслета ребенка</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            При обращении ребенка за призом нажимает на главную кнопку <strong>«Проверить браслет»</strong> на верхней панели и прикладывает браслет ребенка к считывателю.
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            Система считывает код и автоматически открывает карточку Аватара ребенка с детальной информацией о его игровом уровне, истории посещений и доступных наградах.
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/check_bracelet_header.png" alt="Проверка браслета">
-                    <div class="image-caption">Рис. 11: Кнопка «ПРОВЕРИТЬ БРАСЛЕТ» в верхней панели интерфейса</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 12 / Prize 2 -->
-        <div class="step-container" style="margin-bottom: 50px;">
-            <div class="step-header">
-                <div class="step-number">Шаг 2</div>
-                <div class="step-name">Выдача доступного приза гостю</div>
-            </div>
-            <div class="step-content">
-                <div class="step-details">
-                    <div class="badge-block">
-                        <span class="badge badge-cashier">Действие кассира</span>
-                        <div class="badge-content">
-                            Видит доступную награду (например, «Стикерпак»), нажимает кнопку <strong>«Выдать»</strong> в строке приза, после чего вручает физический подарок ребенку, закрывает карточку Аватара и сбрасывает поиск.
-                        </div>
-                    </div>
-                    <div class="badge-block" style="margin-top: 6px;">
-                        <span class="badge badge-system">Действие системы</span>
-                        <div class="badge-content">
-                            Статус приза в системе меняется на «Выдан», а в истории операций фиксируется транзакция выдачи.
-                        </div>
-                    </div>
-                </div>
-                <div class="step-image-box">
-                    <img src="screenshots/extracted_media/image10.png" alt="Выдача приза">
-                    <div class="image-caption">Рис. 12: Карточка Аватара с доступными для выдачи наградами</div>
-                </div>
-            </div>
-        </div>
     </div>
 </body>
 </html>

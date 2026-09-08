@@ -12,3 +12,5 @@ videos/
 screenshot_script.py
 server.mjs
 pb.yaml
+__pycache__/
+*.pyc

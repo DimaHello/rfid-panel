@@ -12,6 +12,8 @@
     <!-- Gilroy via CDN Fonts (display font) -->
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/gilroy-bold">
     <link rel="stylesheet" href="style.css">
+    <!-- Cities dataset for smart autocomplete -->
+    <script src="cities.js"></script>
 </head>
 <body>
 
@@ -24,11 +26,12 @@
              ============================================ -->
         <div class="progress-container" id="progress-container">
             <div class="progress-glass">
-                <span class="progress-text" id="progress-text">Шаг 1 из 3: Согласие</span>
+                <span class="progress-text" id="progress-text">Шаг 1 из 4: Согласие</span>
                 <div class="progress-segments">
                     <div class="progress-seg active" id="seg-1"></div>
                     <div class="progress-seg" id="seg-2"></div>
                     <div class="progress-seg" id="seg-3"></div>
+                    <div class="progress-seg" id="seg-4"></div>
                 </div>
             </div>
         </div>
@@ -157,9 +160,101 @@
         </section>
 
         <!-- ============================================
-             STEP 3: QR CODE
+             STEP 3: SURVEY (SOURCE + CITY)
              ============================================ -->
-        <section class="step" id="step-3" aria-label="QR-код">
+        <section class="step" id="step-3" aria-label="Опрос">
+            <div class="card">
+                <div class="card-header-hero">
+                    <h1 class="card-hero-title">
+                        Ещё пару<br>
+                        вопросов —<br>
+                        и <span class="text-orange">в парк!</span>
+                    </h1>
+                    <img src="fox.webp" alt="Лис" class="card-hero-image">
+                </div>
+
+                <p class="step-explanation">Ответьте на 2 вопроса, чтобы помочь нам сделать Hello Park ещё лучше для вас и ваших детей.</p>
+
+                <!-- Question 1: Source -->
+                <div class="form-group">
+                    <label class="form-label" for="source-select">
+                        Откуда вы узнали о нас? <span class="required-star">*</span>
+                    </label>
+
+                    <!-- Quick source chips for 1-tap selection -->
+                    <div class="chip-group" id="source-chips">
+                        <button type="button" class="chip" data-source="увидели в ТЦ">🏢 Увидели в ТЦ</button>
+                        <button type="button" class="chip" data-source="инстаграм">📱 Инстаграм</button>
+                        <button type="button" class="chip" data-source="от знакомых">👥 От знакомых</button>
+                        <button type="button" class="chip" data-source="были в парке">🎈 Были в парке</button>
+                    </div>
+
+                    <div class="select-wrapper">
+                        <select id="source-select" class="form-input form-select" required>
+                            <option value="" disabled selected>Или выберите другой вариант...</option>
+                            <option value="от знакомых">От знакомых</option>
+                            <option value="сайт">Сайт</option>
+                            <option value="инстаграм">Инстаграм</option>
+                            <option value="интернет">Интернет</option>
+                            <option value="увидели в ТЦ">Увидели в ТЦ</option>
+                            <option value="экраны/баннеры в городе">Экраны/баннеры в городе</option>
+                            <option value="реклама на/в транспорте">Реклама на/в транспорте</option>
+                            <option value="блогер">Блогер</option>
+                            <option value="были в парке">Были в парке</option>
+                            <option value="постоянный клиент">Постоянный клиент</option>
+                            <option value="не помню">Не помню</option>
+                            <option value="другое">Другое</option>
+                        </select>
+                    </div>
+
+                    <div class="hidden" id="source-other-group" style="margin-top: 0.65rem;">
+                        <input type="text" id="source-other-input" class="form-input" placeholder="Уточните, пожалуйста, откуда..." enterkeyhint="next">
+                    </div>
+
+                    <p class="form-error hidden" id="source-error">Выберите, пожалуйста, откуда вы узнали о нас</p>
+                </div>
+
+                <!-- Question 2: City -->
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label for="city-input" class="form-label">
+                        Из какого вы города? <span class="required-star">*</span>
+                    </label>
+
+                    <!-- Quick city chips -->
+                    <div class="chip-group" id="city-chips">
+                        <button type="button" class="chip" data-city="Москва">📍 Москва</button>
+                        <button type="button" class="chip" data-city="Санкт-Петербург">Санкт-Петербург</button>
+                        <button type="button" class="chip" data-city="Химки">Химки</button>
+                        <button type="button" class="chip" data-city="Мытищи">Мытищи</button>
+                    </div>
+
+                    <div class="city-autocomplete-wrapper">
+                        <div class="city-input-inner">
+                            <span class="city-input-icon">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                            </span>
+                            <input type="text" id="city-input" class="form-input city-field" placeholder="Начните вводить город..." autocomplete="off" enterkeyhint="done">
+                            <button type="button" class="city-input-clear hidden" id="city-clear" aria-label="Очистить поле">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="city-suggestions-dropdown hidden" id="city-suggestions"></div>
+                    </div>
+                    <p class="form-error hidden" id="city-error">Укажите, пожалуйста, ваш город</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================
+             STEP 4: QR CODE
+             ============================================ -->
+        <section class="step" id="step-4" aria-label="QR-код">
             <div class="card card-qr">
                 <div class="qr-success-badge">
                     <svg width="30" height="30" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -222,6 +317,23 @@
                 </svg>
             </button>
             <button class="btn-next" id="btn-step2" type="button">
+                <span class="btn-next-label">Далее</span>
+                <span class="btn-next-arrow">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </button>
+        </div>
+
+        <!-- Step 3 bottom bar (Back + Submit) -->
+        <div class="bottom-nav-inner" id="bottom-bar-3" style="display:none;">
+            <button class="btn-back" id="btn-step3-back" type="button" aria-label="Назад">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <button class="btn-next" id="btn-step3" type="button">
                 <span class="btn-next-label">Зарегистрироваться</span>
                 <span class="btn-next-arrow">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
@@ -231,8 +343,8 @@
             </button>
         </div>
 
-        <!-- Step 3 bottom bar (Restart) -->
-        <div class="bottom-nav-inner" id="bottom-bar-3" style="display:none;">
+        <!-- Step 4 bottom bar (Restart) -->
+        <div class="bottom-nav-inner" id="bottom-bar-4" style="display:none;">
             <button class="btn-restart" id="btn-restart" type="button">
                 <span class="btn-next-label">Начать заново</span>
                 <span class="btn-restart-icon">
@@ -290,7 +402,7 @@
        NAVIGATION
     ============================================ */
     function goTo(target) {
-        if (target === step || target < 1 || target > 3) return;
+        if (target === step || target < 1 || target > 4) return;
         const oldEl = $(`#step-${step}`);
         const newEl = $(`#step-${target}`);
         
@@ -303,11 +415,11 @@
         step = target;
 
         // Update progress text
-        const stepNames = { 1: 'Согласие', 2: 'Данные семьи', 3: 'QR-код' };
-        $('#progress-text').textContent = `Шаг ${step} из 3: ${stepNames[step]}`;
+        const stepNames = { 1: 'Согласие', 2: 'Данные семьи', 3: 'Опрос', 4: 'QR-код' };
+        $('#progress-text').textContent = `Шаг ${step} из 4: ${stepNames[step]}`;
 
         // Update progress segments
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 4; i++) {
             const seg = $(`#seg-${i}`);
             seg.classList.remove('active', 'done');
             if (i < step)       seg.classList.add('done');
@@ -318,6 +430,7 @@
         $('#bottom-bar-1').style.display = step === 1 ? 'flex' : 'none';
         $('#bottom-bar-2').style.display = step === 2 ? 'flex' : 'none';
         $('#bottom-bar-3').style.display = step === 3 ? 'flex' : 'none';
+        $('#bottom-bar-4').style.display = step === 4 ? 'flex' : 'none';
 
         // Buttery-smooth transition: fade out, then fade in
         oldEl.style.opacity = '0';
@@ -608,18 +721,232 @@
 
         if (err) return;
 
-        buildQR();
         goTo(3);
     });
 
     /* ============================================
-       STEP 3 — QR CODE
+       STEP 3 — SURVEY (SOURCE + CITY)
+    ============================================ */
+    const sourceSelect = $('#source-select');
+    const sourceChips = $$('#source-chips .chip');
+    const sourceOtherGroup = $('#source-other-group');
+    const sourceOtherInput = $('#source-other-input');
+    const sourceError = $('#source-error');
+
+    // Source chips click
+    sourceChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const val = chip.dataset.source;
+            sourceSelect.value = val;
+            sourceChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            sourceError.classList.add('hidden');
+            sourceSelect.classList.remove('input-error');
+            if (val === 'другое') {
+                sourceOtherGroup.classList.remove('hidden');
+                sourceOtherInput.focus();
+            } else {
+                sourceOtherGroup.classList.add('hidden');
+            }
+        });
+    });
+
+    // Source select change
+    sourceSelect.addEventListener('change', () => {
+        const val = sourceSelect.value;
+        sourceError.classList.add('hidden');
+        sourceSelect.classList.remove('input-error');
+        sourceChips.forEach(c => {
+            if (c.dataset.source === val) c.classList.add('active');
+            else c.classList.remove('active');
+        });
+        if (val === 'другое') {
+            sourceOtherGroup.classList.remove('hidden');
+            sourceOtherInput.focus();
+        } else {
+            sourceOtherGroup.classList.add('hidden');
+        }
+    });
+
+    // City elements
+    const cityInput = $('#city-input');
+    const cityClear = $('#city-clear');
+    const citySuggestions = $('#city-suggestions');
+    const cityChips = $$('#city-chips .chip');
+    const cityError = $('#city-error');
+
+    // Sync city chips
+    function syncCityChips(cityName) {
+        cityChips.forEach(c => {
+            if (c.dataset.city.toLowerCase() === (cityName || '').toLowerCase()) {
+                c.classList.add('active');
+            } else {
+                c.classList.remove('active');
+            }
+        });
+    }
+
+    // City chips click
+    cityChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const cityName = chip.dataset.city;
+            cityInput.value = cityName;
+            cityClear.classList.remove('hidden');
+            cityError.classList.add('hidden');
+            cityInput.classList.remove('input-error');
+            syncCityChips(cityName);
+            citySuggestions.classList.add('hidden');
+        });
+    });
+
+    // City input clear
+    cityClear.addEventListener('click', () => {
+        cityInput.value = '';
+        cityClear.classList.add('hidden');
+        syncCityChips('');
+        citySuggestions.classList.add('hidden');
+        cityInput.focus();
+    });
+
+    // City live search autocomplete
+    function renderCitySuggestions(query) {
+        const cities = window.CITIES_DATA || [];
+        if (!query || query.trim().length < 1) {
+            citySuggestions.innerHTML = '';
+            citySuggestions.classList.add('hidden');
+            return;
+        }
+
+        const q = query.trim().toLowerCase();
+        const prefixMatches = [];
+        const includesMatches = [];
+
+        for (let i = 0; i < cities.length; i++) {
+            const c = cities[i];
+            const nameLower = c.name.toLowerCase();
+            if (nameLower.startsWith(q)) {
+                prefixMatches.push(c);
+            } else if (nameLower.includes(q)) {
+                includesMatches.push(c);
+            }
+            if (prefixMatches.length + includesMatches.length >= 15) break;
+        }
+
+        const matches = [...prefixMatches, ...includesMatches].slice(0, 10);
+
+        if (matches.length === 0) {
+            citySuggestions.innerHTML = `
+                <div class="city-no-match">
+                    Город «${query}» не найден в списке, но вы можете оставить его
+                </div>
+            `;
+            citySuggestions.classList.remove('hidden');
+            return;
+        }
+
+        citySuggestions.innerHTML = matches.map(c => {
+            const idx = c.name.toLowerCase().indexOf(q);
+            let highlightedName = c.name;
+            if (idx !== -1) {
+                highlightedName = c.name.slice(0, idx) +
+                    `<span class="city-match">${c.name.slice(idx, idx + q.length)}</span>` +
+                    c.name.slice(idx + q.length);
+            }
+            const regionText = (c.subject && c.subject !== c.name) ? `<span class="city-subject">${c.subject}</span>` : '';
+            return `
+                <div class="city-suggestion-item" data-name="${c.name}">
+                    <span class="city-name">${highlightedName}</span>
+                    ${regionText}
+                </div>
+            `;
+        }).join('');
+
+        citySuggestions.querySelectorAll('.city-suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const chosen = item.dataset.name;
+                cityInput.value = chosen;
+                cityClear.classList.remove('hidden');
+                cityError.classList.add('hidden');
+                cityInput.classList.remove('input-error');
+                syncCityChips(chosen);
+                citySuggestions.classList.add('hidden');
+            });
+        });
+
+        citySuggestions.classList.remove('hidden');
+    }
+
+    cityInput.addEventListener('input', (e) => {
+        const val = e.target.value.trim();
+        if (val) {
+            cityClear.classList.remove('hidden');
+            cityError.classList.add('hidden');
+            cityInput.classList.remove('input-error');
+        } else {
+            cityClear.classList.add('hidden');
+        }
+        syncCityChips(val);
+        renderCitySuggestions(val);
+    });
+
+    cityInput.addEventListener('focus', () => {
+        if (cityInput.value.trim()) {
+            renderCitySuggestions(cityInput.value.trim());
+        }
+    });
+
+    // Close suggestions on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.city-autocomplete-wrapper')) {
+            citySuggestions.classList.add('hidden');
+        }
+    });
+
+    // Step 3 Back button
+    $('#btn-step3-back').addEventListener('click', () => goTo(2));
+
+    // Step 3 Next button (Submit survey -> QR)
+    $('#btn-step3').addEventListener('click', () => {
+        let err = false;
+        const source = sourceSelect.value;
+        const city = cityInput.value.trim();
+
+        if (!source) {
+            sourceError.classList.remove('hidden');
+            sourceSelect.classList.add('input-error');
+            err = true;
+        } else {
+            sourceError.classList.add('hidden');
+            sourceSelect.classList.remove('input-error');
+        }
+
+        if (!city || city.length < 2) {
+            cityError.textContent = 'Укажите, пожалуйста, ваш город';
+            cityError.classList.remove('hidden');
+            cityInput.classList.add('input-error');
+            err = true;
+        } else {
+            cityError.classList.add('hidden');
+            cityInput.classList.remove('input-error');
+        }
+
+        if (err) return;
+
+        buildQR();
+        goTo(4);
+    });
+
+    /* ============================================
+       STEP 4 — QR CODE
     ============================================ */
     function buildQR() {
-        const fio      = $('#fio-input').value.trim();
-        const phoneDig = digits($('#phone-input').value);
-        const phone    = '+7' + phoneDig;
-        const children = [];
+        const fio         = $('#fio-input').value.trim();
+        const phoneDig    = digits($('#phone-input').value);
+        const phone       = '+7' + phoneDig;
+        const children    = [];
+        const source      = sourceSelect.value;
+        const sourceOther = sourceOtherInput.value.trim();
+        const city        = cityInput.value.trim();
 
         $$('.child-card').forEach(c => {
             const name = c.querySelector('.child-name-input').value.trim();
@@ -627,7 +954,16 @@
             if (name) children.push({ name, dob });
         });
 
-        const payload = { v: 1, fio, phone, children, ts: Date.now() };
+        const payload = { 
+            v: 1, 
+            fio, 
+            phone, 
+            children, 
+            city, 
+            source, 
+            sourceOther: source === 'другое' ? sourceOther : undefined, 
+            ts: Date.now() 
+        };
         const json    = JSON.stringify(payload);
         const b64     = btoa(unescape(encodeURIComponent(json)));
         const content = 'HPARK:' + b64;
@@ -647,8 +983,6 @@
             canvas.className = 'qr-rendered';
             container.appendChild(canvas);
         });
-
-        // Summary no longer used since we deleted those elements in step 3
     }
 
     // Restart
@@ -678,6 +1012,21 @@
         $('#children-error').classList.add('hidden');
 
         // Reset step 3
+        sourceSelect.value = '';
+        sourceSelect.classList.remove('input-error');
+        sourceError.classList.add('hidden');
+        sourceChips.forEach(c => c.classList.remove('active'));
+        sourceOtherGroup.classList.add('hidden');
+        sourceOtherInput.value = '';
+
+        cityInput.value = '';
+        cityInput.classList.remove('input-error');
+        cityError.classList.add('hidden');
+        cityClear.classList.add('hidden');
+        citySuggestions.classList.add('hidden');
+        cityChips.forEach(c => c.classList.remove('active'));
+
+        // Reset step 4
         $('#qr-canvas').innerHTML = '';
 
         goTo(1);

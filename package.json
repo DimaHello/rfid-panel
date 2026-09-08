@@ -3,6 +3,8 @@
     "start": "node server.mjs",
     "compile-docs": "python3 scripts/compile_docs.py",
     "compile-returning-docs": "python3 scripts/compile_returning_doc.py",
+    "compile-odoo-doc": "python3 scripts/compile_odoo_response_docx.py",
+    "compile-odoo-doc-en": "python3 scripts/compile_odoo_response_en_docx.py",
     "generate-pdf": "node scripts/generate_pdf.mjs"
   },
   "dependencies": {

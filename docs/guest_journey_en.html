@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Guest Journey at the Park</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+    background: #fff;
+    padding: 40px 30px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a1a2e;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .step {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .step-num {
+    width: 44px;
+    min-width: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .step-num .circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .step-num .line {
+    flex: 1;
+    width: 3px;
+    background: #ddd;
+    margin-top: 4px;
+  }
+
+  .step-card {
+    flex: 1;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-left: 14px;
+    border: 1px solid #e8e8e8;
+    position: relative;
+  }
+
+  .step-card.semnox {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);
+    border-color: #c5d0f0;
+  }
+  .step-card.hellopark {
+    background: linear-gradient(135deg, #eefbf3 0%, #e0f5e9 100%);
+    border-color: #b5dfc5;
+  }
+
+  .step-card .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .tag.semnox-tag {
+    background: #3b5bdb;
+    color: #fff;
+  }
+  .tag.hp-tag {
+    background: #2b9348;
+    color: #fff;
+  }
+
+  .step-card .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .step-card .desc {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  .webhook-box {
+    margin-top: 10px;
+    background: #fff3e0;
+    border: 1px solid #ffcc80;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .webhook-box .arrow {
+    font-size: 18px;
+    color: #e65100;
+    flex-shrink: 0;
+  }
+  .webhook-box .wh-text {
+    font-size: 12px;
+    color: #bf360c;
+    font-weight: 600;
+  }
+
+  .api-box {
+    margin-top: 10px;
+    background: #f3e5f5;
+    border: 1px solid #ce93d8;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .api-box .arrow {
+    font-size: 18px;
+    color: #7b1fa2;
+    flex-shrink: 0;
+  }
+  .api-box .api-text {
+    font-size: 12px;
+    color: #6a1b9a;
+    font-weight: 600;
+  }
+
+  .circle.semnox-c { background: #3b5bdb; }
+  .circle.hp-c { background: #2b9348; }
+
+  .legend {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #444;
+  }
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 24px 0 12px;
+    padding: 6px 0;
+    border-top: 2px dashed #e0e0e0;
+    border-bottom: 2px dashed #e0e0e0;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎢 Guest Journey at the Park</h1>
+<p class="subtitle">Semnox vs Hello Park — Who Does What</p>
+
+<!-- STEP 1 -->
+<div class="step">
+  <div class="step-num">
+    <div class="circle semnox-c">1</div>
+    <div class="line"></div>
+  </div>
+  <div class="step-card semnox">
+    <span class="tag semnox-tag">SEMNOX</span>
+    <div class="title">📱 Guest scans QR code and fills out registration form</div>
+    <div class="desc">Parent's full name, phone, email, children's names, dates of birth.<br>Everything happens in the Semnox system.</div>
+    <div class="webhook-box">
+      <span class="arrow">➡️</span>
+      <span class="wh-text">Semnox calls HP API → registration data (parent + children + DOB)</span>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2 -->
+<div class="step">
+  <div class="step-num">
+    <div class="circle semnox-c">2</div>
+    <div class="line"></div>
+  </div>
+  <div class="step-card semnox">
+    <span class="tag semnox-tag">SEMNOX</span>
+    <div class="title">💳 Guest pays for tickets at POS</div>
+    <div class="desc">Cashier processes the receipt in Semnox POS terminal. Selects a package (time-based, full day, etc.).</div>
+  </div>
+</div>
+
+<!-- STEP 3 -->
+<div class="step">
+  <div class="step-num">
+    <div class="circle semnox-c">3</div>
+    <div class="line"></div>
+  </div>
+  <div class="step-card semnox">
+    <span class="tag semnox-tag">SEMNOX</span>
+    <div class="title">⌚ Cashier binds RFID wristband to a child</div>
+    <div class="desc">Directly in the Semnox POS interface. Cashier scans the wristband → system links it to the child's profile.<br><strong>Single interface, single POS — no second screen needed.</strong></div>
+    <div class="webhook-box">
+      <span class="arrow">➡️</span>
+      <span class="wh-text">Semnox calls HP API → wristband bound (child_id + rfid_uid)</span>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4 -->
+<div class="step">
+  <div class="step-num">
+    <div class="circle semnox-c">4</div>
+    <div class="line"></div>
+  </div>
+  <div class="step-card semnox">
+    <span class="tag semnox-tag">SEMNOX</span>
+    <div class="title">🚧 Child passes through turnstile</div>
+    <div class="desc">Semnox validates the wristband, opens the gate, starts session timer (if time-based package).</div>
+    <div class="webhook-box">
+      <span class="arrow">➡️</span>
+      <span class="wh-text">Semnox calls HP API → child entered the park (entry_time, session)</span>
+    </div>
+  </div>
+</div>
+
+<div class="section-label">🎮 Hello Park Play Area</div>
+
+<!-- STEP 5 -->
+<div class="step">
+  <div class="step-num">
+    <div class="circle hp-c">5</div>
+    <div class="line"></div>
+  </div>
+  <div class="step-card hellopark">
+    <span class="tag hp-tag">HELLO PARK</span>
+    <div class="title">🕹️ Child taps wristband at Hello Park attraction</div>
+    <div class="desc">Our RFID reader at the attraction reads the wristband number.<br>We already know who this child is — because we received the API call at step 3.</div>
+    <div class="api-box">
+      <span class="arrow">⬅️</span>
+      <span class="api-text">HP calls Semnox API → validate wristband, get child details</span>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 6 -->
+<div class="step">
+  <div class="step-num">
+    <div class="circle hp-c">6</div>
+    <div class="line"></div>
+  </div>
+  <div class="step-card hellopark">
+    <span class="tag hp-tag">HELLO PARK</span>
+    <div class="title">🧑‍🎤 Avatar and game progress is loaded</div>
+    <div class="desc">The child plays on attractions. Progress is saved in our system.<br><strong>On the next visit — progress is restored!</strong></div>
+  </div>
+</div>
+
+<div class="section-label">🔄 End of Visit</div>
+
+<!-- STEP 7 -->
+<div class="step">
+  <div class="step-num">
+    <div class="circle semnox-c">7</div>
+  </div>
+  <div class="step-card semnox">
+    <span class="tag semnox-tag">SEMNOX</span>
+    <div class="title">🔙 Child leaves, returns wristband</div>
+    <div class="desc">Semnox unbinds the wristband from the child. The wristband is now ready for reuse by the next guest on the same day.</div>
+    <div class="webhook-box">
+      <span class="arrow">➡️</span>
+      <span class="wh-text">Semnox calls HP API → wristband unbound → we clear the game session from this band</span>
+    </div>
+  </div>
+</div>
+
+<div class="section-label">🔄 Scenario A: Same-Day Wristband Reuse</div>
+
+<div class="step">
+  <div class="step-num">
+    <div class="circle" style="background:#e65100; font-size:13px;">A</div>
+    <div class="line"></div>
+  </div>
+  <div class="step-card" style="background:linear-gradient(135deg,#fff8f0,#fff3e0); border-color:#ffcc80;">
+    <div class="title">🔁 Wristband is returned and reassigned to a new child</div>
+    <div class="desc" style="line-height:1.8;">
+      <strong>1.</strong> Emma leaves the park, returns wristband <code>#A001</code><br>
+      <strong>2.</strong> Semnox unbinds <code>#A001</code> from Emma<br>
+      <strong>3.</strong> Semnox calls HP API → <strong>unbind</strong> → we clear Emma's game session from <code>#A001</code><br>
+      <strong>4.</strong> New guest Liam arrives, cashier assigns <code>#A001</code> to Liam<br>
+      <strong>5.</strong> Semnox calls HP API → <strong>bind</strong> (Liam + <code>#A001</code>)<br>
+      <strong>6.</strong> Liam taps the wristband at attraction → Hello Park creates a new Avatar for Liam ✅
+    </div>
+  </div>
+</div>
+
+<div class="section-label">📅 Scenario B: Returning Guest (Next Day / Next Week)</div>
+
+<div class="step">
+  <div class="step-num">
+    <div class="circle" style="background:#2b9348; font-size:13px;">B</div>
+  </div>
+  <div class="step-card" style="background:linear-gradient(135deg,#f0faf3,#e0f5e9); border-color:#b5dfc5;">
+    <div class="title">📅 Emma comes back the next day</div>
+    <div class="desc" style="line-height:1.8;">
+      <strong>1.</strong> Emma returns to the park (next day or next week)<br>
+      <strong>2.</strong> Cashier finds Emma in Semnox by phone number / QR code / name<br>
+      <strong>3.</strong> New wristband <code>#B007</code> is assigned to Emma<br>
+      <strong>4.</strong> Semnox calls HP API → <strong>bind</strong> (Emma + <code>#B007</code>) — <em>same <code>child_id</code> as before!</em><br>
+      <strong>5.</strong> Emma taps <code>#B007</code> at Hello Park attraction<br>
+      <strong>6.</strong> HP recognizes Emma by <code>child_id</code> → <strong>loads SAVED game progress from previous visit</strong> 🎮✅
+    </div>
+    <div class="api-box" style="margin-top:12px;">
+      <span class="arrow">⚠️</span>
+      <span class="api-text">CRITICAL: Semnox must send the same child_id on every visit so we can restore game progress</span>
+    </div>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="legend" style="margin-top:30px;">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#3b5bdb"></div>
+    <span><strong>Blue</strong> = Semnox handles</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#2b9348"></div>
+    <span><strong>Green</strong> = Hello Park handles</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#ff9800"></div>
+    <span><strong>Orange</strong> = Semnox calls HP API</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#9c27b0"></div>
+    <span><strong>Purple</strong> = HP calls Semnox API</span>
+  </div>
+</div>
+
+</body>
+</html>

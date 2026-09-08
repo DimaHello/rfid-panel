@@ -128,7 +128,7 @@ body {
 }
 
 .progress-seg {
-  width: 18px;
+  width: 14px;
   height: 5px;
   border-radius: var(--radius-pill);
   background: #E5E5E5;
@@ -1162,3 +1162,197 @@ body {
 /* Scrollbar hide utility */
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ════════════════════════════════════════
+   SURVEY STEP (STEP 3), CHIPS & AUTOCOMPLETE
+   ════════════════════════════════════════ */
+.required-star {
+  color: var(--hp-orange);
+  font-weight: 800;
+  margin-left: 2px;
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chip {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all var(--dur-base) var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  outline: none;
+  min-height: 40px;
+}
+
+.chip:hover {
+  background: #FFF5F0;
+  border-color: var(--hp-orange);
+  color: var(--hp-orange);
+}
+
+.chip.active {
+  background: var(--hp-orange);
+  border-color: var(--hp-orange);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(255, 96, 34, 0.25);
+  transform: scale(1.02);
+}
+
+/* Select styling */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.75L6 6.25L10.5 1.75' stroke='%23747474' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 12px 8px;
+  padding-right: 2.75rem;
+  cursor: pointer;
+}
+
+.form-select:focus {
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.75L6 6.25L10.5 1.75' stroke='%23FF6022' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* City Autocomplete */
+.city-autocomplete-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.city-input-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.city-input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--ink-soft);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  transition: color var(--dur-base);
+  z-index: 2;
+}
+
+.city-field {
+  padding-left: 2.75rem !important;
+  padding-right: 2.75rem !important;
+  width: 100%;
+}
+
+.city-field:focus ~ .city-input-icon {
+  color: var(--hp-orange);
+}
+
+.city-input-clear {
+  position: absolute;
+  right: 0.85rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #EAEAEA;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+  z-index: 2;
+}
+
+.city-input-clear:hover {
+  background: #D4D4D4;
+  color: var(--ink);
+}
+
+.city-suggestions-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-pop);
+  max-height: 230px;
+  overflow-y: auto;
+  z-index: 300;
+  padding: 6px;
+}
+
+.city-suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.9rem;
+}
+
+.city-suggestion-item:hover,
+.city-suggestion-item.active {
+  background: #FFF5F0;
+}
+
+.city-suggestion-item .city-name {
+  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--font-display);
+}
+
+.city-suggestion-item:hover .city-name,
+.city-suggestion-item.active .city-name {
+  color: var(--hp-orange);
+}
+
+.city-suggestion-item .city-subject {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  font-weight: 500;
+  margin-left: 8px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.city-match {
+  color: var(--hp-orange);
+  font-weight: 800;
+}
+
+.city-no-match {
+  padding: 12px 14px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+

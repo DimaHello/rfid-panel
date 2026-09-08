@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                fontSize: '14px'
+            }
+        });
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 30px 40px;
+            background: #ffffff;
+            display: inline-block;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="mermaid">
+flowchart LR
+    A["📱 <b>Step 1</b><br>Guest scans QR &<br>fills registration form"] --> B["🗄 <b>Step 2</b><br>Data saved to<br>Database & RFID Panel"]
+    B --> C["💳 <b>Step 3</b><br>Guest pays for<br>ticket at POS"]
+    C --> D["📡 <b>Step 4</b><br>POS sends request<br>to our Backend"]
+    D --> E["⌚ <b>Step 5</b><br>Cashier attaches<br>wristband to child"]
+
+    style A fill:#FFF7ED,stroke:#EA580C,stroke-width:2.5px,color:#1E293B,rx:8px,ry:8px
+    style B fill:#F5F3FF,stroke:#7C3AED,stroke-width:2.5px,color:#1E293B,rx:8px,ry:8px
+    style C fill:#F0FDF4,stroke:#16A34A,stroke-width:2.5px,color:#1E293B,rx:8px,ry:8px
+    style D fill:#FFF7ED,stroke:#EA580C,stroke-width:2.5px,color:#1E293B,rx:8px,ry:8px
+    style E fill:#F0F9FF,stroke:#0284C7,stroke-width:2.5px,color:#1E293B,rx:8px,ry:8px
+    linkStyle default stroke:#64748B,stroke-width:2px
+    </div>
+</body>
+</html>
