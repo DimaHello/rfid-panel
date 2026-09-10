@@ -225,14 +225,6 @@
                         Из какого вы города? <span class="required-star">*</span>
                     </label>
 
-                    <!-- Quick city chips -->
-                    <div class="chip-group" id="city-chips">
-                        <button type="button" class="chip" data-city="Москва">📍 Москва</button>
-                        <button type="button" class="chip" data-city="Санкт-Петербург">Санкт-Петербург</button>
-                        <button type="button" class="chip" data-city="Химки">Химки</button>
-                        <button type="button" class="chip" data-city="Мытищи">Мытищи</button>
-                    </div>
-
                     <div class="city-autocomplete-wrapper">
                         <div class="city-input-inner">
                             <span class="city-input-icon">
@@ -777,38 +769,12 @@
     const cityInput = $('#city-input');
     const cityClear = $('#city-clear');
     const citySuggestions = $('#city-suggestions');
-    const cityChips = $$('#city-chips .chip');
     const cityError = $('#city-error');
-
-    // Sync city chips
-    function syncCityChips(cityName) {
-        cityChips.forEach(c => {
-            if (c.dataset.city.toLowerCase() === (cityName || '').toLowerCase()) {
-                c.classList.add('active');
-            } else {
-                c.classList.remove('active');
-            }
-        });
-    }
-
-    // City chips click
-    cityChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            const cityName = chip.dataset.city;
-            cityInput.value = cityName;
-            cityClear.classList.remove('hidden');
-            cityError.classList.add('hidden');
-            cityInput.classList.remove('input-error');
-            syncCityChips(cityName);
-            citySuggestions.classList.add('hidden');
-        });
-    });
 
     // City input clear
     cityClear.addEventListener('click', () => {
         cityInput.value = '';
         cityClear.classList.add('hidden');
-        syncCityChips('');
         citySuggestions.classList.add('hidden');
         cityInput.focus();
     });
@@ -873,7 +839,6 @@
                 cityClear.classList.remove('hidden');
                 cityError.classList.add('hidden');
                 cityInput.classList.remove('input-error');
-                syncCityChips(chosen);
                 citySuggestions.classList.add('hidden');
             });
         });
@@ -890,7 +855,6 @@
         } else {
             cityClear.classList.add('hidden');
         }
-        syncCityChips(val);
         renderCitySuggestions(val);
     });
 
@@ -1029,7 +993,6 @@
         cityError.classList.add('hidden');
         cityClear.classList.add('hidden');
         citySuggestions.classList.add('hidden');
-        cityChips.forEach(c => c.classList.remove('active'));
 
         // Reset step 4
         $('#qr-canvas').innerHTML = '';
