@@ -1455,6 +1455,18 @@
         }
     }
 
+    function clearSignatureCanvas() {
+        sigCtx.setTransform(1, 0, 0, 1, 0, 0);
+        sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+        const dpr = window.devicePixelRatio || 1;
+        sigCtx.scale(dpr, dpr);
+        sigCtx.lineCap = 'round';
+        sigCtx.lineJoin = 'round';
+        sigCtx.lineWidth = 2.8;
+        sigCtx.strokeStyle = '#1A1A1A';
+        sigCtx.fillStyle = '#1A1A1A';
+    }
+
     function initCanvasSize() {
         const rect = sigWrap.getBoundingClientRect();
         if (!rect.width || rect.width === 0 || !rect.height || rect.height === 0) return;
@@ -1579,7 +1591,7 @@
 
     // Clear signature
     btnClearSig.addEventListener('click', () => {
-        initCanvasSize();
+        clearSignatureCanvas();
         hasSignature = false;
         signaturePointsCount = 0;
         signatureDataUrl = null;
@@ -1781,7 +1793,7 @@
         $('#children-error').classList.add('hidden');
 
         // Reset step 3 signature
-        initCanvasSize();
+        clearSignatureCanvas();
         sigPlaque.classList.remove('is-signing', 'is-signed');
         sigGhostHint.classList.remove('hint-hidden');
         sigStatusBadge.textContent = 'Awaiting signature';
