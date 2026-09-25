@@ -244,6 +244,8 @@
         }
 
         /* Animated ghost finger */
+        .ghost-finger-hint, .ghost-finger-hint * { pointer-events: none !important; user-select: none !important; -webkit-user-select: none !important; }
+        .sig-baseline-guide, .sig-baseline-guide * { pointer-events: none !important; user-select: none !important; -webkit-user-select: none !important; }
         .ghost-finger-hint {
             position: absolute;
             inset: 0;
@@ -865,14 +867,21 @@
 
         function resize() {
             const rect = holder.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
             const dpr = window.devicePixelRatio || 1;
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
+            const dw = Math.round(rect.width);
+            const dh = Math.round(rect.height);
+            if (canvas.width !== dw * dpr || canvas.height !== dh * dpr) {
+                canvas.width = dw * dpr;
+                canvas.height = dh * dpr;
+            }
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(dpr, dpr);
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.lineWidth = 2.6;
+            ctx.lineWidth = 2.8;
             ctx.strokeStyle = '#1A1A1A';
+            ctx.fillStyle = '#1A1A1A';
         }
 
         function getCoords(e) {
@@ -883,13 +892,22 @@
         }
 
         function start(e) {
+            if (e.cancelable) e.preventDefault();
+            if (!canvas.width || canvas.width === 0 || !canvas.height || canvas.height === 0) {
+                resize();
+            }
+            try {
+                if (e.pointerId !== undefined && canvas.setPointerCapture) {
+                    canvas.setPointerCapture(e.pointerId);
+                }
+            } catch (err) {}
             isDrawing = true;
             box && box.classList.add('focused');
             ghost && ghost.classList.add('hidden');
             lastPoint = getCoords(e);
             pointsCount++;
             ctx.beginPath();
-            ctx.arc(lastPoint.x, lastPoint.y, 1.3, 0, Math.PI * 2);
+            ctx.arc(lastPoint.x, lastPoint.y, 1.4, 0, Math.PI * 2);
             ctx.fill();
         }
 

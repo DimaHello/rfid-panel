@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hello Park — Guest Registration</title>
+    <title>Hello Park — Guest Registration (Digital Waiver)</title>
     <meta name="description" content="Quick family registration at Hello Park. Complete your registration to save game progress and enjoy the park.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Nunito & Gilroy -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/gilroy-bold">
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
     <style>
         /* ── Compact Country Selector in Phone Field ── */
         .phone-country-wrapper {
@@ -35,7 +35,7 @@
             gap: 4px;
         }
         .phone-country-display::after {
-            content: "";
+            content: '';
             display: inline-block;
             width: 0;
             height: 0;
@@ -54,8 +54,9 @@
             -webkit-appearance: none;
             z-index: 5;
         }
+
         .progress-seg {
-            width: 24px;
+            width: 18px;
         }
         .lang-switch-btn {
             display: inline-flex;
@@ -77,6 +78,245 @@
             color: var(--hp-orange);
             border-color: var(--hp-orange);
             background: rgba(255, 96, 34, 0.08);
+        }
+
+        /* ════════════════════════════════════════
+           STEP 3: SIGNATURE SCREEN & ONBOARDING
+           ════════════════════════════════════════ */
+        .screen-header-clean {
+            text-align: left;
+            margin-bottom: 0.85rem;
+        }
+        .screen-header-tag {
+            display: inline-block;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--hp-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 2px;
+        }
+        .screen-header-title {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--ink);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .screen-header-sub {
+            font-size: 0.86rem;
+            color: var(--ink-soft);
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+
+        /* ── Legal Banner (Full-Focus Studio Style - Variant 2) ── */
+        .sig-legal-banner {
+            background: #F9F9FB;
+            border-left: 3.5px solid var(--hp-orange);
+            padding: 10px 14px;
+            border-radius: 4px 12px 12px 4px;
+            margin-bottom: 14px;
+            text-align: left;
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            line-height: 1.45;
+        }
+        .sig-legal-banner strong {
+            color: var(--ink);
+        }
+        .sig-legal-banner a {
+            color: var(--hp-orange);
+            text-decoration: underline;
+            font-weight: 700;
+        }
+        .sig-legal-banner a:hover {
+            color: #E04E15;
+        }
+
+        /* ── Signature Plaque Box (Studio Pad: 280px tall) ── */
+        .signature-plaque {
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            position: relative;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .signature-plaque.is-signing {
+            border-color: var(--hp-orange);
+            box-shadow: 0 0 0 4px rgba(255, 96, 34, 0.12);
+        }
+        .signature-plaque.is-signed {
+            border-color: #10B981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+        }
+
+        .signature-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 14px;
+            background: #FAFAFA;
+            border-bottom: 1px solid var(--border);
+        }
+        .signature-tool-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-display);
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--ink-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .btn-clear-sig {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            padding: 3px 10px;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ink-soft);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-clear-sig:hover {
+            color: var(--red);
+            border-color: var(--red);
+            background: rgba(212, 24, 61, 0.06);
+        }
+
+        /* ── Canvas Pad (Studio Pad: 280px tall) ── */
+        .signature-canvas-wrap {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background: #FFFFFF;
+            cursor: crosshair;
+            overflow: hidden;
+        }
+        .signature-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            z-index: 2;
+        }
+
+        .signature-baseline {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
+            border-bottom: 2px dashed rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 3px;
+            z-index: 1;
+        }
+        .baseline-x {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: rgba(0, 0, 0, 0.22);
+            margin-right: 6px;
+            user-select: none;
+        }
+
+        /* ── Animated Ghost Finger Hint ── */
+        .sig-ghost-hint,
+        .sig-ghost-hint * {
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+        .signature-baseline,
+        .signature-baseline * {
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+        .sig-ghost-hint {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none !important;
+            z-index: 5;
+            transition: opacity 0.2s ease;
+        }
+        .sig-ghost-hint.hint-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .sig-ghost-hand {
+            width: 46px;
+            height: 46px;
+            animation: handSignMove 2.6s ease-in-out infinite;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.14));
+        }
+        .sig-ghost-text {
+            margin-top: 8px;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--ink-soft);
+            background: rgba(255, 255, 255, 0.94);
+            padding: 3px 12px;
+            border-radius: var(--radius-pill);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            letter-spacing: -0.01em;
+            animation: pulseHint 2s infinite ease-in-out;
+        }
+
+        @keyframes handSignMove {
+            0%   { transform: translate(-45px, 12px) rotate(-16deg); opacity: 0; }
+            20%  { opacity: 1; }
+            40%  { transform: translate(-10px, -10px) rotate(-6deg); }
+            60%  { transform: translate(18px, 10px) rotate(-12deg); }
+            80%  { transform: translate(45px, -6px) rotate(2deg); opacity: 1; }
+            100% { transform: translate(55px, 0px) rotate(8deg); opacity: 0; }
+        }
+
+        @keyframes pulseHint {
+            0%, 100% { transform: scale(1); }
+            50%      { transform: scale(1.04); }
+        }
+
+        .signature-status-note {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: #FAFAFA;
+            border-top: 1px solid var(--border);
+            font-size: 0.74rem;
+            color: var(--ink-soft);
+            font-weight: 600;
+        }
+        .sig-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-display);
+            font-weight: 800;
+        }
+        .sig-status-badge.valid {
+            color: #10B981;
         }
 
         /* ════════════════════════════════════════
@@ -327,6 +567,16 @@
             color: var(--ink-soft);
         }
 
+        .ticket-sig-preview {
+            max-height: 40px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.02);
+            padding: 2px 6px;
+            border: 1px dashed rgba(0, 0, 0, 0.1);
+            margin-top: 4px;
+            display: block;
+        }
+
         /* ── Ticket Footer Instructions ── */
         .ticket-footer {
             margin-top: 0.9rem;
@@ -405,36 +655,39 @@
              ============================================ -->
         <div class="progress-container" id="progress-container">
             <div class="progress-glass">
-                <span class="progress-text" id="progress-text">Step 1 of 2: Phone</span>
+                <span class="progress-text" id="progress-text">Step 1 of 3: Phone</span>
                 <div style="display:flex;align-items:center;gap:10px;">
                     <div class="progress-segments">
                         <div class="progress-seg active" id="seg-1"></div>
                         <div class="progress-seg" id="seg-2"></div>
+                        <div class="progress-seg" id="seg-3"></div>
                     </div>
-                    <a href="../index.html" class="lang-switch-btn" title="Russian version">RU</a>
+                    <a href="index.html" class="lang-switch-btn" title="Russian version">RU</a>
                 </div>
             </div>
         </div>
 
         <!-- ============================================
-             STEP 1: RULES + PHONE + SMS
+             STEP 1: PHONE (CLEAN & DIRECT)
              ============================================ -->
-        <section class="step step-visible" id="step-1" aria-label="Rules and phone verification">
+        <section class="step step-visible" id="step-1" aria-label="Phone number">
             <div class="card">
                 <div class="card-header-hero">
                     <h1 class="card-hero-title">
                         Welcome<br>
                         to <span class="text-orange">Hello Park</span>
                     </h1>
-                    <img src="../fox.webp" alt="Fox mascot" class="card-hero-image">
+                    <img src="fox.webp" alt="Fox mascot" class="card-hero-image">
                 </div>
 
-                <p class="step-explanation">Enter your phone number to register, save game progress across interactive attractions, and unlock loyalty rewards.</p>
+                <p class="step-explanation">Enter your mobile phone number to start family registration and save your interactive game progress.</p>
 
-                <!-- Phone + SMS -->
+                <!-- Phone input with compact trigger -->
                 <div class="form-group">
                     <label for="phone-input" class="form-label">Phone Number</label>
                     <div class="phone-wrapper" id="phone-wrapper">
+                        
+                        <!-- Country trigger (only code visible, full names in popup) -->
                         <div class="phone-country-wrapper" id="country-wrapper">
                             <span class="phone-country-display" id="country-display">🇦🇪 +971</span>
                             <select id="country-code" class="phone-country-select" aria-label="Country Code">
@@ -456,14 +709,16 @@
                                 <option value="+91" data-flag="🇮🇳">🇮🇳 +91 (India)</option>
                                 <option value="+65" data-flag="🇸🇬">🇸🇬 +65 (Singapore)</option>
                                 <option value="+61" data-flag="🇦🇺">🇦🇺 +61 (Australia)</option>
-                                <option value="+" data-flag="🌐">🌐 + (Other)</option>
+                                <option value="+" data-flag="🌐">🌐 + Other</option>
                             </select>
                         </div>
+
                         <input type="tel" id="phone-input" class="phone-field"
                             placeholder="50 123 4567"
                             inputmode="tel"
                             autocomplete="tel-national"
-                            enterkeyhint="send">
+                            enterkeyhint="next">
+                        
                         <div class="phone-badge hidden" id="phone-badge">
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
@@ -473,42 +728,6 @@
                     <p class="form-error hidden" id="phone-error"></p>
                 </div>
 
-                <!-- Legal Checkbox -->
-                <div class="legal-checkbox-group" id="legal-group">
-                    <label class="legal-checkbox-label">
-                        <input type="checkbox" class="legal-checkbox-input" id="check-mandatory">
-                        <span>I accept the <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">park rules</a>, <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">loyalty terms</a>, and consent to <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">data processing</a>.</span>
-                    </label>
-                </div>
-
-                <!-- Send Verification Code Button -->
-                <button class="btn btn-sms" id="btn-send-sms" type="button" disabled>
-                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
-                    </svg>
-                    <span>Send Verification Code</span>
-                </button>
-
-                <!-- SMS Code Block -->
-                <div class="sms-block hidden" id="sms-block">
-                    <div class="form-group">
-                        <label for="sms-input" class="form-label">Enter 4-digit verification code</label>
-                        <div class="sms-row">
-                            <input type="text" id="sms-input"
-                                class="form-input sms-input-field"
-                                placeholder="••••"
-                                maxlength="4"
-                                inputmode="numeric"
-                                autocomplete="one-time-code"
-                                enterkeyhint="done">
-                            <button class="btn-verify" id="btn-verify" type="button">Verify</button>
-                        </div>
-                        <p class="form-error hidden" id="sms-error"></p>
-                    </div>
-                    <button class="btn-resend" id="btn-resend" type="button" disabled>
-                        <span>Resend Code</span>
-                    </button>
-                </div>
             </div>
         </section>
 
@@ -519,13 +738,13 @@
             <div class="card">
                 <div class="card-header-hero">
                     <h1 class="card-hero-title">
-                        Welcome<br>
-                        to <span class="text-orange">Hello Park</span>
+                        Family<br>
+                        <span class="text-orange">Members</span>
                     </h1>
-                    <img src="../fox.webp" alt="Fox mascot" class="card-hero-image">
+                    <img src="fox.webp" alt="Fox mascot" class="card-hero-image">
                 </div>
 
-                <p class="step-explanation">Provide your full name and add your children. Birth dates are needed to personalize avatars, track achievements, and save game progress on interactive attractions.</p>
+                <p class="step-explanation">Provide your full name and add your children. Birth dates are needed to personalize avatars, track achievements, and save game progress.</p>
 
                 <!-- Parent Full Name -->
                 <div class="form-group">
@@ -560,16 +779,74 @@
         </section>
 
         <!-- ============================================
-             STEP 3: FESTIVE SUCCESS SCREEN (NO QR CODE)
+             STEP 3: SIGNATURE & WAIVER (VARIANT 2: STUDIO PAD 280PX)
              ============================================ -->
-        <section class="step" id="step-3" aria-label="Registration Success">
+        <section class="step" id="step-3" aria-label="Signature Consent">
+            <div class="card">
+                <div class="screen-header-clean">
+                    <span class="screen-header-tag">Step 3 of 3 · Final Step</span>
+                    <h1 class="screen-header-title">Confirm with Signature</h1>
+                    <p class="screen-header-sub">Review agreement and sign with your finger in the box below.</p>
+                </div>
+
+                <!-- Single-Line Dynamic Legal Banner (Variant 2) -->
+                <div class="sig-legal-banner">
+                    By signing below, <strong id="sig-summary-parent">Guest</strong> agrees to the <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">Park Safety Rules</a>, <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">Liability Waiver</a>, and personal data policy for self and <strong id="sig-summary-kids">registered minors</strong>.
+                </div>
+
+                <!-- Giant Signature Pad Plaque (280px) -->
+                <div class="signature-plaque" id="signature-plaque">
+                    <div class="signature-toolbar">
+                        <span class="signature-tool-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>
+                            Full-Focus Studio Pad (280px)
+                        </span>
+                        <button type="button" class="btn-clear-sig" id="btn-clear-sig">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                            Clear ↺
+                        </button>
+                    </div>
+
+                    <!-- Canvas Area (280px) with Ghost Gesture Hint -->
+                    <div class="signature-canvas-wrap" id="signature-canvas-wrap">
+                        <div class="signature-baseline">
+                            <span class="baseline-x">✕</span>
+                        </div>
+
+                        <!-- Animated Hint (Disappears on touch) -->
+                        <div class="sig-ghost-hint" id="sig-ghost-hint">
+                            <svg class="sig-ghost-hand" viewBox="0 0 24 24" fill="none" stroke="#FF6022" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/>
+                                <path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0v2.5"/>
+                                <path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/>
+                                <path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-2h.208a6 6 0 0 1-5.012-2.7l-.196-.3c-.312-.479-1.407-2.388-3.286-5.728a1.5 1.5 0 0 1 .536-2.022a1.867 1.867 0 0 1 2.28.28l1.47 1.47"/>
+                            </svg>
+                            <span class="sig-ghost-text">Swipe your finger across the box</span>
+                        </div>
+
+                        <canvas id="signature-canvas" class="signature-canvas"></canvas>
+                    </div>
+
+                    <div class="signature-status-note">
+                        <span>Generous drawing space</span>
+                        <span class="sig-status-badge" id="sig-status-badge">Awaiting signature</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================
+             STEP 4: FESTIVE SUCCESS SCREEN (VIP PASS)
+             ============================================ -->
+        <section class="step" id="step-4" aria-label="Registration Success">
             <div class="festive-card">
                 <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
 
                 <!-- Hero Mascot & Title -->
                 <div class="festive-hero">
                     <div class="festive-fox-wrap">
-                        <img src="../fox.webp" alt="Fox mascot" class="festive-fox-image">
+                        <img src="fox.webp" alt="Fox mascot" class="festive-fox-image">
                         <div class="festive-party-badge">🎉</div>
                     </div>
                     
@@ -583,7 +860,7 @@
                         You're in the <span class="text-orange">Game!</span>
                     </h1>
                     <p class="festive-subtitle">
-                        Welcome to Hello Park! Your family registration is complete and ready for an adventure.
+                        Welcome to Hello Park! Your family registration is confirmed and ready for an adventure.
                     </p>
                 </div>
 
@@ -622,6 +899,15 @@
                             <div class="ticket-info">
                                 <div class="ticket-label">Young Explorers</div>
                                 <div class="ticket-children-list" id="summary-children-list"></div>
+                            </div>
+                        </div>
+
+                        <!-- Signature Confirmation Row -->
+                        <div class="ticket-row" id="ticket-sig-row" style="display: none;">
+                            <div class="ticket-icon">✍️</div>
+                            <div class="ticket-info">
+                                <div class="ticket-label">Authorized Signature</div>
+                                <img id="summary-sig-img" class="ticket-sig-preview" alt="Signature preview">
                             </div>
                         </div>
                     </div>
@@ -663,7 +949,7 @@
          ================================================ -->
     <div class="bottom-nav" id="bottom-nav">
 
-        <!-- Step 1 bottom bar (only Next) -->
+        <!-- Step 1 bottom bar (Phone -> Next) -->
         <div class="bottom-nav-inner" id="bottom-bar-1" style="display:flex;">
             <button class="btn-next disabled" id="btn-step1" type="button" disabled>
                 <span class="btn-next-label">Next</span>
@@ -675,7 +961,7 @@
             </button>
         </div>
 
-        <!-- Step 2 bottom bar (Back + Submit) -->
+        <!-- Step 2 bottom bar (Back + Next to Signature) -->
         <div class="bottom-nav-inner" id="bottom-bar-2" style="display:none;">
             <button class="btn-back" id="btn-step2-back" type="button" aria-label="Back">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
@@ -683,7 +969,7 @@
                 </svg>
             </button>
             <button class="btn-next" id="btn-step2" type="button">
-                <span class="btn-next-label">Complete Registration</span>
+                <span class="btn-next-label">Next: Sign Agreement</span>
                 <span class="btn-next-arrow">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
@@ -692,8 +978,25 @@
             </button>
         </div>
 
-        <!-- Step 3 bottom bar (Register Another Guest) -->
+        <!-- Step 3 bottom bar (Back + Complete Registration) -->
         <div class="bottom-nav-inner" id="bottom-bar-3" style="display:none;">
+            <button class="btn-back" id="btn-step3-back" type="button" aria-label="Back">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <button class="btn-next disabled" id="btn-step3" type="button" disabled>
+                <span class="btn-next-label">Complete Registration</span>
+                <span class="btn-next-arrow">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </span>
+            </button>
+        </div>
+
+        <!-- Step 4 bottom bar (Register Another Guest) -->
+        <div class="bottom-nav-inner" id="bottom-bar-4" style="display:none;">
             <button class="btn-restart" id="btn-restart" type="button">
                 <span class="btn-next-label">🎉 Register Another Guest</span>
                 <span class="btn-restart-icon">
@@ -714,10 +1017,10 @@
        STATE & HELPERS
     ============================================ */
     let step = 1;
-    let verified = false;
-    let smsTimer = null;
-    let smsCountdown = 59;
     let childId = 0;
+    let hasSignature = false;
+    let signaturePointsCount = 0;
+    let signatureDataUrl = null;
 
     const $ = (s) => document.querySelector(s);
     const $$ = (s) => document.querySelectorAll(s);
@@ -811,7 +1114,7 @@
        NAVIGATION & CONFETTI TRIGGER
     ============================================ */
     function goTo(target) {
-        if (target === step || target < 1 || target > 3) return;
+        if (target === step || target < 1 || target > 4) return;
         const oldEl = $(`#step-${step}`);
         const newEl = $(`#step-${target}`);
         
@@ -823,18 +1126,17 @@
         step = target;
 
         // Update progress text & segments
-        const stepNames = { 1: 'Phone', 2: 'Family Details', 3: 'Complete' };
-        if (step === 3) {
+        const stepNames = { 1: 'Phone', 2: 'Family Details', 3: 'Signature', 4: 'Complete' };
+        if (step === 4) {
             $('#progress-text').textContent = 'Registration Complete ✓';
-            $('#seg-1').classList.remove('active');
-            $('#seg-1').classList.add('done');
-            $('#seg-2').classList.remove('active');
-            $('#seg-2').classList.add('done');
+            $('#seg-1').className = 'progress-seg done';
+            $('#seg-2').className = 'progress-seg done';
+            $('#seg-3').className = 'progress-seg done';
         } else {
-            $('#progress-text').textContent = `Step ${step} of 2: ${stepNames[step]}`;
-            for (let i = 1; i <= 2; i++) {
+            $('#progress-text').textContent = `Step ${step} of 3: ${stepNames[step]}`;
+            for (let i = 1; i <= 3; i++) {
                 const seg = $(`#seg-${i}`);
-                seg.classList.remove('active', 'done');
+                seg.className = 'progress-seg';
                 if (i < step)        seg.classList.add('done');
                 else if (i === step) seg.classList.add('active');
             }
@@ -844,6 +1146,12 @@
         $('#bottom-bar-1').style.display = step === 1 ? 'flex' : 'none';
         $('#bottom-bar-2').style.display = step === 2 ? 'flex' : 'none';
         $('#bottom-bar-3').style.display = step === 3 ? 'flex' : 'none';
+        $('#bottom-bar-4').style.display = step === 4 ? 'flex' : 'none';
+
+        // Prepare Step 3 summary if entering Step 3
+        if (step === 3) {
+            populateSignatureSummary();
+        }
 
         // Transition: fade out old, fade in new
         oldEl.style.opacity = '0';
@@ -865,8 +1173,12 @@
             app.style.minHeight = `${newHeight}px`;
             
             window.scrollTo({ top: 0, behavior: 'instant' });
-            
             newEl.offsetHeight; // reflow
+
+            // Initialize canvas size immediately once element is visible in DOM
+            if (step === 3) {
+                initCanvasSize();
+            }
             
             newEl.style.transition = 'opacity 220ms ease, transform 220ms ease';
             newEl.style.opacity = '1';
@@ -879,8 +1191,12 @@
                 app.style.minHeight = '';
                 app.style.transition = '';
 
-                // Fire celebratory confetti when landing on Step 3
-                if (step === 3) {
+                if (step === 3 && !hasSignature) {
+                    initCanvasSize();
+                }
+
+                // Fire celebratory confetti when landing on Step 4
+                if (step === 4) {
                     startConfetti();
                 }
             }, 250);
@@ -888,107 +1204,46 @@
     }
 
     /* ============================================
-       CONFETTI SYSTEM (Pure Vanilla JS Canvas)
+       STEP 1 — COMPACT COUNTRY TRIGGER & VALIDATION
     ============================================ */
-    function startConfetti() {
-        const canvas = document.getElementById('confetti-canvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const parent = canvas.parentElement;
-        canvas.width = parent.clientWidth;
-        canvas.height = parent.clientHeight;
+    const phoneInput     = $('#phone-input');
+    const phoneWrap      = $('#phone-wrapper');
+    const countryCode    = $('#country-code');
+    const countryDisplay = $('#country-display');
+    const btnStep1       = $('#btn-step1');
 
-        const colors = ['#FF6022', '#6C4AED', '#FFB800', '#10B981', '#1BA0F2', '#FF3366', '#FFD700'];
-        const particles = [];
-        const count = 70;
-
-        for (let i = 0; i < count; i++) {
-            particles.push({
-                x: canvas.width * 0.5 + (Math.random() - 0.5) * 80,
-                y: 110 + (Math.random() - 0.5) * 40,
-                vx: (Math.random() - 0.5) * 11,
-                vy: -Math.random() * 9 - 4,
-                size: Math.random() * 8 + 5,
-                color: colors[Math.floor(Math.random() * colors.length)],
-                rotation: Math.random() * 360,
-                rotationSpeed: (Math.random() - 0.5) * 10,
-                shape: Math.random() > 0.35 ? 'rect' : 'circle',
-                opacity: 1
-            });
-        }
-
-        const startTime = performance.now();
-
-        function render(now) {
-            const elapsed = now - startTime;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            let activeCount = 0;
-            for (const p of particles) {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.32; // gravity
-                p.vx *= 0.98; // air drag
-                p.rotation += p.rotationSpeed;
-
-                if (elapsed > 1800) {
-                    p.opacity = Math.max(0, 1 - (elapsed - 1800) / 1400);
-                }
-
-                if (p.y < canvas.height && p.opacity > 0) {
-                    activeCount++;
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate((p.rotation * Math.PI) / 180);
-                    ctx.globalAlpha = p.opacity;
-                    ctx.fillStyle = p.color;
-
-                    if (p.shape === 'rect') {
-                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
-                    } else {
-                        ctx.beginPath();
-                        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    ctx.restore();
-                }
-            }
-
-            if (activeCount > 0 && elapsed < 3500) {
-                requestAnimationFrame(render);
-            } else {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        }
-
-        requestAnimationFrame(render);
+    function updateCountryDisplay() {
+        const selOpt = countryCode.options[countryCode.selectedIndex];
+        const flag = selOpt.getAttribute('data-flag') || '';
+        const val = countryCode.value;
+        countryDisplay.textContent = `${flag} ${val}`;
     }
 
-    /* ============================================
-       STEP 1 — PHONE & DYNAMIC COUNTRY MASK
-    ============================================ */
-    const phoneInput  = $('#phone-input');
-    const phoneWrap   = $('#phone-wrapper');
-    const countryCode = $('#country-code');
-
-    function checkSmsButton() {
+    function updateStep1Button() {
         const code = countryCode.value;
         const cfg = COUNTRY_CONFIGS[code] || COUNTRY_CONFIGS['+'];
         const d = digits(phoneInput.value);
-        const isChecked = $('#check-mandatory').checked;
-        if (d.length >= cfg.min && isChecked) {
-            $('#btn-send-sms').disabled = false;
+        const isValid = (d.length >= cfg.min);
+
+        if (isValid) {
+            btnStep1.disabled = false;
+            btnStep1.classList.remove('disabled');
+            $('#phone-badge').classList.remove('hidden');
+            phoneWrap.classList.add('verified');
         } else {
-            $('#btn-send-sms').disabled = true;
+            btnStep1.disabled = true;
+            btnStep1.classList.add('disabled');
+            $('#phone-badge').classList.add('hidden');
+            phoneWrap.classList.remove('verified');
         }
     }
 
-    $('#check-mandatory').addEventListener('change', checkSmsButton);
-
     phoneWrap.addEventListener('click', (e) => {
-        if (e.target !== countryCode) phoneInput.focus();
+        if (!e.target.closest('#country-wrapper')) {
+            phoneInput.focus();
+        }
     });
-    phoneInput.addEventListener('focus', () => { if (!verified) phoneWrap.classList.add('focused'); });
+    phoneInput.addEventListener('focus', () => phoneWrap.classList.add('focused'));
     phoneInput.addEventListener('blur',  () => phoneWrap.classList.remove('focused'));
 
     phoneInput.addEventListener('input', (e) => {
@@ -997,16 +1252,8 @@
         e.target.value = formatted;
         
         $('#phone-error').classList.add('hidden');
-        phoneWrap.classList.remove('error', 'verified');
-
-        if (verified) {
-            verified = false;
-            $('#phone-badge').classList.add('hidden');
-            $('#sms-block').classList.add('hidden');
-            updateStep1Btn();
-        }
-
-        checkSmsButton();
+        phoneWrap.classList.remove('error');
+        updateStep1Button();
     });
 
     // Detect and switch country on paste
@@ -1016,11 +1263,12 @@
             const cleaned = text.trim();
             for (const code of Object.keys(COUNTRY_CONFIGS)) {
                 if (code !== '+' && cleaned.startsWith(code)) {
-                    countryCode.value = code; updateCountryDisplay();
+                    countryCode.value = code;
+                    updateCountryDisplay();
                     const rest = cleaned.slice(code.length);
                     setTimeout(() => {
                         phoneInput.value = formatPhoneByCountry(rest, code);
-                        checkSmsButton();
+                        updateStep1Button();
                     }, 0);
                     return;
                 }
@@ -1028,108 +1276,29 @@
         }
     });
 
-    function updateCountryDisplay() {
-        const opt = countryCode.options[countryCode.selectedIndex];
-        const flag = opt ? opt.getAttribute('data-flag') || '' : '';
-        const val = countryCode.value;
-        const disp = $('#country-display');
-        if (disp) disp.textContent = `${flag} ${val}`;
-    }
-
     countryCode.addEventListener('change', () => {
         updateCountryDisplay();
         const code = countryCode.value;
         const cfg = COUNTRY_CONFIGS[code] || COUNTRY_CONFIGS['+'];
         phoneInput.placeholder = cfg.placeholder;
         phoneInput.value = formatPhoneByCountry(phoneInput.value, code);
-        checkSmsButton();
+        updateStep1Button();
     });
 
-    // Send SMS
-    $('#btn-send-sms').addEventListener('click', () => {
-        $('#btn-send-sms').style.display = 'none';
-        $('#legal-group').style.display = 'none';
-        $('#sms-block').classList.remove('hidden');
-        $('#sms-input').value = '';
-        $('#sms-error').classList.add('hidden');
-        $('#sms-input').classList.remove('input-error');
-        $('#sms-input').focus();
-        toast('Verification code sent to your phone', 'info');
-        startTimer();
-    });
-
-    function startTimer() {
-        smsCountdown = 59;
-        const btn = $('#btn-resend');
-        btn.disabled = true;
-        btn.textContent = `Resend Code (${smsCountdown}s)`;
-        if (smsTimer) clearInterval(smsTimer);
-        smsTimer = setInterval(() => {
-            smsCountdown--;
-            if (smsCountdown <= 0) {
-                clearInterval(smsTimer);
-                btn.disabled = false;
-                btn.textContent = 'Resend Code';
-            } else {
-                btn.textContent = `Resend Code (${smsCountdown}s)`;
-            }
-        }, 1000);
-    }
-
-    $('#btn-resend').addEventListener('click', () => {
-        $('#sms-input').value = '';
-        $('#sms-error').classList.add('hidden');
-        $('#sms-input').classList.remove('input-error');
-        $('#sms-input').focus();
-        toast('New verification code sent', 'info');
-        startTimer();
-    });
-
-    // Verify SMS
-    function verifySms() {
-        const code = $('#sms-input').value.trim();
-        if (code.length === 4 && /^\d{4}$/.test(code)) {
-            if (code === '0000') {
-                $('#sms-error').textContent = 'Incorrect verification code';
-                $('#sms-error').classList.remove('hidden');
-                $('#sms-input').classList.add('input-error');
-                return;
-            }
-            verified = true;
-            if (smsTimer) clearInterval(smsTimer);
-            $('#sms-block').classList.add('hidden');
-            $('#phone-badge').classList.remove('hidden');
-            phoneWrap.classList.remove('focused', 'error');
-            phoneWrap.classList.add('verified');
-            toast('Phone verified ✓', 'success');
-            updateStep1Btn();
-
-            // Auto-advance to Step 2
-            setTimeout(() => {
-                if ($('#children-list').children.length === 0) addChild();
-                goTo(2);
-            }, 800);
-        } else {
-            $('#sms-error').textContent = 'Code must contain 4 digits';
-            $('#sms-error').classList.remove('hidden');
-            $('#sms-input').classList.add('input-error');
+    btnStep1.addEventListener('click', () => {
+        const code = countryCode.value;
+        const cfg = COUNTRY_CONFIGS[code] || COUNTRY_CONFIGS['+'];
+        const d = digits(phoneInput.value);
+        if (d.length < cfg.min) {
+            $('#phone-error').textContent = 'Please enter a valid phone number';
+            $('#phone-error').classList.remove('hidden');
+            phoneWrap.classList.add('error');
+            return;
         }
-    }
 
-    $('#btn-verify').addEventListener('click', verifySms);
-    $('#sms-input').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); verifySms(); }
-    });
-
-    function updateStep1Btn() {
-        const btn = $('#btn-step1');
-        if (verified) { btn.disabled = false; btn.classList.remove('disabled'); }
-        else          { btn.disabled = true;  btn.classList.add('disabled'); }
-    }
-
-    $('#btn-step1').addEventListener('click', () => {
-        if (!verified) return;
-        if ($('#children-list').children.length === 0) addChild();
+        if ($('#children-list').children.length === 0) {
+            addChild();
+        }
         goTo(2);
     });
 
@@ -1245,11 +1414,202 @@
 
         if (err) return;
 
+        goTo(3);
+    });
+
+    /* ============================================
+       STEP 3 — SIGNATURE PAD & DRAWING ENGINE
+    ============================================ */
+    const sigCanvas = $('#signature-canvas');
+    const sigCtx    = sigCanvas.getContext('2d');
+    const sigWrap   = $('#signature-canvas-wrap');
+    const sigPlaque = $('#signature-plaque');
+    const sigGhostHint = $('#sig-ghost-hint');
+    const sigStatusBadge = $('#sig-status-badge');
+    const btnClearSig = $('#btn-clear-sig');
+    const btnStep3 = $('#btn-step3');
+
+    let isDrawing = false;
+    let lastPoint = null;
+
+    function populateSignatureSummary() {
+        const fio = $('#fio-input').value.trim() || 'Parent';
+        const parentEl = $('#sig-summary-parent');
+        if (parentEl) parentEl.textContent = fio;
+
+        const childNames = [];
+        $$('.child-card').forEach(c => {
+            const name = c.querySelector('.child-name-input').value.trim();
+            if (name) childNames.push(name);
+        });
+        const count = childNames.length;
+        const kidsEl = $('#sig-summary-kids');
+        if (kidsEl) {
+            if (count === 0) {
+                kidsEl.textContent = 'registered minors';
+            } else if (count === 1) {
+                kidsEl.textContent = childNames[0] ? `1 minor (${childNames[0]})` : '1 minor';
+            } else {
+                kidsEl.textContent = `${count} minors (${childNames.join(', ')})`;
+            }
+        }
+    }
+
+    function initCanvasSize() {
+        const rect = sigWrap.getBoundingClientRect();
+        if (!rect.width || rect.width === 0 || !rect.height || rect.height === 0) return;
+        const dpr = window.devicePixelRatio || 1;
+        const displayW = Math.round(rect.width);
+        const displayH = Math.round(rect.height);
+
+        // Only recreate bitmap if dimensions actually change
+        if (sigCanvas.width !== displayW * dpr || sigCanvas.height !== displayH * dpr) {
+            sigCanvas.width = displayW * dpr;
+            sigCanvas.height = displayH * dpr;
+        }
+        sigCtx.setTransform(1, 0, 0, 1, 0, 0);
+        sigCtx.scale(dpr, dpr);
+        sigCtx.lineCap = 'round';
+        sigCtx.lineJoin = 'round';
+        sigCtx.lineWidth = 2.8;
+        sigCtx.strokeStyle = '#1A1A1A';
+        sigCtx.fillStyle = '#1A1A1A';
+    }
+
+    window.addEventListener('resize', () => {
+        if (step === 3 && !hasSignature) {
+            initCanvasSize();
+        }
+    });
+
+    function getCanvasCoords(e) {
+        const rect = sigCanvas.getBoundingClientRect();
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else if (e.changedTouches && e.changedTouches.length > 0) {
+            clientX = e.changedTouches[0].clientX;
+            clientY = e.changedTouches[0].clientY;
+        }
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
+
+    function startDrawing(e) {
+        if (e.cancelable) e.preventDefault();
+
+        // Safeguard: If dimensions were not yet ready, force init on first touch
+        if (!sigCanvas.width || sigCanvas.width === 0 || !sigCanvas.height || sigCanvas.height === 0) {
+            initCanvasSize();
+        }
+
+        try {
+            if (e.pointerId !== undefined && sigCanvas.setPointerCapture) {
+                sigCanvas.setPointerCapture(e.pointerId);
+            }
+        } catch (err) {}
+
+        isDrawing = true;
+        sigPlaque.classList.add('is-signing');
+        sigGhostHint.classList.add('hint-hidden');
+
+        lastPoint = getCanvasCoords(e);
+        signaturePointsCount++;
+
+        sigCtx.beginPath();
+        sigCtx.arc(lastPoint.x, lastPoint.y, 1.4, 0, Math.PI * 2);
+        sigCtx.fill();
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        if (e.cancelable) e.preventDefault();
+
+        const currentPoint = getCanvasCoords(e);
+        const dist = Math.hypot(currentPoint.x - lastPoint.x, currentPoint.y - lastPoint.y);
+        
+        if (dist > 1.2) {
+            sigCtx.beginPath();
+            sigCtx.moveTo(lastPoint.x, lastPoint.y);
+            const midX = (lastPoint.x + currentPoint.x) / 2;
+            const midY = (lastPoint.y + currentPoint.y) / 2;
+            sigCtx.quadraticCurveTo(lastPoint.x, lastPoint.y, midX, midY);
+            sigCtx.stroke();
+            lastPoint = currentPoint;
+            signaturePointsCount++;
+
+            if (signaturePointsCount >= 10 && !hasSignature) {
+                hasSignature = true;
+                sigPlaque.classList.remove('is-signing');
+                sigPlaque.classList.add('is-signed');
+                sigStatusBadge.innerHTML = '✓ Signature recorded';
+                sigStatusBadge.className = 'sig-status-badge valid';
+                btnStep3.disabled = false;
+                btnStep3.classList.remove('disabled');
+            }
+        }
+    }
+
+    function stopDrawing(e) {
+        if (!isDrawing) return;
+        isDrawing = false;
+        sigPlaque.classList.remove('is-signing');
+        try {
+            if (e && e.pointerId !== undefined && sigCanvas.releasePointerCapture) {
+                sigCanvas.releasePointerCapture(e.pointerId);
+            }
+        } catch (err) {}
+    }
+
+    // Pointer events with full mobile capture
+    sigCanvas.addEventListener('pointerdown', startDrawing);
+    sigCanvas.addEventListener('pointermove', draw);
+    window.addEventListener('pointerup', stopDrawing);
+    window.addEventListener('pointercancel', stopDrawing);
+
+    // Fallback touch listeners for older mobile browsers
+    sigCanvas.addEventListener('touchstart', startDrawing, { passive: false });
+    sigCanvas.addEventListener('touchmove', draw, { passive: false });
+    window.addEventListener('touchend', stopDrawing);
+    window.addEventListener('touchcancel', stopDrawing);
+
+    // Clear signature
+    btnClearSig.addEventListener('click', () => {
+        initCanvasSize();
+        hasSignature = false;
+        signaturePointsCount = 0;
+        signatureDataUrl = null;
+        sigPlaque.classList.remove('is-signing', 'is-signed');
+        sigGhostHint.classList.remove('hint-hidden');
+        sigStatusBadge.textContent = 'Awaiting signature';
+        sigStatusBadge.className = 'sig-status-badge';
+        btnStep3.disabled = true;
+        btnStep3.classList.add('disabled');
+    });
+
+    $('#btn-step3-back').addEventListener('click', () => goTo(2));
+
+    $('#btn-step3').addEventListener('click', () => {
+        if (!hasSignature) {
+            toast('Please sign with your finger to proceed', 'error');
+            return;
+        }
+
+        try {
+            signatureDataUrl = sigCanvas.toDataURL('image/png');
+        } catch (e) {
+            console.warn('Canvas export failed:', e);
+        }
+
         submitRegistration();
     });
 
     /* ============================================
-       SUBMIT & POPULATE FESTIVE PASS
+       SUBMIT & POPULATE FESTIVE PASS (STEP 4)
     ============================================ */
     function submitRegistration() {
         const fio         = $('#fio-input').value.trim();
@@ -1268,12 +1628,14 @@
         const park        = urlParams.get('park') || 'Dubai';
 
         const payload = { 
-            v: 1, 
+            v: 2, 
+            auth: 'signature',
             lang: 'en',
             fio, 
             phone, 
             children, 
             park,
+            signature: signatureDataUrl,
             ts: Date.now() 
         };
         const json = JSON.stringify(payload);
@@ -1290,6 +1652,12 @@
             chip.innerHTML = `<span class="ticket-child-chip-name">${idx + 1}. ${escapeHtml(ch.name)}</span> ${dobFormatted}`;
             summaryList.appendChild(chip);
         });
+
+        // Show signature preview on ticket
+        if (signatureDataUrl) {
+            $('#summary-sig-img').src = signatureDataUrl;
+            $('#ticket-sig-row').style.display = 'flex';
+        }
 
         // Send registration to Backend / AmoCRM (asynchronous & non-blocking)
         fetch('/api/register-guest', {
@@ -1310,27 +1678,100 @@
         });
 
         toast('Registration completed successfully! 🎉', 'success');
-        goTo(3);
+        goTo(4);
+    }
+
+    /* ============================================
+       CONFETTI SYSTEM (Pure Vanilla JS Canvas)
+    ============================================ */
+    function startConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const parent = canvas.parentElement;
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+
+        const colors = ['#FF6022', '#6C4AED', '#FFB800', '#10B981', '#1BA0F2', '#FF3366', '#FFD700'];
+        const particles = [];
+        const count = 70;
+
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: canvas.width * 0.5 + (Math.random() - 0.5) * 80,
+                y: 110 + (Math.random() - 0.5) * 40,
+                vx: (Math.random() - 0.5) * 11,
+                vy: -Math.random() * 9 - 4,
+                size: Math.random() * 8 + 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 10,
+                shape: Math.random() > 0.35 ? 'rect' : 'circle',
+                opacity: 1
+            });
+        }
+
+        const startTime = performance.now();
+
+        function render(now) {
+            const elapsed = now - startTime;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let activeCount = 0;
+            for (const p of particles) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.32; // gravity
+                p.vx *= 0.98; // air drag
+                p.rotation += p.rotationSpeed;
+
+                if (elapsed > 1800) {
+                    p.opacity = Math.max(0, 1 - (elapsed - 1800) / 1400);
+                }
+
+                if (p.y < canvas.height && p.opacity > 0) {
+                    activeCount++;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.globalAlpha = p.opacity;
+                    ctx.fillStyle = p.color;
+
+                    if (p.shape === 'rect') {
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            if (activeCount > 0 && elapsed < 3500) {
+                requestAnimationFrame(render);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        requestAnimationFrame(render);
     }
 
     // Reset / Register Another Guest
     $('#btn-restart').addEventListener('click', () => {
-        verified = false;
-        if (smsTimer) clearInterval(smsTimer);
         childId = 0;
+        hasSignature = false;
+        signaturePointsCount = 0;
+        signatureDataUrl = null;
 
         // Reset step 1
         phoneInput.value = '';
         phoneWrap.classList.remove('focused', 'error', 'verified');
         $('#phone-error').classList.add('hidden');
         $('#phone-badge').classList.add('hidden');
-        $('#btn-send-sms').style.display = '';
-        $('#btn-send-sms').disabled = true;
-        $('#legal-group').style.display = '';
-        $('#check-mandatory').checked = false;
-        $('#sms-block').classList.add('hidden');
-        $('#btn-step1').disabled = true;
-        $('#btn-step1').classList.add('disabled');
+        btnStep1.disabled = true;
+        btnStep1.classList.add('disabled');
 
         // Reset step 2
         $('#fio-input').value = '';
@@ -1339,10 +1780,20 @@
         $('#children-list').innerHTML = '';
         $('#children-error').classList.add('hidden');
 
-        // Reset summary
+        // Reset step 3 signature
+        initCanvasSize();
+        sigPlaque.classList.remove('is-signing', 'is-signed');
+        sigGhostHint.classList.remove('hint-hidden');
+        sigStatusBadge.textContent = 'Awaiting signature';
+        sigStatusBadge.className = 'sig-status-badge';
+        btnStep3.disabled = true;
+        btnStep3.classList.add('disabled');
+
+        // Reset step 4 summary
         $('#summary-fio').textContent = '—';
         $('#summary-phone').textContent = '—';
         $('#summary-children-list').innerHTML = '';
+        $('#ticket-sig-row').style.display = 'none';
 
         goTo(1);
     });
