@@ -22,7 +22,7 @@
             outline: none;
             cursor: pointer;
             padding-right: 6px;
-            max-width: 135px;
+            max-width: 145px;
             flex-shrink: 0;
         }
         .progress-seg {
@@ -49,42 +49,321 @@
             border-color: var(--hp-orange);
             background: rgba(255, 96, 34, 0.08);
         }
-        .success-hero-badge {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            background: rgba(16, 185, 129, 0.12);
+
+        /* ════════════════════════════════════════
+           FESTIVE CELEBRATION PLAQUE & SCREEN
+           ════════════════════════════════════════ */
+        .festive-card {
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            padding: 1.5rem 1.15rem 1.6rem;
+            border-radius: var(--radius-card);
+            background: #ffffff;
+            box-shadow: 0 12px 40px rgba(255, 96, 34, 0.09), 0 2px 8px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255, 96, 34, 0.12);
+        }
+
+        .confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .festive-hero {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.1rem;
+        }
+
+        .festive-fox-wrap {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            margin-bottom: 0.85rem;
+            animation: bounceIn 0.65s var(--ease-spring);
+        }
+
+        .festive-fox-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 18px rgba(255, 96, 34, 0.28));
+        }
+
+        .festive-party-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -6px;
+            font-size: 1.75rem;
+            line-height: 1;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+            animation: popRotate 1.3s ease-in-out infinite alternate;
+        }
+
+        @keyframes popRotate {
+            0%   { transform: scale(1) rotate(-10deg); }
+            100% { transform: scale(1.18) rotate(14deg); }
+        }
+
+        @keyframes bounceIn {
+            0%   { transform: scale(0.3); opacity: 0; }
+            60%  { transform: scale(1.12); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        .festive-tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(255, 96, 34, 0.12), rgba(108, 74, 237, 0.12));
+            border: 1.5px solid rgba(255, 96, 34, 0.25);
+            border-radius: var(--radius-pill);
+            padding: 4px 14px;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: var(--hp-orange);
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        .festive-title {
+            font-family: var(--font-display);
+            font-size: 1.65rem;
+            font-weight: 900;
+            line-height: 1.15;
+            color: var(--ink);
+            margin-bottom: 0.35rem;
+            letter-spacing: -0.02em;
+        }
+
+        .festive-subtitle {
+            font-size: 0.88rem;
+            color: var(--ink-soft);
+            line-height: 1.45;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* ── The Festive Plaque / VIP Ticket ── */
+        .festive-ticket {
+            background: linear-gradient(150deg, #FFFFFF 0%, #FFFDF9 60%, #FFF4ED 100%);
+            border: 2px solid rgba(255, 96, 34, 0.25);
+            border-radius: 24px;
+            padding: 1.15rem 1.15rem 1rem;
+            position: relative;
+            box-shadow: 0 10px 28px rgba(255, 96, 34, 0.08), 0 2px 6px rgba(0, 0, 0, 0.02);
+            text-align: left;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .festive-ticket::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #FF6022 0%, #FFB800 35%, #6C4AED 70%, #10B981 100%);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 1.5px dashed rgba(255, 96, 34, 0.22);
+            margin-bottom: 0.9rem;
+        }
+
+        .ticket-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 800;
             color: #10B981;
+            letter-spacing: 0.06em;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10B981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+            animation: pulseDot 1.8s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50%      { transform: scale(1.35); opacity: 0.6; }
+        }
+
+        .ticket-park-name {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            color: var(--ink-soft);
+        }
+
+        .ticket-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .ticket-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .ticket-icon {
+            font-size: 1.25rem;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(255, 96, 34, 0.09);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0.5rem auto 1.25rem;
-            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.06);
-            animation: popIn 0.5s var(--ease-spring);
+            flex-shrink: 0;
         }
-        .success-info-box {
-            margin-top: 1.25rem;
-            background: linear-gradient(135deg, rgba(255, 96, 34, 0.06) 0%, rgba(108, 74, 237, 0.06) 100%);
-            border: 1.5px solid rgba(255, 96, 34, 0.18);
-            border-radius: 20px;
-            padding: 1.25rem;
-            text-align: center;
+
+        .ticket-info {
+            flex-grow: 1;
         }
-        .children-summary-list {
+
+        .ticket-label {
+            font-family: var(--font-display);
+            font-size: 0.66rem;
+            font-weight: 800;
+            color: var(--ink-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 2px;
+        }
+
+        .ticket-val {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--ink);
+            word-break: break-word;
+        }
+
+        .ticket-children-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .ticket-child-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ffffff;
+            border: 1.5px solid rgba(108, 74, 237, 0.2);
+            border-radius: var(--radius-pill);
+            padding: 4px 10px;
+            font-size: 0.82rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .ticket-child-chip-name {
+            font-weight: 800;
+            color: var(--ink);
+        }
+
+        .ticket-child-chip-dob {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--ink-soft);
+        }
+
+        /* ── Ticket Footer Instructions ── */
+        .ticket-footer {
+            margin-top: 0.9rem;
+            padding-top: 0.85rem;
+            border-top: 1.5px dashed rgba(255, 96, 34, 0.22);
+        }
+
+        .ticket-badge-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 96, 34, 0.08);
+            border: 1px solid rgba(255, 96, 34, 0.16);
+            border-radius: 14px;
+            padding: 9px 12px;
+        }
+
+        .ticket-badge-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            animation: gentleWobble 2s ease-in-out infinite;
+        }
+
+        @keyframes gentleWobble {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50%      { transform: translateY(-2px) rotate(6deg); }
+        }
+
+        .ticket-badge-text {
+            font-size: 0.82rem;
+            line-height: 1.35;
+            color: var(--ink);
+        }
+
+        .ticket-badge-text strong {
+            color: var(--hp-orange);
+            display: block;
+            font-weight: 800;
+            font-size: 0.88rem;
+            margin-bottom: 1px;
+        }
+
+        .festive-perks-row {
+            display: flex;
+            justify-content: space-around;
+            gap: 6px;
+            margin-top: 1.15rem;
+            padding-top: 0.95rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .festive-perk {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-        }
-        .child-summary-item {
-            font-size: 0.85rem;
-            color: var(--ink);
+            align-items: center;
+            text-align: center;
+            gap: 3px;
+            font-size: 0.72rem;
             font-weight: 700;
-        }
-        .child-summary-dob {
             color: var(--ink-soft);
-            font-weight: 500;
-            font-size: 0.8rem;
-            margin-left: 4px;
+            line-height: 1.25;
+        }
+
+        .perk-emoji {
+            font-size: 1.2rem;
+            margin-bottom: 1px;
         }
     </style>
 </head>
@@ -128,22 +407,24 @@
                     <label for="phone-input" class="form-label">Phone Number</label>
                     <div class="phone-wrapper" id="phone-wrapper">
                         <select id="country-code" class="phone-country-select" aria-label="Country Code">
-                            <option value="+1">🇺🇸 +1</option>
-                            <option value="+971" selected>🇦🇪 +971</option>
-                            <option value="+44">🇬🇧 +44</option>
-                            <option value="+7">🇰🇿 +7</option>
-                            <option value="+49">🇩🇪 +49</option>
-                            <option value="+33">🇫🇷 +33</option>
-                            <option value="+39">🇮🇹 +39</option>
-                            <option value="+34">🇪🇸 +34</option>
-                            <option value="+966">🇸🇦 +966</option>
-                            <option value="+974">🇶🇦 +974</option>
-                            <option value="+965">🇰🇼 +965</option>
-                            <option value="+90">🇹🇷 +90</option>
-                            <option value="+86">🇨🇳 +86</option>
-                            <option value="+91">🇮🇳 +91</option>
-                            <option value="+65">🇸🇬 +65</option>
-                            <option value="+61">🇦🇺 +61</option>
+                            <option value="+971" selected>🇦🇪 +971 (UAE)</option>
+                            <option value="+1">🇺🇸 +1 (US/CA)</option>
+                            <option value="+44">🇬🇧 +44 (UK)</option>
+                            <option value="+7">🇰🇿 +7 (KZ/RU)</option>
+                            <option value="+966">🇸🇦 +966 (Saudi)</option>
+                            <option value="+974">🇶🇦 +974 (Qatar)</option>
+                            <option value="+965">🇰🇼 +965 (Kuwait)</option>
+                            <option value="+968">🇴🇲 +968 (Oman)</option>
+                            <option value="+973">🇧🇭 +973 (Bahrain)</option>
+                            <option value="+49">🇩🇪 +49 (Germany)</option>
+                            <option value="+33">🇫🇷 +33 (France)</option>
+                            <option value="+39">🇮🇹 +39 (Italy)</option>
+                            <option value="+34">🇪🇸 +34 (Spain)</option>
+                            <option value="+90">🇹🇷 +90 (Turkey)</option>
+                            <option value="+86">🇨🇳 +86 (China)</option>
+                            <option value="+91">🇮🇳 +91 (India)</option>
+                            <option value="+65">🇸🇬 +65 (Singapore)</option>
+                            <option value="+61">🇦🇺 +61 (Australia)</option>
                             <option value="+">🌐 + Other</option>
                         </select>
                         <input type="tel" id="phone-input" class="phone-field"
@@ -247,42 +528,98 @@
         </section>
 
         <!-- ============================================
-             STEP 3: SUCCESS SCREEN (NO QR CODE)
+             STEP 3: FESTIVE SUCCESS SCREEN (NO QR CODE)
              ============================================ -->
         <section class="step" id="step-3" aria-label="Registration Success">
-            <div class="card card-qr">
-                <div class="success-hero-badge">
-                    <svg width="38" height="38" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                    </svg>
-                </div>
-                <h1 class="card-title">Registration Successful!</h1>
-                <p class="card-subtitle">Welcome to Hello Park! You are all set to play.</p>
+            <div class="festive-card">
+                <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
 
-                <!-- Registration Summary -->
-                <div class="qr-summary" id="registration-summary" style="margin-top: 1.5rem;">
-                    <div class="qr-row">
-                        <span class="qr-label">Parent</span>
-                        <span class="qr-value" id="summary-fio">—</span>
+                <!-- Hero Mascot & Title -->
+                <div class="festive-hero">
+                    <div class="festive-fox-wrap">
+                        <img src="fox.webp" alt="Fox mascot" class="festive-fox-image">
+                        <div class="festive-party-badge">🎉</div>
                     </div>
-                    <div class="qr-row">
-                        <span class="qr-label">Phone</span>
-                        <span class="qr-value" id="summary-phone">—</span>
+                    
+                    <div class="festive-tag-pill">
+                        <span>✨</span>
+                        <span>HELLO PARK VIP PASS</span>
+                        <span>✨</span>
                     </div>
-                    <div class="qr-row qr-row-last">
-                        <span class="qr-label">Children</span>
-                        <span class="qr-value" id="summary-children">
-                            <div class="children-summary-list" id="summary-children-list"></div>
-                        </span>
-                    </div>
-                </div>
 
-                <div class="success-info-box">
-                    <div style="font-size: 1.7rem; margin-bottom: 0.35rem;">🎉</div>
-                    <div style="font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.35rem;">Ready for Adventure!</div>
-                    <p style="font-size: 0.88rem; color: var(--ink-soft); line-height: 1.5; margin: 0;">
-                        Provide your name or phone number at the entrance or reception desk. Have a wonderful and magical time in Hello Park!
+                    <h1 class="festive-title">
+                        You're in the <span class="text-orange">Game!</span>
+                    </h1>
+                    <p class="festive-subtitle">
+                        Welcome to Hello Park! Your family registration is complete and ready for an adventure.
                     </p>
+                </div>
+
+                <!-- Festive Plaque / Ticket -->
+                <div class="festive-ticket">
+                    <div class="ticket-header">
+                        <div class="ticket-status">
+                            <span class="status-dot"></span>
+                            <span>PASS ACTIVE</span>
+                        </div>
+                        <div class="ticket-park-name">HELLO PARK</div>
+                    </div>
+
+                    <div class="ticket-body">
+                        <!-- Parent Row -->
+                        <div class="ticket-row">
+                            <div class="ticket-icon">👑</div>
+                            <div class="ticket-info">
+                                <div class="ticket-label">Parent / Guardian</div>
+                                <div class="ticket-val" id="summary-fio">—</div>
+                            </div>
+                        </div>
+
+                        <!-- Phone Row -->
+                        <div class="ticket-row">
+                            <div class="ticket-icon">📱</div>
+                            <div class="ticket-info">
+                                <div class="ticket-label">Phone Number</div>
+                                <div class="ticket-val" id="summary-phone">—</div>
+                            </div>
+                        </div>
+
+                        <!-- Children Players Row -->
+                        <div class="ticket-row">
+                            <div class="ticket-icon">🎮</div>
+                            <div class="ticket-info">
+                                <div class="ticket-label">Young Explorers</div>
+                                <div class="ticket-children-list" id="summary-children-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Footer / Instructions -->
+                    <div class="ticket-footer">
+                        <div class="ticket-badge-banner">
+                            <div class="ticket-badge-icon">🎈</div>
+                            <div class="ticket-badge-text">
+                                <strong>Ready to Play!</strong>
+                                Simply state your name or phone number at the entrance desk.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Festive Perks Row -->
+                <div class="festive-perks-row">
+                    <div class="festive-perk">
+                        <span class="perk-emoji">⭐</span>
+                        <span>Progress Saved</span>
+                    </div>
+                    <div class="festive-perk">
+                        <span class="perk-emoji">🚀</span>
+                        <span>Digital Quests</span>
+                    </div>
+                    <div class="festive-perk">
+                        <span class="perk-emoji">🎁</span>
+                        <span>Park Bonuses</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -326,7 +663,7 @@
         <!-- Step 3 bottom bar (Register Another Guest) -->
         <div class="bottom-nav-inner" id="bottom-bar-3" style="display:none;">
             <button class="btn-restart" id="btn-restart" type="button">
-                <span class="btn-next-label">Register Another Guest</span>
+                <span class="btn-next-label">🎉 Register Another Guest</span>
                 <span class="btn-restart-icon">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.36-5.36M20 15a9 9 0 01-15.36 5.36"/>
@@ -342,7 +679,7 @@
 
     <script>
     /* ============================================
-       STATE
+       STATE & HELPERS
     ============================================ */
     let step = 1;
     let verified = false;
@@ -358,6 +695,62 @@
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    }
+
+    function digits(v) { 
+        return (v || '').replace(/\D/g, ''); 
+    }
+
+    /* ============================================
+       COUNTRY PHONE CONFIGS & DYNAMIC MASKING
+    ============================================ */
+    const COUNTRY_CONFIGS = {
+        '+971': { mask: '## ### ####',       placeholder: '50 123 4567',     min: 9,  max: 9 },
+        '+1':   { mask: '(###) ###-####',   placeholder: '(555) 000-0000',  min: 10, max: 10 },
+        '+44':  { mask: '#### ######',       placeholder: '7911 123456',     min: 10, max: 10 },
+        '+7':   { mask: '(###) ###-##-##',   placeholder: '(701) 000-00-00', min: 10, max: 10 },
+        '+966': { mask: '## ### ####',       placeholder: '50 123 4567',     min: 9,  max: 9 },
+        '+974': { mask: '#### ####',         placeholder: '3312 3456',       min: 8,  max: 8 },
+        '+965': { mask: '#### ####',         placeholder: '9123 4567',       min: 8,  max: 8 },
+        '+968': { mask: '#### ####',         placeholder: '9123 4567',       min: 8,  max: 8 },
+        '+973': { mask: '#### ####',         placeholder: '3912 3456',       min: 8,  max: 8 },
+        '+49':  { mask: '### #### ####',     placeholder: '151 2345 6789',   min: 10, max: 11 },
+        '+33':  { mask: '# ## ## ## ##',     placeholder: '6 12 34 56 78',   min: 9,  max: 9 },
+        '+39':  { mask: '### ### ####',      placeholder: '312 345 6789',    min: 10, max: 10 },
+        '+34':  { mask: '### ## ## ##',      placeholder: '612 34 56 78',    min: 9,  max: 9 },
+        '+90':  { mask: '(###) ### ## ##',   placeholder: '(532) 123 45 67',  min: 10, max: 10 },
+        '+86':  { mask: '### #### ####',     placeholder: '138 0000 0000',   min: 11, max: 11 },
+        '+91':  { mask: '##### #####',       placeholder: '98765 43210',     min: 10, max: 10 },
+        '+65':  { mask: '#### ####',         placeholder: '8123 4567',       min: 8,  max: 8 },
+        '+61':  { mask: '### ### ###',       placeholder: '412 345 678',     min: 9,  max: 9 },
+        '+':    { mask: null,                placeholder: 'Phone number',    min: 7,  max: 15 }
+    };
+
+    function formatPhoneByCountry(raw, code) {
+        let d = digits(raw);
+        const cfg = COUNTRY_CONFIGS[code] || COUNTRY_CONFIGS['+'];
+        
+        if (!cfg.mask) {
+            if (d.length > 15) d = d.slice(0, 15);
+            if (d.length <= 3) return d;
+            if (d.length <= 6) return `${d.slice(0, 3)} ${d.slice(3)}`;
+            if (d.length <= 9) return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
+            return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 9)} ${d.slice(9)}`;
+        }
+        
+        if (d.length > cfg.max) d = d.slice(0, cfg.max);
+        
+        let res = '';
+        let dIdx = 0;
+        for (let i = 0; i < cfg.mask.length && dIdx < d.length; i++) {
+            const m = cfg.mask[i];
+            if (m === '#') {
+                res += d[dIdx++];
+            } else {
+                res += m;
+            }
+        }
+        return res;
     }
 
     /* ============================================
@@ -383,14 +776,13 @@
     }
 
     /* ============================================
-       NAVIGATION
+       NAVIGATION & CONFETTI TRIGGER
     ============================================ */
     function goTo(target) {
         if (target === step || target < 1 || target > 3) return;
         const oldEl = $(`#step-${step}`);
         const newEl = $(`#step-${target}`);
         
-        // Measure old height to stabilize layout during transition
         const oldHeight = oldEl.offsetHeight;
         const app = $('#app');
         app.style.minHeight = `${oldHeight}px`;
@@ -454,23 +846,105 @@
                 newEl.style.transition = '';
                 app.style.minHeight = '';
                 app.style.transition = '';
+
+                // Fire celebratory confetti when landing on Step 3
+                if (step === 3) {
+                    startConfetti();
+                }
             }, 250);
         }, 180);
     }
 
     /* ============================================
-       STEP 1 — RULES + PHONE + SMS
+       CONFETTI SYSTEM (Pure Vanilla JS Canvas)
     ============================================ */
-    function digits(v) { return v.replace(/\D/g, ''); }
+    function startConfetti() {
+        const canvas = document.getElementById('confetti-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const parent = canvas.parentElement;
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
 
+        const colors = ['#FF6022', '#6C4AED', '#FFB800', '#10B981', '#1BA0F2', '#FF3366', '#FFD700'];
+        const particles = [];
+        const count = 70;
+
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: canvas.width * 0.5 + (Math.random() - 0.5) * 80,
+                y: 110 + (Math.random() - 0.5) * 40,
+                vx: (Math.random() - 0.5) * 11,
+                vy: -Math.random() * 9 - 4,
+                size: Math.random() * 8 + 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 10,
+                shape: Math.random() > 0.35 ? 'rect' : 'circle',
+                opacity: 1
+            });
+        }
+
+        const startTime = performance.now();
+
+        function render(now) {
+            const elapsed = now - startTime;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let activeCount = 0;
+            for (const p of particles) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.32; // gravity
+                p.vx *= 0.98; // air drag
+                p.rotation += p.rotationSpeed;
+
+                if (elapsed > 1800) {
+                    p.opacity = Math.max(0, 1 - (elapsed - 1800) / 1400);
+                }
+
+                if (p.y < canvas.height && p.opacity > 0) {
+                    activeCount++;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.globalAlpha = p.opacity;
+                    ctx.fillStyle = p.color;
+
+                    if (p.shape === 'rect') {
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            if (activeCount > 0 && elapsed < 3500) {
+                requestAnimationFrame(render);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        requestAnimationFrame(render);
+    }
+
+    /* ============================================
+       STEP 1 — PHONE & DYNAMIC COUNTRY MASK
+    ============================================ */
     const phoneInput  = $('#phone-input');
     const phoneWrap   = $('#phone-wrapper');
     const countryCode = $('#country-code');
 
     function checkSmsButton() {
+        const code = countryCode.value;
+        const cfg = COUNTRY_CONFIGS[code] || COUNTRY_CONFIGS['+'];
         const d = digits(phoneInput.value);
         const isChecked = $('#check-mandatory').checked;
-        if (d.length >= 7 && isChecked) {
+        if (d.length >= cfg.min && isChecked) {
             $('#btn-send-sms').disabled = false;
         } else {
             $('#btn-send-sms').disabled = true;
@@ -486,8 +960,10 @@
     phoneInput.addEventListener('blur',  () => phoneWrap.classList.remove('focused'));
 
     phoneInput.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/[^\d\s()-]/g, '');
-        e.target.value = val;
+        const code = countryCode.value;
+        const formatted = formatPhoneByCountry(e.target.value, code);
+        e.target.value = formatted;
+        
         $('#phone-error').classList.add('hidden');
         phoneWrap.classList.remove('error', 'verified');
 
@@ -501,11 +977,30 @@
         checkSmsButton();
     });
 
+    // Detect and switch country on paste
+    phoneInput.addEventListener('paste', (e) => {
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        if (text) {
+            const cleaned = text.trim();
+            for (const code of Object.keys(COUNTRY_CONFIGS)) {
+                if (code !== '+' && cleaned.startsWith(code)) {
+                    countryCode.value = code;
+                    const rest = cleaned.slice(code.length);
+                    setTimeout(() => {
+                        phoneInput.value = formatPhoneByCountry(rest, code);
+                        checkSmsButton();
+                    }, 0);
+                    return;
+                }
+            }
+        }
+    });
+
     countryCode.addEventListener('change', () => {
-        if (countryCode.value === '+1') phoneInput.placeholder = '(555) 000-0000';
-        else if (countryCode.value === '+971') phoneInput.placeholder = '50 123 4567';
-        else if (countryCode.value === '+44') phoneInput.placeholder = '7911 123456';
-        else phoneInput.placeholder = 'Phone number';
+        const code = countryCode.value;
+        const cfg = COUNTRY_CONFIGS[code] || COUNTRY_CONFIGS['+'];
+        phoneInput.placeholder = cfg.placeholder;
+        phoneInput.value = formatPhoneByCountry(phoneInput.value, code);
         checkSmsButton();
     });
 
@@ -713,7 +1208,7 @@
     });
 
     /* ============================================
-       SUBMIT & SUCCESS SCREEN
+       SUBMIT & POPULATE FESTIVE PASS
     ============================================ */
     function submitRegistration() {
         const fio         = $('#fio-input').value.trim();
@@ -729,7 +1224,7 @@
         });
 
         const urlParams   = new URLSearchParams(window.location.search);
-        const park        = urlParams.get('park') || 'Global';
+        const park        = urlParams.get('park') || 'Dubai';
 
         const payload = { 
             v: 1, 
@@ -742,17 +1237,17 @@
         };
         const json = JSON.stringify(payload);
 
-        // Populate summary
+        // Populate festive summary
         $('#summary-fio').textContent = fio;
         $('#summary-phone').textContent = phone;
         const summaryList = $('#summary-children-list');
         summaryList.innerHTML = '';
         children.forEach((ch, idx) => {
-            const item = document.createElement('div');
-            item.className = 'child-summary-item';
-            const dobFormatted = ch.dob ? `<span class="child-summary-dob">(${ch.dob})</span>` : '';
-            item.innerHTML = `<span>${idx + 1}. ${escapeHtml(ch.name)}</span> ${dobFormatted}`;
-            summaryList.appendChild(item);
+            const chip = document.createElement('div');
+            chip.className = 'ticket-child-chip';
+            const dobFormatted = ch.dob ? `<span class="ticket-child-chip-dob">(${ch.dob})</span>` : '';
+            chip.innerHTML = `<span class="ticket-child-chip-name">${idx + 1}. ${escapeHtml(ch.name)}</span> ${dobFormatted}`;
+            summaryList.appendChild(chip);
         });
 
         // Send registration to Backend / AmoCRM (asynchronous & non-blocking)
@@ -770,7 +1265,6 @@
             }
         })
         .catch(err => {
-            // Graceful degradation when static or backend unreachable
             console.warn('[CRM] Sync notice:', err);
         });
 
