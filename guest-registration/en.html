@@ -12,19 +12,49 @@
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/gilroy-bold">
     <link rel="stylesheet" href="style.css">
     <style>
-        .phone-country-select {
-            border: none;
-            background: transparent;
+        /* ── Compact Country Selector in Phone Field ── */
+        .phone-country-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+            padding-right: 8px;
+            margin-right: 8px;
+            border-right: 1.5px solid var(--border);
+            cursor: pointer;
+        }
+        .phone-country-display {
             font-family: var(--font-body);
             font-size: 0.95rem;
             font-weight: 700;
             color: var(--ink);
-            outline: none;
-            cursor: pointer;
-            padding-right: 6px;
-            max-width: 145px;
-            flex-shrink: 0;
+            white-space: nowrap;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
+        .phone-country-display::after {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid var(--ink-soft);
+            margin-left: 4px;
+        }
+        .phone-country-select {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            -webkit-appearance: none;
+            z-index: 5;
+        }
+
         .progress-seg {
             width: 18px;
         }
@@ -53,40 +83,106 @@
         /* ════════════════════════════════════════
            STEP 3: SIGNATURE SCREEN & ONBOARDING
            ════════════════════════════════════════ */
-        .signing-family-summary {
-            background: linear-gradient(135deg, rgba(255, 96, 34, 0.06), rgba(108, 74, 237, 0.06));
-            border: 1.5px solid rgba(255, 96, 34, 0.2);
-            border-radius: 18px;
-            padding: 0.9rem 1.1rem;
-            margin: 1rem 0 1.25rem;
+        .screen-header-clean {
             text-align: left;
+            margin-bottom: 0.85rem;
         }
-        .signing-family-row {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            font-size: 0.86rem;
-            margin-bottom: 4px;
-        }
-        .signing-family-row:last-child {
-            margin-bottom: 0;
-        }
-        .signing-family-label {
+        .screen-header-tag {
+            display: inline-block;
             font-family: var(--font-display);
-            font-weight: 800;
             font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--hp-orange);
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--ink-soft);
-            flex-shrink: 0;
+            letter-spacing: 0.08em;
+            margin-bottom: 2px;
         }
-        .signing-family-val {
-            font-weight: 700;
+        .screen-header-title {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 900;
             color: var(--ink);
-            word-break: break-word;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .screen-header-sub {
+            font-size: 0.86rem;
+            color: var(--ink-soft);
+            margin-top: 3px;
+            line-height: 1.4;
         }
 
-        /* ── Signature Plaque Box ── */
+        .signing-family-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F9F9FB;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 8px 12px;
+            margin-bottom: 1rem;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+        .signing-family-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+        .signing-family-kids-tag {
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-family: var(--font-display);
+            background: rgba(108, 74, 237, 0.1);
+            color: #6C4AED;
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+        }
+
+        /* ── 3 Legal Clauses on Signature Screen ── */
+        .waiver-clauses-box {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .waiver-clause-row {
+            background: #F8F9FA;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px 11px;
+            font-size: 0.78rem;
+            line-height: 1.35;
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+        }
+        .waiver-clause-icon {
+            font-size: 1rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .waiver-clause-body strong {
+            display: block;
+            font-family: var(--font-display);
+            color: var(--ink);
+            font-size: 0.8rem;
+            margin-bottom: 1px;
+        }
+        .waiver-clause-body span {
+            color: var(--ink-soft);
+        }
+        .waiver-clause-link {
+            color: var(--hp-orange);
+            text-decoration: underline;
+            margin-left: 4px;
+        }
+
+        /* ── Signature Plaque Box (Spacious 230px) ── */
         .signature-plaque {
             background: #FFFFFF;
             border: 2px solid var(--border);
@@ -109,7 +205,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 14px;
+            padding: 9px 14px;
             background: #FAFAFA;
             border-bottom: 1px solid var(--border);
         }
@@ -118,20 +214,20 @@
             align-items: center;
             gap: 6px;
             font-family: var(--font-display);
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 800;
-            color: var(--ink);
+            color: var(--ink-soft);
             text-transform: uppercase;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
         }
         .btn-clear-sig {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            background: rgba(0, 0, 0, 0.05);
+            gap: 4px;
+            background: #ffffff;
             border: 1px solid var(--border);
             border-radius: var(--radius-pill);
-            padding: 4px 10px;
+            padding: 3px 10px;
             font-family: var(--font-display);
             font-size: 0.72rem;
             font-weight: 700;
@@ -149,7 +245,7 @@
         .signature-canvas-wrap {
             position: relative;
             width: 100%;
-            height: 190px;
+            height: 230px;
             background: #FFFFFF;
             cursor: crosshair;
             overflow: hidden;
@@ -160,28 +256,27 @@
             left: 0;
             width: 100%;
             height: 100%;
-            touch-action: none; /* Prevents scroll while drawing */
+            touch-action: none;
             z-index: 2;
         }
 
-        /* Dotted Baseline */
         .signature-baseline {
             position: absolute;
-            bottom: 34px;
+            bottom: 30px;
             left: 20px;
             right: 20px;
             border-bottom: 2px dashed rgba(0, 0, 0, 0.12);
             pointer-events: none;
             display: flex;
             align-items: flex-end;
-            padding-bottom: 4px;
+            padding-bottom: 3px;
             z-index: 1;
         }
         .baseline-x {
             font-family: var(--font-display);
             font-weight: 900;
             font-size: 1.1rem;
-            color: rgba(0, 0, 0, 0.25);
+            color: rgba(0, 0, 0, 0.22);
             margin-right: 6px;
             user-select: none;
         }
@@ -203,19 +298,19 @@
             visibility: hidden;
         }
         .sig-ghost-hand {
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             animation: handSignMove 2.6s ease-in-out infinite;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.14));
         }
         .sig-ghost-text {
-            margin-top: 10px;
+            margin-top: 8px;
             font-family: var(--font-display);
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 800;
             color: var(--ink-soft);
-            background: rgba(255, 255, 255, 0.9);
-            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 3px 12px;
             border-radius: var(--radius-pill);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             letter-spacing: -0.01em;
@@ -256,19 +351,6 @@
         }
         .sig-status-badge.valid {
             color: #10B981;
-        }
-
-        .signature-legal-agreement {
-            font-size: 0.78rem;
-            color: var(--ink-soft);
-            line-height: 1.45;
-            margin-top: 0.85rem;
-            text-align: left;
-            padding: 0 4px;
-        }
-        .signature-legal-agreement a {
-            color: var(--hp-orange);
-            text-decoration: underline;
         }
 
         /* ════════════════════════════════════════
@@ -620,9 +702,9 @@
         </div>
 
         <!-- ============================================
-             STEP 1: PHONE + RULES CONSENT
+             STEP 1: PHONE (CLEAN & DIRECT)
              ============================================ -->
-        <section class="step step-visible" id="step-1" aria-label="Phone number and rules">
+        <section class="step step-visible" id="step-1" aria-label="Phone number">
             <div class="card">
                 <div class="card-header-hero">
                     <h1 class="card-hero-title">
@@ -632,38 +714,45 @@
                     <img src="fox.webp" alt="Fox mascot" class="card-hero-image">
                 </div>
 
-                <p class="step-explanation">Enter your phone number to start family registration, unlock park missions, and save interactive game progress.</p>
+                <p class="step-explanation">Enter your mobile phone number to start family registration and save your interactive game progress.</p>
 
-                <!-- Phone input -->
+                <!-- Phone input with compact trigger -->
                 <div class="form-group">
                     <label for="phone-input" class="form-label">Phone Number</label>
                     <div class="phone-wrapper" id="phone-wrapper">
-                        <select id="country-code" class="phone-country-select" aria-label="Country Code">
-                            <option value="+971" selected>🇦🇪 +971 (UAE)</option>
-                            <option value="+1">🇺🇸 +1 (US/CA)</option>
-                            <option value="+44">🇬🇧 +44 (UK)</option>
-                            <option value="+7">🇰🇿 +7 (KZ/RU)</option>
-                            <option value="+966">🇸🇦 +966 (Saudi)</option>
-                            <option value="+974">🇶🇦 +974 (Qatar)</option>
-                            <option value="+965">🇰🇼 +965 (Kuwait)</option>
-                            <option value="+968">🇴🇲 +968 (Oman)</option>
-                            <option value="+973">🇧🇭 +973 (Bahrain)</option>
-                            <option value="+49">🇩🇪 +49 (Germany)</option>
-                            <option value="+33">🇫🇷 +33 (France)</option>
-                            <option value="+39">🇮🇹 +39 (Italy)</option>
-                            <option value="+34">🇪🇸 +34 (Spain)</option>
-                            <option value="+90">🇹🇷 +90 (Turkey)</option>
-                            <option value="+86">🇨🇳 +86 (China)</option>
-                            <option value="+91">🇮🇳 +91 (India)</option>
-                            <option value="+65">🇸🇬 +65 (Singapore)</option>
-                            <option value="+61">🇦🇺 +61 (Australia)</option>
-                            <option value="+">🌐 + Other</option>
-                        </select>
+                        
+                        <!-- Country trigger (only code visible, full names in popup) -->
+                        <div class="phone-country-wrapper" id="country-wrapper">
+                            <span class="phone-country-display" id="country-display">🇦🇪 +971</span>
+                            <select id="country-code" class="phone-country-select" aria-label="Country Code">
+                                <option value="+971" data-flag="🇦🇪" selected>🇦🇪 +971 (UAE)</option>
+                                <option value="+1" data-flag="🇺🇸">🇺🇸 +1 (US / Canada)</option>
+                                <option value="+44" data-flag="🇬🇧">🇬🇧 +44 (United Kingdom)</option>
+                                <option value="+7" data-flag="🇰🇿">🇰🇿 +7 (Kazakhstan / Russia)</option>
+                                <option value="+966" data-flag="🇸🇦">🇸🇦 +966 (Saudi Arabia)</option>
+                                <option value="+974" data-flag="🇶🇦">🇶🇦 +974 (Qatar)</option>
+                                <option value="+965" data-flag="🇰🇼">🇰🇼 +965 (Kuwait)</option>
+                                <option value="+968" data-flag="🇴🇲">🇴🇲 +968 (Oman)</option>
+                                <option value="+973" data-flag="🇧🇭">🇧🇭 +973 (Bahrain)</option>
+                                <option value="+49" data-flag="🇩🇪">🇩🇪 +49 (Germany)</option>
+                                <option value="+33" data-flag="🇫🇷">🇫🇷 +33 (France)</option>
+                                <option value="+39" data-flag="🇮🇹">🇮🇹 +39 (Italy)</option>
+                                <option value="+34" data-flag="🇪🇸">🇪🇸 +34 (Spain)</option>
+                                <option value="+90" data-flag="🇹🇷">🇹🇷 +90 (Turkey)</option>
+                                <option value="+86" data-flag="🇨🇳">🇨🇳 +86 (China)</option>
+                                <option value="+91" data-flag="🇮🇳">🇮🇳 +91 (India)</option>
+                                <option value="+65" data-flag="🇸🇬">🇸🇬 +65 (Singapore)</option>
+                                <option value="+61" data-flag="🇦🇺">🇦🇺 +61 (Australia)</option>
+                                <option value="+" data-flag="🌐">🌐 + Other</option>
+                            </select>
+                        </div>
+
                         <input type="tel" id="phone-input" class="phone-field"
                             placeholder="50 123 4567"
                             inputmode="tel"
                             autocomplete="tel-national"
                             enterkeyhint="next">
+                        
                         <div class="phone-badge hidden" id="phone-badge">
                             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
@@ -673,13 +762,6 @@
                     <p class="form-error hidden" id="phone-error"></p>
                 </div>
 
-                <!-- Legal Checkbox -->
-                <div class="legal-checkbox-group" id="legal-group">
-                    <label class="legal-checkbox-label">
-                        <input type="checkbox" class="legal-checkbox-input" id="check-mandatory">
-                        <span>I accept the <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">park rules</a>, <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">loyalty terms</a>, and consent to <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">data processing</a>.</span>
-                    </label>
-                </div>
             </div>
         </section>
 
@@ -731,46 +813,64 @@
         </section>
 
         <!-- ============================================
-             STEP 3: SIGNATURE & WAIVER (FINGER PAD)
+             STEP 3: SIGNATURE & WAIVER (CLEAN & SPACIOUS 230PX)
              ============================================ -->
         <section class="step" id="step-3" aria-label="Signature Consent">
             <div class="card">
-                <div class="card-header-hero">
-                    <h1 class="card-hero-title">
-                        Sign with<br>
-                        your <span class="text-orange">Finger</span>
-                    </h1>
-                    <img src="fox.webp" alt="Fox mascot" class="card-hero-image">
+                <div class="screen-header-clean">
+                    <span class="screen-header-tag">Step 3 of 3 · Final Step</span>
+                    <h1 class="screen-header-title">Sign Waiver & Agreement</h1>
+                    <p class="screen-header-sub">Review terms and sign with your finger in the box below.</p>
                 </div>
-
-                <p class="step-explanation">Please draw your signature in the box below to confirm your registration and accept park safety rules for your family.</p>
 
                 <!-- Family Mini-Summary -->
                 <div class="signing-family-summary">
-                    <div class="signing-family-row">
-                        <span class="signing-family-label">Parent:</span>
-                        <span class="signing-family-val" id="sig-summary-parent">—</span>
+                    <div class="signing-family-left">
+                        <span>👤 <span id="sig-summary-parent">—</span></span>
                     </div>
-                    <div class="signing-family-row">
-                        <span class="signing-family-label">Kids:</span>
-                        <span class="signing-family-val" id="sig-summary-kids">—</span>
+                    <span class="signing-family-kids-tag" id="sig-summary-kids">—</span>
+                </div>
+
+                <!-- 3 Clear Waiver Clauses (Moved from Step 1) -->
+                <div class="waiver-clauses-box">
+                    <div class="waiver-clause-row">
+                        <span class="waiver-clause-icon">🛡️</span>
+                        <div class="waiver-clause-body">
+                            <strong>Park Safety & Visitor Rules</strong>
+                            <span>I agree to follow safety regulations and equipment limits.</span>
+                            <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer" class="waiver-clause-link">Read rules</a>
+                        </div>
+                    </div>
+                    <div class="waiver-clause-row">
+                        <span class="waiver-clause-icon">⚖️</span>
+                        <div class="waiver-clause-body">
+                            <strong>Parental Supervision & Liability</strong>
+                            <span>I confirm supervision and assume responsibility for registered minors.</span>
+                        </div>
+                    </div>
+                    <div class="waiver-clause-row">
+                        <span class="waiver-clause-icon">🔒</span>
+                        <div class="waiver-clause-body">
+                            <strong>Personal Data & Game Progress</strong>
+                            <span>Consent to process contact info to retain game progress and score points.</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Signature Pad Plaque -->
+                <!-- Signature Pad Plaque (Spacious 230px) -->
                 <div class="signature-plaque" id="signature-plaque">
                     <div class="signature-toolbar">
                         <span class="signature-tool-title">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>
-                            Signature Area
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>
+                            Draw Your Signature
                         </span>
                         <button type="button" class="btn-clear-sig" id="btn-clear-sig">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
                             Clear
                         </button>
                     </div>
 
-                    <!-- Canvas Area with Ghost Gesture Hint -->
+                    <!-- Canvas Area (230px) with Ghost Gesture Hint -->
                     <div class="signature-canvas-wrap" id="signature-canvas-wrap">
                         <div class="signature-baseline">
                             <span class="baseline-x">✕</span>
@@ -781,21 +881,18 @@
                             <svg class="sig-ghost-hand" viewBox="0 0 24 24" fill="none" stroke="#FF6022" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.303 1.197l-1.591 1.591M21.75 12h-2.25M6.697 5.697l1.591 1.591M2.25 12h2.25"/>
                             </svg>
-                            <span class="sig-ghost-text">Draw signature with finger</span>
+                            <span class="sig-ghost-text">Sign with your finger</span>
                         </div>
 
                         <canvas id="signature-canvas" class="signature-canvas"></canvas>
                     </div>
 
                     <div class="signature-status-note">
-                        <span>Finger or stylus</span>
+                        <span>Finger or stylus touch</span>
                         <span class="sig-status-badge" id="sig-status-badge">Awaiting signature</span>
                     </div>
                 </div>
 
-                <p class="signature-legal-agreement">
-                    By signing above, I accept the <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">Park Safety Rules</a> and confirm responsibility for the registered minors.
-                </p>
             </div>
         </section>
 
@@ -1159,20 +1256,26 @@
     }
 
     /* ============================================
-       STEP 1 — PHONE & STEP 1 BUTTON STATE
+       STEP 1 — COMPACT COUNTRY TRIGGER & VALIDATION
     ============================================ */
-    const phoneInput  = $('#phone-input');
-    const phoneWrap   = $('#phone-wrapper');
-    const countryCode = $('#country-code');
-    const checkMandatory = $('#check-mandatory');
-    const btnStep1 = $('#btn-step1');
+    const phoneInput     = $('#phone-input');
+    const phoneWrap      = $('#phone-wrapper');
+    const countryCode    = $('#country-code');
+    const countryDisplay = $('#country-display');
+    const btnStep1       = $('#btn-step1');
+
+    function updateCountryDisplay() {
+        const selOpt = countryCode.options[countryCode.selectedIndex];
+        const flag = selOpt.getAttribute('data-flag') || '';
+        const val = countryCode.value;
+        countryDisplay.textContent = `${flag} ${val}`;
+    }
 
     function updateStep1Button() {
         const code = countryCode.value;
         const cfg = COUNTRY_CONFIGS[code] || COUNTRY_CONFIGS['+'];
         const d = digits(phoneInput.value);
-        const isChecked = checkMandatory.checked;
-        const isValid = (d.length >= cfg.min && isChecked);
+        const isValid = (d.length >= cfg.min);
 
         if (isValid) {
             btnStep1.disabled = false;
@@ -1187,10 +1290,10 @@
         }
     }
 
-    checkMandatory.addEventListener('change', updateStep1Button);
-
     phoneWrap.addEventListener('click', (e) => {
-        if (e.target !== countryCode) phoneInput.focus();
+        if (!e.target.closest('#country-wrapper')) {
+            phoneInput.focus();
+        }
     });
     phoneInput.addEventListener('focus', () => phoneWrap.classList.add('focused'));
     phoneInput.addEventListener('blur',  () => phoneWrap.classList.remove('focused'));
@@ -1213,6 +1316,7 @@
             for (const code of Object.keys(COUNTRY_CONFIGS)) {
                 if (code !== '+' && cleaned.startsWith(code)) {
                     countryCode.value = code;
+                    updateCountryDisplay();
                     const rest = cleaned.slice(code.length);
                     setTimeout(() => {
                         phoneInput.value = formatPhoneByCountry(rest, code);
@@ -1225,6 +1329,7 @@
     });
 
     countryCode.addEventListener('change', () => {
+        updateCountryDisplay();
         const code = countryCode.value;
         const cfg = COUNTRY_CONFIGS[code] || COUNTRY_CONFIGS['+'];
         phoneInput.placeholder = cfg.placeholder;
@@ -1240,10 +1345,6 @@
             $('#phone-error').textContent = 'Please enter a valid phone number';
             $('#phone-error').classList.remove('hidden');
             phoneWrap.classList.add('error');
-            return;
-        }
-        if (!$('#check-mandatory').checked) {
-            toast('Please accept park rules and data policy', 'error');
             return;
         }
 
@@ -1385,16 +1486,15 @@
 
     function populateSignatureSummary() {
         const fio = $('#fio-input').value.trim() || 'Parent';
-        const code = countryCode.value;
-        const phone = (code === '+' ? '+' : code) + ' ' + $('#phone-input').value.trim();
-        $('#sig-summary-parent').textContent = `${fio} (${phone})`;
+        $('#sig-summary-parent').textContent = fio;
 
         const childNames = [];
         $$('.child-card').forEach(c => {
             const name = c.querySelector('.child-name-input').value.trim();
             if (name) childNames.push(name);
         });
-        $('#sig-summary-kids').textContent = childNames.join(', ') || '1 child';
+        const count = childNames.length;
+        $('#sig-summary-kids').textContent = `${count} ${count === 1 ? 'Child' : 'Children'} (${childNames.join(', ')})`;
     }
 
     function initCanvasSize() {
@@ -1433,7 +1533,6 @@
         lastPoint = getCanvasCoords(e);
         signaturePointsCount++;
 
-        // Draw initial dot
         sigCtx.beginPath();
         sigCtx.arc(lastPoint.x, lastPoint.y, 1.3, 0, Math.PI * 2);
         sigCtx.fill();
@@ -1441,7 +1540,7 @@
 
     function draw(e) {
         if (!isDrawing) return;
-        e.preventDefault(); // Prevent screen scroll
+        e.preventDefault();
 
         const currentPoint = getCanvasCoords(e);
         const dist = Math.hypot(currentPoint.x - lastPoint.x, currentPoint.y - lastPoint.y);
@@ -1456,8 +1555,7 @@
             lastPoint = currentPoint;
             signaturePointsCount++;
 
-            // Require enough strokes for real signature (not accidental tap)
-            if (signaturePointsCount >= 12 && !hasSignature) {
+            if (signaturePointsCount >= 10 && !hasSignature) {
                 hasSignature = true;
                 sigPlaque.classList.remove('is-signing');
                 sigPlaque.classList.add('is-signed');
@@ -1503,7 +1601,6 @@
             return;
         }
 
-        // Export signature image
         try {
             signatureDataUrl = sigCanvas.toDataURL('image/png');
         } catch (e) {
@@ -1675,7 +1772,6 @@
         phoneWrap.classList.remove('focused', 'error', 'verified');
         $('#phone-error').classList.add('hidden');
         $('#phone-badge').classList.add('hidden');
-        $('#check-mandatory').checked = false;
         btnStep1.disabled = true;
         btnStep1.classList.add('disabled');
 

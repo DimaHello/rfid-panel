@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Signature Screen UX Variants — Hello Park</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/gilroy-bold">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            padding-bottom: 40px;
+            background: #F4F5F8;
+        }
+        .variants-nav-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1.5px solid var(--border);
+            padding: 10px 12px;
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+        .variants-nav-bar::-webkit-scrollbar { display: none; }
+
+        .variant-tab-btn {
+            white-space: nowrap;
+            padding: 8px 14px;
+            border-radius: var(--radius-pill);
+            border: 1.5px solid var(--border);
+            background: #ffffff;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--ink-soft);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .variant-tab-btn.active {
+            background: var(--hp-orange);
+            color: #ffffff;
+            border-color: var(--hp-orange);
+            box-shadow: 0 4px 12px rgba(255, 96, 34, 0.25);
+        }
+
+        .variant-view {
+            display: none;
+            animation: fadeIn 0.22s ease-out;
+        }
+        .variant-view.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .variant-description-box {
+            background: rgba(255, 96, 34, 0.08);
+            border: 1px dashed rgba(255, 96, 34, 0.35);
+            border-radius: 16px;
+            padding: 10px 14px;
+            margin: 12px auto 14px;
+            max-width: 480px;
+            font-size: 0.82rem;
+            color: var(--ink);
+            line-height: 1.45;
+        }
+        .variant-description-box strong {
+            color: var(--hp-orange);
+            font-family: var(--font-display);
+        }
+
+        /* ── Common Signature Screen Card ── */
+        .screen-card {
+            background: #ffffff;
+            border-radius: 26px;
+            border: 1px solid var(--border);
+            padding: 1.4rem 1.15rem 1.3rem;
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.04);
+            margin-bottom: 1rem;
+        }
+
+        .screen-header-compact {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+        .screen-step-tag {
+            display: inline-block;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--hp-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 2px;
+        }
+        .screen-title-clean {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--ink);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        .screen-subtitle-clean {
+            font-size: 0.86rem;
+            color: var(--ink-soft);
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+
+        /* ── Family Context Mini-Badge ── */
+        .family-sign-context {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F9F9FB;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 8px 12px;
+            margin-bottom: 1rem;
+            font-size: 0.82rem;
+        }
+        .context-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--ink);
+            font-weight: 700;
+        }
+        .context-kids-tag {
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-family: var(--font-display);
+            background: rgba(108, 74, 237, 0.1);
+            color: #6C4AED;
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+        }
+
+        /* ── Universal Signature Pad Styling ── */
+        .sig-pad-box {
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .sig-pad-box.focused {
+            border-color: var(--hp-orange);
+            box-shadow: 0 0 0 4px rgba(255, 96, 34, 0.12);
+        }
+        .sig-pad-box.signed {
+            border-color: #10B981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+        }
+
+        .sig-pad-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 14px;
+            background: #FAFAFA;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.76rem;
+        }
+        .sig-pad-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--ink-soft);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-sig-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            padding: 3px 9px;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--ink-soft);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-sig-action:hover {
+            color: var(--red);
+            border-color: var(--red);
+            background: rgba(212, 24, 61, 0.06);
+        }
+
+        .sig-canvas-holder {
+            position: relative;
+            width: 100%;
+            background: #ffffff;
+            touch-action: none;
+            overflow: hidden;
+        }
+        .sig-canvas-holder canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            z-index: 2;
+        }
+
+        .sig-baseline-guide {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
+            border-bottom: 2px dashed rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 2px;
+            z-index: 1;
+        }
+        .sig-x-mark {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: rgba(0, 0, 0, 0.22);
+            margin-right: 6px;
+        }
+
+        /* Animated ghost finger */
+        .ghost-finger-hint {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 4;
+            transition: opacity 0.2s ease;
+        }
+        .ghost-finger-hint.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .ghost-hand-svg {
+            width: 44px;
+            height: 44px;
+            animation: handSignTrace 2.5s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
+        }
+        .ghost-label {
+            margin-top: 8px;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--ink-soft);
+            background: rgba(255, 255, 255, 0.94);
+            padding: 3px 12px;
+            border-radius: var(--radius-pill);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        @keyframes handSignTrace {
+            0%   { transform: translate(-40px, 10px) rotate(-15deg); opacity: 0; }
+            20%  { opacity: 1; }
+            45%  { transform: translate(-10px, -8px) rotate(-5deg); }
+            65%  { transform: translate(18px, 10px) rotate(-10deg); }
+            85%  { transform: translate(45px, -5px) rotate(0deg); opacity: 1; }
+            100% { transform: translate(55px, 0px) rotate(5deg); opacity: 0; }
+        }
+
+        .sig-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 14px;
+            background: #FAFAFA;
+            border-top: 1px solid var(--border);
+            font-size: 0.72rem;
+            color: var(--ink-soft);
+            font-weight: 600;
+        }
+        .sig-valid-tag {
+            font-family: var(--font-display);
+            font-weight: 800;
+            color: #10B981;
+            display: none;
+        }
+        .sig-valid-tag.show {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ── Action Button ── */
+        .btn-confirm-sig {
+            width: 100%;
+            height: 52px;
+            border-radius: var(--radius-pill);
+            background: var(--hp-orange);
+            color: #ffffff;
+            border: none;
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 96, 34, 0.28);
+            transition: all 0.2s ease;
+            margin-top: 14px;
+        }
+        .btn-confirm-sig.disabled {
+            background: #E5E5E5;
+            color: #ABABAB;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* ════════════════════════════════════════
+           VARIANT-SPECIFIC STYLES
+           ════════════════════════════════════════ */
+
+        /* ── Variant 1: Digital Waiver (Disney / SkyZone style) ── */
+        .waiver-clauses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 14px;
+            text-align: left;
+        }
+        .waiver-clause-item {
+            background: #F8F9FA;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 9px 12px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .clause-icon {
+            font-size: 1.05rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .clause-text strong {
+            display: block;
+            font-family: var(--font-display);
+            color: var(--ink);
+            font-size: 0.82rem;
+            margin-bottom: 1px;
+        }
+        .clause-text span {
+            color: var(--ink-soft);
+        }
+        .clause-link {
+            color: var(--hp-orange);
+            text-decoration: underline;
+            margin-left: 4px;
+        }
+
+        /* ── Variant 2: Full-Focus Studio Pad (Giant Canvas) ── */
+        .v2-legal-banner {
+            background: #F9F9FB;
+            border-left: 3.5px solid var(--hp-orange);
+            padding: 9px 12px;
+            border-radius: 4px 12px 12px 4px;
+            margin-bottom: 12px;
+            text-align: left;
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+            line-height: 1.4;
+        }
+        .v2-legal-banner strong {
+            color: var(--ink);
+        }
+
+        /* ── Variant 3: Interactive Legal Accordions ── */
+        .legal-accordion-group {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+        }
+        .legal-acc-item {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #ffffff;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .legal-acc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 12px;
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--ink);
+            background: #FAFAFA;
+        }
+        .legal-acc-header:hover {
+            background: #F4F4F6;
+        }
+        .legal-acc-chevron {
+            transition: transform 0.2s ease;
+            color: var(--ink-soft);
+        }
+        .legal-acc-item.open .legal-acc-chevron {
+            transform: rotate(180deg);
+        }
+        .legal-acc-body {
+            display: none;
+            padding: 10px 12px;
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+            line-height: 1.45;
+            border-top: 1px solid var(--border);
+            background: #FFFFFF;
+        }
+        .legal-acc-item.open .legal-acc-body {
+            display: block;
+        }
+
+        /* ── Variant 4: Expandable / Fullscreen Landscape Modal ── */
+        .btn-fullscreen-sig {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(108, 74, 237, 0.08);
+            border: 1.5px solid rgba(108, 74, 237, 0.25);
+            border-radius: var(--radius-pill);
+            padding: 6px 14px;
+            font-family: var(--font-display);
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #6C4AED;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        .btn-fullscreen-sig:hover {
+            background: rgba(108, 74, 237, 0.14);
+        }
+
+        /* Landscape Modal */
+        .fs-sig-modal {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            padding: 14px;
+        }
+        .fs-sig-modal.open {
+            display: flex;
+        }
+        .fs-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .fs-modal-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--ink);
+        }
+        .fs-canvas-container {
+            flex-grow: 1;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            touch-action: none;
+        }
+        .fs-canvas-container canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .fs-modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVIGATION TABS (Interactive Variant Switcher) -->
+    <header class="variants-nav-bar">
+        <button class="variant-tab-btn active" data-target="v1">1 · Digital Waiver (Recommended)</button>
+        <button class="variant-tab-btn" data-target="v2">2 · Full-Focus Pad (Max Space)</button>
+        <button class="variant-tab-btn" data-target="v3">3 · Accordion Document</button>
+        <button class="variant-tab-btn" data-target="v4">4 · Expandable Fullscreen</button>
+    </header>
+
+    <div class="app">
+
+        <!-- ============================================
+             VARIANT 1: DIGITAL WAIVER (RECOMMENDED)
+             Clean, official, 3 concise legal clauses, generous 230px pad
+             ============================================ -->
+        <section class="variant-view active" id="view-v1">
+            <div class="variant-description-box">
+                <strong>Вариант 1 (Рекомендуемый): «Digital Waiver»</strong><br>
+                Никаких лис и лишних картинок. Сверху компактная сводка семьи, затем 3 кратких пункта соглашения с иконками, и крупное поле для подписи высотой 230px.
+            </div>
+
+            <div class="screen-card">
+                <div class="screen-header-compact">
+                    <span class="screen-step-tag">Step 3 of 3 · Final Step</span>
+                    <h1 class="screen-title-clean">Sign Waiver & Rules</h1>
+                    <p class="screen-subtitle-clean">Please review the safety terms and sign with your finger below.</p>
+                </div>
+
+                <!-- Family mini context -->
+                <div class="family-sign-context">
+                    <div class="context-left">
+                        <span>👤 Sarah Jenkins</span>
+                    </div>
+                    <span class="context-kids-tag">2 Children (Leo, Maya)</span>
+                </div>
+
+                <!-- 3 Concise Waiver Clauses (Moved from Step 1) -->
+                <div class="waiver-clauses-list">
+                    <div class="waiver-clause-item">
+                        <span class="clause-icon">🛡️</span>
+                        <div class="clause-text">
+                            <strong>Park Safety & Visitor Rules</strong>
+                            <span>I agree to follow staff instructions and ensure children follow safety measures.</span>
+                            <a href="https://hello-park.com" target="_blank" class="clause-link">Read rules</a>
+                        </div>
+                    </div>
+                    <div class="waiver-clause-item">
+                        <span class="clause-icon">⚖️</span>
+                        <div class="clause-text">
+                            <strong>Parental Responsibility Waiver</strong>
+                            <span>I confirm supervision and assume responsibility for participating minors.</span>
+                        </div>
+                    </div>
+                    <div class="waiver-clause-item">
+                        <span class="clause-icon">🔒</span>
+                        <div class="clause-text">
+                            <strong>Privacy & Game Progress Data</strong>
+                            <span>Consent to process contact info to save achievements and character levels.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Big Signature Pad (230px height) -->
+                <div class="sig-pad-box" id="sig-box-v1">
+                    <div class="sig-pad-toolbar">
+                        <span class="sig-pad-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>
+                            Draw Your Signature
+                        </span>
+                        <button type="button" class="btn-sig-action" data-clear="v1">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                            Clear
+                        </button>
+                    </div>
+
+                    <div class="sig-canvas-holder" style="height: 230px;" id="holder-v1">
+                        <div class="sig-baseline-guide"><span class="sig-x-mark">✕</span></div>
+                        <div class="ghost-finger-hint" id="ghost-v1">
+                            <svg class="ghost-hand-svg" viewBox="0 0 24 24" fill="none" stroke="#FF6022" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.303 1.197l-1.591 1.591M21.75 12h-2.25M6.697 5.697l1.591 1.591M2.25 12h2.25"/>
+                            </svg>
+                            <span class="ghost-label">Sign with your finger</span>
+                        </div>
+                        <canvas id="canvas-v1"></canvas>
+                    </div>
+
+                    <div class="sig-status-bar">
+                        <span>Finger or stylus touch</span>
+                        <span class="sig-valid-tag" id="tag-v1">✓ Valid signature</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-confirm-sig disabled" id="btn-v1" disabled>
+                    <span>Complete Registration</span>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================
+             VARIANT 2: FULL-FOCUS STUDIO PAD (GIANT CANVAS)
+             Maximum room for finger signing (280px tall)
+             ============================================ -->
+        <section class="variant-view" id="view-v2">
+            <div class="variant-description-box">
+                <strong>Вариант 2: «Full-Focus Studio Pad»</strong><br>
+                Минимум текста. Одно компактное юридическое предложение с акцентной полосой, и гигантский холст высотой 280px для самой комфортной и размашистой росписи пальцем.
+            </div>
+
+            <div class="screen-card">
+                <div class="screen-header-compact">
+                    <span class="screen-step-tag">Step 3 of 3</span>
+                    <h1 class="screen-title-clean">Confirm with Signature</h1>
+                </div>
+
+                <div class="v2-legal-banner">
+                    By signing below, <strong>Sarah Jenkins</strong> agrees to the <a href="#" style="color:var(--hp-orange);text-decoration:underline;">Park Safety Rules</a>, <a href="#" style="color:var(--hp-orange);text-decoration:underline;">Liability Waiver</a>, and personal data policy for herself and <strong>2 minors</strong>.
+                </div>
+
+                <!-- Giant Signature Pad (280px height) -->
+                <div class="sig-pad-box" id="sig-box-v2">
+                    <div class="sig-pad-toolbar">
+                        <span class="sig-pad-title">✍️ Full Screen Pad (280px)</span>
+                        <button type="button" class="btn-sig-action" data-clear="v2">Clear ↺</button>
+                    </div>
+
+                    <div class="sig-canvas-holder" style="height: 280px;" id="holder-v2">
+                        <div class="sig-baseline-guide"><span class="sig-x-mark">✕</span></div>
+                        <div class="ghost-finger-hint" id="ghost-v2">
+                            <svg class="ghost-hand-svg" viewBox="0 0 24 24" fill="none" stroke="#FF6022" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.303 1.197l-1.591 1.591M21.75 12h-2.25M6.697 5.697l1.591 1.591M2.25 12h2.25"/>
+                            </svg>
+                            <span class="ghost-label">Swipe your finger across the box</span>
+                        </div>
+                        <canvas id="canvas-v2"></canvas>
+                    </div>
+
+                    <div class="sig-status-bar">
+                        <span>Generous drawing space</span>
+                        <span class="sig-valid-tag" id="tag-v2">✓ Signature recorded</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-confirm-sig disabled" id="btn-v2" disabled>
+                    <span>Confirm & Finish</span>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================
+             VARIANT 3: ACCORDION DOCUMENT
+             Transparent legal clauses, expandable drawers
+             ============================================ -->
+        <section class="variant-view" id="view-v3">
+            <div class="variant-description-box">
+                <strong>Вариант 3: «Accordion Document»</strong><br>
+                Для аудитории, которая ценит юридическую прозрачность. 3 выпадающих аккордеона с полным текстом правил, которые можно раскрыть прямо в форме, и холст 210px под ними.
+            </div>
+
+            <div class="screen-card">
+                <div class="screen-header-compact">
+                    <span class="screen-step-tag">Step 3 of 3</span>
+                    <h1 class="screen-title-clean">Visitor Agreement</h1>
+                    <p class="screen-subtitle-clean">Review terms or tap to view details before signing.</p>
+                </div>
+
+                <!-- Interactive Accordions -->
+                <div class="legal-accordion-group">
+                    <div class="legal-acc-item open">
+                        <div class="legal-acc-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span>1. Park Visiting Rules & Safety</span>
+                            <span class="legal-acc-chevron">▼</span>
+                        </div>
+                        <div class="legal-acc-body">
+                            Guests must follow park operator guidance, wear socks in play zones, and respect equipment safety limits. Children under 12 require continuous parental supervision.
+                        </div>
+                    </div>
+                    <div class="legal-acc-item">
+                        <div class="legal-acc-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span>2. Minor Liability Waiver</span>
+                            <span class="legal-acc-chevron">▼</span>
+                        </div>
+                        <div class="legal-acc-body">
+                            The signing parent/guardian confirms they are authorized to act on behalf of the registered children and assumes responsibility during park stay.
+                        </div>
+                    </div>
+                    <div class="legal-acc-item">
+                        <div class="legal-acc-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span>3. Loyalty & Data Terms</span>
+                            <span class="legal-acc-chevron">▼</span>
+                        </div>
+                        <div class="legal-acc-body">
+                            Contact data and birthdates are processed securely to activate interactive bracelets, retain achievements, and grant loyalty bonuses.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canvas -->
+                <div class="sig-pad-box" id="sig-box-v3">
+                    <div class="sig-pad-toolbar">
+                        <span class="sig-pad-title">I accept all above & sign</span>
+                        <button type="button" class="btn-sig-action" data-clear="v3">Clear ↺</button>
+                    </div>
+
+                    <div class="sig-canvas-holder" style="height: 200px;" id="holder-v3">
+                        <div class="sig-baseline-guide"><span class="sig-x-mark">✕</span></div>
+                        <div class="ghost-finger-hint" id="ghost-v3">
+                            <svg class="ghost-hand-svg" viewBox="0 0 24 24" fill="none" stroke="#FF6022" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.303 1.197l-1.591 1.591M21.75 12h-2.25M6.697 5.697l1.591 1.591M2.25 12h2.25"/>
+                            </svg>
+                            <span class="ghost-label">Sign with your finger</span>
+                        </div>
+                        <canvas id="canvas-v3"></canvas>
+                    </div>
+
+                    <div class="sig-status-bar">
+                        <span>Finger signature</span>
+                        <span class="sig-valid-tag" id="tag-v3">✓ Agreed & Signed</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-confirm-sig disabled" id="btn-v3" disabled>
+                    <span>Accept & Submit</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================
+             VARIANT 4: EXPANDABLE FULLSCREEN MODAL
+             Portrait + One-Tap Fullscreen/Landscape mode
+             ============================================ -->
+        <section class="variant-view" id="view-v4">
+            <div class="variant-description-box">
+                <strong>Вариант 4: «Expandable Fullscreen»</strong><br>
+                Стандартный холст + волшебная кнопка <strong>«Sign Fullscreen»</strong>. Если пальцем на обычном экране тесно — открывается чистый полноэкранный планшет на весь экран смартфона!
+            </div>
+
+            <div class="screen-card">
+                <div class="screen-header-compact">
+                    <span class="screen-step-tag">Step 3 of 3</span>
+                    <h1 class="screen-title-clean">Authorized Signature</h1>
+                    <p class="screen-subtitle-clean">Sign in the box or expand to full screen for maximum comfort.</p>
+                </div>
+
+                <div style="text-align: right;">
+                    <button type="button" class="btn-fullscreen-sig" id="btn-open-fs">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
+                        Sign in Fullscreen
+                    </button>
+                </div>
+
+                <div class="sig-pad-box" id="sig-box-v4">
+                    <div class="sig-pad-toolbar">
+                        <span class="sig-pad-title">Finger Signature</span>
+                        <button type="button" class="btn-sig-action" data-clear="v4">Clear ↺</button>
+                    </div>
+
+                    <div class="sig-canvas-holder" style="height: 200px;" id="holder-v4">
+                        <div class="sig-baseline-guide"><span class="sig-x-mark">✕</span></div>
+                        <div class="ghost-finger-hint" id="ghost-v4">
+                            <span class="ghost-label">Sign here or tap Fullscreen</span>
+                        </div>
+                        <canvas id="canvas-v4"></canvas>
+                    </div>
+
+                    <div class="sig-status-bar">
+                        <span>Compact or Fullscreen</span>
+                        <span class="sig-valid-tag" id="tag-v4">✓ Signature confirmed</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-confirm-sig disabled" id="btn-v4" disabled>
+                    <span>Complete Registration</span>
+                </button>
+            </div>
+        </section>
+
+    </div><!-- /.app -->
+
+    <!-- Fullscreen Signature Modal (for Variant 4) -->
+    <div class="fs-sig-modal" id="fs-modal">
+        <div class="fs-modal-header">
+            <span class="fs-modal-title">Rotate or sign with finger</span>
+            <button type="button" class="btn-sig-action" id="btn-fs-clear" style="padding: 6px 12px; font-size: 0.8rem;">Clear ↺</button>
+        </div>
+        <div class="fs-canvas-container" id="fs-canvas-holder">
+            <div class="sig-baseline-guide"><span class="sig-x-mark">✕</span></div>
+            <canvas id="canvas-fs"></canvas>
+        </div>
+        <div class="fs-modal-footer">
+            <button type="button" class="btn-confirm-sig" id="btn-fs-cancel" style="background: #EEEEEE; color: var(--ink); box-shadow: none;">Cancel</button>
+            <button type="button" class="btn-confirm-sig" id="btn-fs-done">Use Signature ✓</button>
+        </div>
+    </div>
+
+    <script>
+    /* ════════════════════════════════════════
+       TAB SWITCHER
+       ════════════════════════════════════════ */
+    const tabs = document.querySelectorAll('.variant-tab-btn');
+    const views = document.querySelectorAll('.variant-view');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            views.forEach(v => v.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.dataset.target;
+            const view = document.getElementById('view-' + target);
+            if (view) {
+                view.classList.add('active');
+                setTimeout(() => {
+                    initPad(target);
+                }, 50);
+            }
+        });
+    });
+
+    /* ════════════════════════════════════════
+       CANVAS ENGINES FOR EACH VARIANT
+       ════════════════════════════════════════ */
+    const engines = {};
+
+    function setupCanvasEngine(id) {
+        const canvas = document.getElementById('canvas-' + id);
+        const holder = document.getElementById('holder-' + id);
+        const box    = document.getElementById('sig-box-' + id);
+        const ghost  = document.getElementById('ghost-' + id);
+        const tag    = document.getElementById('tag-' + id);
+        const btn    = document.getElementById('btn-' + id);
+        if (!canvas || !holder) return;
+
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let pointsCount = 0;
+        let lastPoint = null;
+        let hasValidSig = false;
+
+        function resize() {
+            const rect = holder.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = 2.6;
+            ctx.strokeStyle = '#1A1A1A';
+        }
+
+        function getCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: cx - rect.left, y: cy - rect.top };
+        }
+
+        function start(e) {
+            isDrawing = true;
+            box && box.classList.add('focused');
+            ghost && ghost.classList.add('hidden');
+            lastPoint = getCoords(e);
+            pointsCount++;
+            ctx.beginPath();
+            ctx.arc(lastPoint.x, lastPoint.y, 1.3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const curr = getCoords(e);
+            const dist = Math.hypot(curr.x - lastPoint.x, curr.y - lastPoint.y);
+            if (dist > 1.5) {
+                ctx.beginPath();
+                ctx.moveTo(lastPoint.x, lastPoint.y);
+                const midX = (lastPoint.x + curr.x) / 2;
+                const midY = (lastPoint.y + curr.y) / 2;
+                ctx.quadraticCurveTo(lastPoint.x, lastPoint.y, midX, midY);
+                ctx.stroke();
+                lastPoint = curr;
+                pointsCount++;
+
+                if (pointsCount >= 10 && !hasValidSig) {
+                    hasValidSig = true;
+                    box && box.classList.add('signed');
+                    tag && tag.classList.add('show');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.classList.remove('disabled');
+                    }
+                }
+            }
+        }
+
+        function stop() {
+            if (!isDrawing) return;
+            isDrawing = false;
+            box && box.classList.remove('focused');
+        }
+
+        canvas.addEventListener('pointerdown', start);
+        canvas.addEventListener('pointermove', draw);
+        window.addEventListener('pointerup', stop);
+        window.addEventListener('pointercancel', stop);
+
+        function clear() {
+            resize();
+            pointsCount = 0;
+            hasValidSig = false;
+            box && box.classList.remove('focused', 'signed');
+            ghost && ghost.classList.remove('hidden');
+            tag && tag.classList.remove('show');
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('disabled');
+            }
+        }
+
+        const clearBtn = document.querySelector(`[data-clear="${id}"]`);
+        if (clearBtn) clearBtn.addEventListener('click', clear);
+
+        resize();
+        engines[id] = { resize, clear, canvas };
+    }
+
+    function initPad(id) {
+        if (!engines[id]) {
+            setupCanvasEngine(id);
+        } else {
+            engines[id].resize();
+        }
+    }
+
+    // Init active variant 1
+    setupCanvasEngine('v1');
+
+    /* ════════════════════════════════════════
+       VARIANT 4 FULLSCREEN MODAL LOGIC
+       ════════════════════════════════════════ */
+    const fsModal = document.getElementById('fs-modal');
+    const btnOpenFs = document.getElementById('btn-open-fs');
+    const btnFsCancel = document.getElementById('btn-fs-cancel');
+    const btnFsDone = document.getElementById('btn-fs-done');
+    const btnFsClear = document.getElementById('btn-fs-clear');
+    const fsCanvas = document.getElementById('canvas-fs');
+    const fsHolder = document.getElementById('fs-canvas-holder');
+    const fsCtx = fsCanvas.getContext('2d');
+
+    let fsDrawing = false;
+    let fsLast = null;
+    let fsCount = 0;
+
+    function resizeFs() {
+        const rect = fsHolder.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        fsCanvas.width = rect.width * dpr;
+        fsCanvas.height = rect.height * dpr;
+        fsCtx.scale(dpr, dpr);
+        fsCtx.lineCap = 'round';
+        fsCtx.lineJoin = 'round';
+        fsCtx.lineWidth = 3;
+        fsCtx.strokeStyle = '#1A1A1A';
+    }
+
+    btnOpenFs.addEventListener('click', () => {
+        fsModal.classList.add('open');
+        setTimeout(resizeFs, 40);
+    });
+
+    btnFsCancel.addEventListener('click', () => {
+        fsModal.classList.remove('open');
+    });
+
+    btnFsClear.addEventListener('click', () => {
+        resizeFs();
+        fsCount = 0;
+    });
+
+    function getFsCoords(e) {
+        const rect = fsCanvas.getBoundingClientRect();
+        const cx = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: cx - rect.left, y: cy - rect.top };
+    }
+
+    fsCanvas.addEventListener('pointerdown', (e) => {
+        fsDrawing = true;
+        fsLast = getFsCoords(e);
+        fsCount++;
+        fsCtx.beginPath();
+        fsCtx.arc(fsLast.x, fsLast.y, 1.5, 0, Math.PI * 2);
+        fsCtx.fill();
+    });
+
+    fsCanvas.addEventListener('pointermove', (e) => {
+        if (!fsDrawing) return;
+        e.preventDefault();
+        const curr = getFsCoords(e);
+        fsCtx.beginPath();
+        fsCtx.moveTo(fsLast.x, fsLast.y);
+        const midX = (fsLast.x + curr.x) / 2;
+        const midY = (fsLast.y + curr.y) / 2;
+        fsCtx.quadraticCurveTo(fsLast.x, fsLast.y, midX, midY);
+        fsCtx.stroke();
+        fsLast = curr;
+        fsCount++;
+    });
+
+    window.addEventListener('pointerup', () => { fsDrawing = false; });
+
+    btnFsDone.addEventListener('click', () => {
+        if (fsCount >= 10 && engines['v4']) {
+            // Transfer to v4 canvas
+            const targetCanvas = engines['v4'].canvas;
+            const tCtx = targetCanvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            tCtx.drawImage(fsCanvas, 0, 0, targetCanvas.width / dpr, targetCanvas.height / dpr);
+            
+            document.getElementById('sig-box-v4').classList.add('signed');
+            document.getElementById('ghost-v4').classList.add('hidden');
+            document.getElementById('tag-v4').classList.add('show');
+            const btn4 = document.getElementById('btn-v4');
+            btn4.disabled = false;
+            btn4.classList.remove('disabled');
+        }
+        fsModal.classList.remove('open');
+    });
+    </script>
+</body>
+</html>
