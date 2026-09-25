@@ -112,77 +112,31 @@
             line-height: 1.4;
         }
 
-        .signing-family-summary {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        /* ── Legal Banner (Full-Focus Studio Style - Variant 2) ── */
+        .sig-legal-banner {
             background: #F9F9FB;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 8px 12px;
-            margin-bottom: 1rem;
-            font-size: 0.82rem;
+            border-left: 3.5px solid var(--hp-orange);
+            padding: 10px 14px;
+            border-radius: 4px 12px 12px 4px;
+            margin-bottom: 14px;
             text-align: left;
-        }
-        .signing-family-left {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 700;
-            color: var(--ink);
-        }
-        .signing-family-kids-tag {
-            font-size: 0.72rem;
-            font-weight: 800;
-            font-family: var(--font-display);
-            background: rgba(108, 74, 237, 0.1);
-            color: #6C4AED;
-            padding: 3px 8px;
-            border-radius: var(--radius-pill);
-        }
-
-        /* ── 3 Legal Clauses on Signature Screen ── */
-        .waiver-clauses-box {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-        .waiver-clause-row {
-            background: #F8F9FA;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 8px 11px;
-            font-size: 0.78rem;
-            line-height: 1.35;
-            display: flex;
-            align-items: flex-start;
-            gap: 9px;
-        }
-        .waiver-clause-icon {
-            font-size: 1rem;
-            line-height: 1;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-        .waiver-clause-body strong {
-            display: block;
-            font-family: var(--font-display);
-            color: var(--ink);
             font-size: 0.8rem;
-            margin-bottom: 1px;
-        }
-        .waiver-clause-body span {
             color: var(--ink-soft);
+            line-height: 1.45;
         }
-        .waiver-clause-link {
+        .sig-legal-banner strong {
+            color: var(--ink);
+        }
+        .sig-legal-banner a {
             color: var(--hp-orange);
             text-decoration: underline;
-            margin-left: 4px;
+            font-weight: 700;
+        }
+        .sig-legal-banner a:hover {
+            color: #E04E15;
         }
 
-        /* ── Signature Plaque Box (Spacious 230px) ── */
+        /* ── Signature Plaque Box (Studio Pad: 280px tall) ── */
         .signature-plaque {
             background: #FFFFFF;
             border: 2px solid var(--border);
@@ -241,11 +195,11 @@
             background: rgba(212, 24, 61, 0.06);
         }
 
-        /* ── Canvas Pad ── */
+        /* ── Canvas Pad (Studio Pad: 280px tall) ── */
         .signature-canvas-wrap {
             position: relative;
             width: 100%;
-            height: 230px;
+            height: 280px;
             background: #FFFFFF;
             cursor: crosshair;
             overflow: hidden;
@@ -813,64 +767,35 @@
         </section>
 
         <!-- ============================================
-             STEP 3: SIGNATURE & WAIVER (CLEAN & SPACIOUS 230PX)
+             STEP 3: SIGNATURE & WAIVER (VARIANT 2: STUDIO PAD 280PX)
              ============================================ -->
         <section class="step" id="step-3" aria-label="Signature Consent">
             <div class="card">
                 <div class="screen-header-clean">
                     <span class="screen-header-tag">Step 3 of 3 · Final Step</span>
-                    <h1 class="screen-header-title">Sign Waiver & Agreement</h1>
-                    <p class="screen-header-sub">Review terms and sign with your finger in the box below.</p>
+                    <h1 class="screen-header-title">Confirm with Signature</h1>
+                    <p class="screen-header-sub">Review agreement and sign with your finger in the box below.</p>
                 </div>
 
-                <!-- Family Mini-Summary -->
-                <div class="signing-family-summary">
-                    <div class="signing-family-left">
-                        <span>👤 <span id="sig-summary-parent">—</span></span>
-                    </div>
-                    <span class="signing-family-kids-tag" id="sig-summary-kids">—</span>
+                <!-- Single-Line Dynamic Legal Banner (Variant 2) -->
+                <div class="sig-legal-banner">
+                    By signing below, <strong id="sig-summary-parent">Guest</strong> agrees to the <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">Park Safety Rules</a>, <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">Liability Waiver</a>, and personal data policy for self and <strong id="sig-summary-kids">registered minors</strong>.
                 </div>
 
-                <!-- 3 Clear Waiver Clauses (Moved from Step 1) -->
-                <div class="waiver-clauses-box">
-                    <div class="waiver-clause-row">
-                        <span class="waiver-clause-icon">🛡️</span>
-                        <div class="waiver-clause-body">
-                            <strong>Park Safety & Visitor Rules</strong>
-                            <span>I agree to follow safety regulations and equipment limits.</span>
-                            <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer" class="waiver-clause-link">Read rules</a>
-                        </div>
-                    </div>
-                    <div class="waiver-clause-row">
-                        <span class="waiver-clause-icon">⚖️</span>
-                        <div class="waiver-clause-body">
-                            <strong>Parental Supervision & Liability</strong>
-                            <span>I confirm supervision and assume responsibility for registered minors.</span>
-                        </div>
-                    </div>
-                    <div class="waiver-clause-row">
-                        <span class="waiver-clause-icon">🔒</span>
-                        <div class="waiver-clause-body">
-                            <strong>Personal Data & Game Progress</strong>
-                            <span>Consent to process contact info to retain game progress and score points.</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Signature Pad Plaque (Spacious 230px) -->
+                <!-- Giant Signature Pad Plaque (280px) -->
                 <div class="signature-plaque" id="signature-plaque">
                     <div class="signature-toolbar">
                         <span class="signature-tool-title">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>
-                            Draw Your Signature
+                            Full-Focus Studio Pad (280px)
                         </span>
                         <button type="button" class="btn-clear-sig" id="btn-clear-sig">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
-                            Clear
+                            Clear ↺
                         </button>
                     </div>
 
-                    <!-- Canvas Area (230px) with Ghost Gesture Hint -->
+                    <!-- Canvas Area (280px) with Ghost Gesture Hint -->
                     <div class="signature-canvas-wrap" id="signature-canvas-wrap">
                         <div class="signature-baseline">
                             <span class="baseline-x">✕</span>
@@ -881,14 +806,14 @@
                             <svg class="sig-ghost-hand" viewBox="0 0 24 24" fill="none" stroke="#FF6022" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.303 1.197l-1.591 1.591M21.75 12h-2.25M6.697 5.697l1.591 1.591M2.25 12h2.25"/>
                             </svg>
-                            <span class="sig-ghost-text">Sign with your finger</span>
+                            <span class="sig-ghost-text">Swipe your finger across the box</span>
                         </div>
 
                         <canvas id="signature-canvas" class="signature-canvas"></canvas>
                     </div>
 
                     <div class="signature-status-note">
-                        <span>Finger or stylus touch</span>
+                        <span>Generous drawing space</span>
                         <span class="sig-status-badge" id="sig-status-badge">Awaiting signature</span>
                     </div>
                 </div>
@@ -1486,7 +1411,8 @@
 
     function populateSignatureSummary() {
         const fio = $('#fio-input').value.trim() || 'Parent';
-        $('#sig-summary-parent').textContent = fio;
+        const parentEl = $('#sig-summary-parent');
+        if (parentEl) parentEl.textContent = fio;
 
         const childNames = [];
         $$('.child-card').forEach(c => {
@@ -1494,7 +1420,16 @@
             if (name) childNames.push(name);
         });
         const count = childNames.length;
-        $('#sig-summary-kids').textContent = `${count} ${count === 1 ? 'Child' : 'Children'} (${childNames.join(', ')})`;
+        const kidsEl = $('#sig-summary-kids');
+        if (kidsEl) {
+            if (count === 0) {
+                kidsEl.textContent = 'registered minors';
+            } else if (count === 1) {
+                kidsEl.textContent = childNames[0] ? `1 minor (${childNames[0]})` : '1 minor';
+            } else {
+                kidsEl.textContent = `${count} minors (${childNames.join(', ')})`;
+            }
+        }
     }
 
     function initCanvasSize() {
