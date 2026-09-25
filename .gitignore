@@ -14,3 +14,5 @@ server.mjs
 pb.yaml
 __pycache__/
 *.pyc
+.env
+.env.*

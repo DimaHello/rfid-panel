@@ -27,11 +27,14 @@
         <div class="progress-container" id="progress-container">
             <div class="progress-glass">
                 <span class="progress-text" id="progress-text">Шаг 1 из 4: Согласие</span>
-                <div class="progress-segments">
-                    <div class="progress-seg active" id="seg-1"></div>
-                    <div class="progress-seg" id="seg-2"></div>
-                    <div class="progress-seg" id="seg-3"></div>
-                    <div class="progress-seg" id="seg-4"></div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="progress-segments">
+                        <div class="progress-seg active" id="seg-1"></div>
+                        <div class="progress-seg" id="seg-2"></div>
+                        <div class="progress-seg" id="seg-3"></div>
+                        <div class="progress-seg" id="seg-4"></div>
+                    </div>
+                    <a href="en.html" class="lang-switch-btn" title="English version">EN</a>
                 </div>
             </div>
         </div>
@@ -923,6 +926,9 @@
             if (name) children.push({ name, dob });
         });
 
+        const urlParams   = new URLSearchParams(window.location.search);
+        const park        = urlParams.get('park') || 'Мега';
+
         const payload = { 
             v: 1, 
             fio, 
@@ -931,11 +937,32 @@
             city, 
             source, 
             sourceOther: source === 'другое' ? sourceOther : undefined, 
+            park,
             ts: Date.now() 
         };
         const json    = JSON.stringify(payload);
         const b64     = btoa(unescape(encodeURIComponent(json)));
         const content = 'HPARK:' + b64;
+
+        // Send registration to Backend / AmoCRM (asynchronous & non-blocking)
+        fetch('/api/register-guest', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: json
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result && result.success) {
+                console.log('[CRM] Registration saved, lead #' + result.lead_id);
+                toast('Анкета зарегистрирована в CRM', 'success');
+            } else {
+                console.warn('[CRM] Registration response:', result);
+            }
+        })
+        .catch(err => {
+            // Graceful degradation: never block guest flow if CRM is temporarily unreachable
+            console.warn('[CRM] Sync error:', err);
+        });
 
         // Render QR
         const container = $('#qr-canvas');

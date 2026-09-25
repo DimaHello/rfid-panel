@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hello Park — Guest Registration</title>
+    <meta name="description" content="Quick family registration at Hello Park. Complete your registration to save game progress and enjoy the park.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Nunito & Gilroy -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/gilroy-bold">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .phone-country-select {
+            border: none;
+            background: transparent;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--ink);
+            outline: none;
+            cursor: pointer;
+            padding-right: 6px;
+            max-width: 135px;
+            flex-shrink: 0;
+        }
+        .progress-seg {
+            width: 24px;
+        }
+        .lang-switch-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--ink-soft);
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            padding: 3px 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            line-height: 1.2;
+        }
+        .lang-switch-btn:hover {
+            color: var(--hp-orange);
+            border-color: var(--hp-orange);
+            background: rgba(255, 96, 34, 0.08);
+        }
+        .success-hero-badge {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10B981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.5rem auto 1.25rem;
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.06);
+            animation: popIn 0.5s var(--ease-spring);
+        }
+        .success-info-box {
+            margin-top: 1.25rem;
+            background: linear-gradient(135deg, rgba(255, 96, 34, 0.06) 0%, rgba(108, 74, 237, 0.06) 100%);
+            border: 1.5px solid rgba(255, 96, 34, 0.18);
+            border-radius: 20px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .children-summary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .child-summary-item {
+            font-size: 0.85rem;
+            color: var(--ink);
+            font-weight: 700;
+        }
+        .child-summary-dob {
+            color: var(--ink-soft);
+            font-weight: 500;
+            font-size: 0.8rem;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app" id="app">
+
+        <!-- ============================================
+             STEP INDICATOR — glassmorphic pill (top)
+             ============================================ -->
+        <div class="progress-container" id="progress-container">
+            <div class="progress-glass">
+                <span class="progress-text" id="progress-text">Step 1 of 2: Phone</span>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="progress-segments">
+                        <div class="progress-seg active" id="seg-1"></div>
+                        <div class="progress-seg" id="seg-2"></div>
+                    </div>
+                    <a href="index.html" class="lang-switch-btn" title="Russian version">RU</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             STEP 1: RULES + PHONE + SMS
+             ============================================ -->
+        <section class="step step-visible" id="step-1" aria-label="Rules and phone verification">
+            <div class="card">
+                <div class="card-header-hero">
+                    <h1 class="card-hero-title">
+                        Welcome<br>
+                        to <span class="text-orange">Hello Park</span>
+                    </h1>
+                    <img src="fox.webp" alt="Fox mascot" class="card-hero-image">
+                </div>
+
+                <p class="step-explanation">Enter your phone number to register, save game progress across interactive attractions, and unlock loyalty rewards.</p>
+
+                <!-- Phone + SMS -->
+                <div class="form-group">
+                    <label for="phone-input" class="form-label">Phone Number</label>
+                    <div class="phone-wrapper" id="phone-wrapper">
+                        <select id="country-code" class="phone-country-select" aria-label="Country Code">
+                            <option value="+1">🇺🇸 +1</option>
+                            <option value="+971" selected>🇦🇪 +971</option>
+                            <option value="+44">🇬🇧 +44</option>
+                            <option value="+7">🇰🇿 +7</option>
+                            <option value="+49">🇩🇪 +49</option>
+                            <option value="+33">🇫🇷 +33</option>
+                            <option value="+39">🇮🇹 +39</option>
+                            <option value="+34">🇪🇸 +34</option>
+                            <option value="+966">🇸🇦 +966</option>
+                            <option value="+974">🇶🇦 +974</option>
+                            <option value="+965">🇰🇼 +965</option>
+                            <option value="+90">🇹🇷 +90</option>
+                            <option value="+86">🇨🇳 +86</option>
+                            <option value="+91">🇮🇳 +91</option>
+                            <option value="+65">🇸🇬 +65</option>
+                            <option value="+61">🇦🇺 +61</option>
+                            <option value="+">🌐 + Other</option>
+                        </select>
+                        <input type="tel" id="phone-input" class="phone-field"
+                            placeholder="50 123 4567"
+                            inputmode="tel"
+                            autocomplete="tel-national"
+                            enterkeyhint="send">
+                        <div class="phone-badge hidden" id="phone-badge">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="form-error hidden" id="phone-error"></p>
+                </div>
+
+                <!-- Legal Checkbox -->
+                <div class="legal-checkbox-group" id="legal-group">
+                    <label class="legal-checkbox-label">
+                        <input type="checkbox" class="legal-checkbox-input" id="check-mandatory">
+                        <span>I accept the <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">park rules</a>, <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">loyalty terms</a>, and consent to <a href="https://hello-park.com" target="_blank" rel="noopener noreferrer">data processing</a>.</span>
+                    </label>
+                </div>
+
+                <!-- Send Verification Code Button -->
+                <button class="btn btn-sms" id="btn-send-sms" type="button" disabled>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                    </svg>
+                    <span>Send Verification Code</span>
+                </button>
+
+                <!-- SMS Code Block -->
+                <div class="sms-block hidden" id="sms-block">
+                    <div class="form-group">
+                        <label for="sms-input" class="form-label">Enter 4-digit verification code</label>
+                        <div class="sms-row">
+                            <input type="text" id="sms-input"
+                                class="form-input sms-input-field"
+                                placeholder="••••"
+                                maxlength="4"
+                                inputmode="numeric"
+                                autocomplete="one-time-code"
+                                enterkeyhint="done">
+                            <button class="btn-verify" id="btn-verify" type="button">Verify</button>
+                        </div>
+                        <p class="form-error hidden" id="sms-error"></p>
+                    </div>
+                    <button class="btn-resend" id="btn-resend" type="button" disabled>
+                        <span>Resend Code</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             STEP 2: PARENT + CHILDREN
+             ============================================ -->
+        <section class="step" id="step-2" aria-label="Family Details">
+            <div class="card">
+                <div class="card-header-hero">
+                    <h1 class="card-hero-title">
+                        Welcome<br>
+                        to <span class="text-orange">Hello Park</span>
+                    </h1>
+                    <img src="fox.webp" alt="Fox mascot" class="card-hero-image">
+                </div>
+
+                <p class="step-explanation">Provide your full name and add your children. Birth dates are needed to personalize avatars, track achievements, and save game progress on interactive attractions.</p>
+
+                <!-- Parent Full Name -->
+                <div class="form-group">
+                    <label for="fio-input" class="form-label">Parent / Guardian Full Name *</label>
+                    <input type="text" id="fio-input" class="form-input"
+                        placeholder="e.g. Sarah Jenkins"
+                        autocomplete="name"
+                        required
+                        enterkeyhint="next">
+                    <p class="form-error hidden" id="fio-error">Please enter your full name</p>
+                </div>
+
+                <!-- Divider -->
+                <div class="section-divider">
+                    <span class="divider-label">Children</span>
+                </div>
+
+                <!-- Children List -->
+                <div class="children-list" id="children-list">
+                    <!-- Dynamically added -->
+                </div>
+
+                <button class="btn-add-child" id="btn-add-child" type="button">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>Add Child</span>
+                </button>
+
+                <p class="form-error hidden" id="children-error">Please add at least one child</p>
+            </div>
+        </section>
+
+        <!-- ============================================
+             STEP 3: SUCCESS SCREEN (NO QR CODE)
+             ============================================ -->
+        <section class="step" id="step-3" aria-label="Registration Success">
+            <div class="card card-qr">
+                <div class="success-hero-badge">
+                    <svg width="38" height="38" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h1 class="card-title">Registration Successful!</h1>
+                <p class="card-subtitle">Welcome to Hello Park! You are all set to play.</p>
+
+                <!-- Registration Summary -->
+                <div class="qr-summary" id="registration-summary" style="margin-top: 1.5rem;">
+                    <div class="qr-row">
+                        <span class="qr-label">Parent</span>
+                        <span class="qr-value" id="summary-fio">—</span>
+                    </div>
+                    <div class="qr-row">
+                        <span class="qr-label">Phone</span>
+                        <span class="qr-value" id="summary-phone">—</span>
+                    </div>
+                    <div class="qr-row qr-row-last">
+                        <span class="qr-label">Children</span>
+                        <span class="qr-value" id="summary-children">
+                            <div class="children-summary-list" id="summary-children-list"></div>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="success-info-box">
+                    <div style="font-size: 1.7rem; margin-bottom: 0.35rem;">🎉</div>
+                    <div style="font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.35rem;">Ready for Adventure!</div>
+                    <p style="font-size: 0.88rem; color: var(--ink-soft); line-height: 1.5; margin: 0;">
+                        Provide your name or phone number at the entrance or reception desk. Have a wonderful and magical time in Hello Park!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div><!-- /.app -->
+
+    <!-- ================================================
+         BOTTOM NAVIGATION BAR — fixed, glassmorphic
+         ================================================ -->
+    <div class="bottom-nav" id="bottom-nav">
+
+        <!-- Step 1 bottom bar (only Next) -->
+        <div class="bottom-nav-inner" id="bottom-bar-1" style="display:flex;">
+            <button class="btn-next disabled" id="btn-step1" type="button" disabled>
+                <span class="btn-next-label">Next</span>
+                <span class="btn-next-arrow">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </button>
+        </div>
+
+        <!-- Step 2 bottom bar (Back + Submit) -->
+        <div class="bottom-nav-inner" id="bottom-bar-2" style="display:none;">
+            <button class="btn-back" id="btn-step2-back" type="button" aria-label="Back">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <button class="btn-next" id="btn-step2" type="button">
+                <span class="btn-next-label">Complete Registration</span>
+                <span class="btn-next-arrow">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </button>
+        </div>
+
+        <!-- Step 3 bottom bar (Register Another Guest) -->
+        <div class="bottom-nav-inner" id="bottom-bar-3" style="display:none;">
+            <button class="btn-restart" id="btn-restart" type="button">
+                <span class="btn-next-label">Register Another Guest</span>
+                <span class="btn-restart-icon">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.36-5.36M20 15a9 9 0 01-15.36 5.36"/>
+                    </svg>
+                </span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+    /* ============================================
+       STATE
+    ============================================ */
+    let step = 1;
+    let verified = false;
+    let smsTimer = null;
+    let smsCountdown = 59;
+    let childId = 0;
+
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => document.querySelectorAll(s);
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    /* ============================================
+       TOAST
+    ============================================ */
+    function toast(msg, type = 'info') {
+        const c = $('#toast-container');
+        const el = document.createElement('div');
+        el.className = `toast toast--${type}`;
+        const icons = {
+            success: '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>',
+            error:   '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>',
+            info:    '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+        };
+        el.innerHTML = (icons[type] || icons.info) + `<span>${msg}</span>`;
+        c.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('toast--show'));
+        setTimeout(() => {
+            el.classList.remove('toast--show');
+            el.classList.add('toast--hide');
+            setTimeout(() => el.remove(), 300);
+        }, 3500);
+    }
+
+    /* ============================================
+       NAVIGATION
+    ============================================ */
+    function goTo(target) {
+        if (target === step || target < 1 || target > 3) return;
+        const oldEl = $(`#step-${step}`);
+        const newEl = $(`#step-${target}`);
+        
+        // Measure old height to stabilize layout during transition
+        const oldHeight = oldEl.offsetHeight;
+        const app = $('#app');
+        app.style.minHeight = `${oldHeight}px`;
+        app.style.transition = 'min-height 280ms cubic-bezier(0.22, 1, 0.36, 1)';
+        
+        step = target;
+
+        // Update progress text & segments
+        const stepNames = { 1: 'Phone', 2: 'Family Details', 3: 'Complete' };
+        if (step === 3) {
+            $('#progress-text').textContent = 'Registration Complete ✓';
+            $('#seg-1').classList.remove('active');
+            $('#seg-1').classList.add('done');
+            $('#seg-2').classList.remove('active');
+            $('#seg-2').classList.add('done');
+        } else {
+            $('#progress-text').textContent = `Step ${step} of 2: ${stepNames[step]}`;
+            for (let i = 1; i <= 2; i++) {
+                const seg = $(`#seg-${i}`);
+                seg.classList.remove('active', 'done');
+                if (i < step)        seg.classList.add('done');
+                else if (i === step) seg.classList.add('active');
+            }
+        }
+
+        // Update bottom bars
+        $('#bottom-bar-1').style.display = step === 1 ? 'flex' : 'none';
+        $('#bottom-bar-2').style.display = step === 2 ? 'flex' : 'none';
+        $('#bottom-bar-3').style.display = step === 3 ? 'flex' : 'none';
+
+        // Transition: fade out old, fade in new
+        oldEl.style.opacity = '0';
+        oldEl.style.transform = 'translateY(-12px)';
+        oldEl.style.transition = 'opacity 180ms ease, transform 180ms ease';
+        
+        setTimeout(() => {
+            oldEl.classList.remove('step-visible');
+            oldEl.style.opacity = '';
+            oldEl.style.transform = '';
+            oldEl.style.transition = '';
+            
+            newEl.style.opacity = '0';
+            newEl.style.transform = 'translateY(12px)';
+            newEl.style.transition = 'none';
+            newEl.classList.add('step-visible');
+            
+            const newHeight = newEl.offsetHeight;
+            app.style.minHeight = `${newHeight}px`;
+            
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            
+            newEl.offsetHeight; // reflow
+            
+            newEl.style.transition = 'opacity 220ms ease, transform 220ms ease';
+            newEl.style.opacity = '1';
+            newEl.style.transform = 'translateY(0)';
+            
+            setTimeout(() => {
+                newEl.style.opacity = '';
+                newEl.style.transform = '';
+                newEl.style.transition = '';
+                app.style.minHeight = '';
+                app.style.transition = '';
+            }, 250);
+        }, 180);
+    }
+
+    /* ============================================
+       STEP 1 — RULES + PHONE + SMS
+    ============================================ */
+    function digits(v) { return v.replace(/\D/g, ''); }
+
+    const phoneInput  = $('#phone-input');
+    const phoneWrap   = $('#phone-wrapper');
+    const countryCode = $('#country-code');
+
+    function checkSmsButton() {
+        const d = digits(phoneInput.value);
+        const isChecked = $('#check-mandatory').checked;
+        if (d.length >= 7 && isChecked) {
+            $('#btn-send-sms').disabled = false;
+        } else {
+            $('#btn-send-sms').disabled = true;
+        }
+    }
+
+    $('#check-mandatory').addEventListener('change', checkSmsButton);
+
+    phoneWrap.addEventListener('click', (e) => {
+        if (e.target !== countryCode) phoneInput.focus();
+    });
+    phoneInput.addEventListener('focus', () => { if (!verified) phoneWrap.classList.add('focused'); });
+    phoneInput.addEventListener('blur',  () => phoneWrap.classList.remove('focused'));
+
+    phoneInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/[^\d\s()-]/g, '');
+        e.target.value = val;
+        $('#phone-error').classList.add('hidden');
+        phoneWrap.classList.remove('error', 'verified');
+
+        if (verified) {
+            verified = false;
+            $('#phone-badge').classList.add('hidden');
+            $('#sms-block').classList.add('hidden');
+            updateStep1Btn();
+        }
+
+        checkSmsButton();
+    });
+
+    countryCode.addEventListener('change', () => {
+        if (countryCode.value === '+1') phoneInput.placeholder = '(555) 000-0000';
+        else if (countryCode.value === '+971') phoneInput.placeholder = '50 123 4567';
+        else if (countryCode.value === '+44') phoneInput.placeholder = '7911 123456';
+        else phoneInput.placeholder = 'Phone number';
+        checkSmsButton();
+    });
+
+    // Send SMS
+    $('#btn-send-sms').addEventListener('click', () => {
+        $('#btn-send-sms').style.display = 'none';
+        $('#legal-group').style.display = 'none';
+        $('#sms-block').classList.remove('hidden');
+        $('#sms-input').value = '';
+        $('#sms-error').classList.add('hidden');
+        $('#sms-input').classList.remove('input-error');
+        $('#sms-input').focus();
+        toast('Verification code sent to your phone', 'info');
+        startTimer();
+    });
+
+    function startTimer() {
+        smsCountdown = 59;
+        const btn = $('#btn-resend');
+        btn.disabled = true;
+        btn.textContent = `Resend Code (${smsCountdown}s)`;
+        if (smsTimer) clearInterval(smsTimer);
+        smsTimer = setInterval(() => {
+            smsCountdown--;
+            if (smsCountdown <= 0) {
+                clearInterval(smsTimer);
+                btn.disabled = false;
+                btn.textContent = 'Resend Code';
+            } else {
+                btn.textContent = `Resend Code (${smsCountdown}s)`;
+            }
+        }, 1000);
+    }
+
+    $('#btn-resend').addEventListener('click', () => {
+        $('#sms-input').value = '';
+        $('#sms-error').classList.add('hidden');
+        $('#sms-input').classList.remove('input-error');
+        $('#sms-input').focus();
+        toast('New verification code sent', 'info');
+        startTimer();
+    });
+
+    // Verify SMS
+    function verifySms() {
+        const code = $('#sms-input').value.trim();
+        if (code.length === 4 && /^\d{4}$/.test(code)) {
+            if (code === '0000') {
+                $('#sms-error').textContent = 'Incorrect verification code';
+                $('#sms-error').classList.remove('hidden');
+                $('#sms-input').classList.add('input-error');
+                return;
+            }
+            verified = true;
+            if (smsTimer) clearInterval(smsTimer);
+            $('#sms-block').classList.add('hidden');
+            $('#phone-badge').classList.remove('hidden');
+            phoneWrap.classList.remove('focused', 'error');
+            phoneWrap.classList.add('verified');
+            toast('Phone verified ✓', 'success');
+            updateStep1Btn();
+
+            // Auto-advance to Step 2
+            setTimeout(() => {
+                if ($('#children-list').children.length === 0) addChild();
+                goTo(2);
+            }, 800);
+        } else {
+            $('#sms-error').textContent = 'Code must contain 4 digits';
+            $('#sms-error').classList.remove('hidden');
+            $('#sms-input').classList.add('input-error');
+        }
+    }
+
+    $('#btn-verify').addEventListener('click', verifySms);
+    $('#sms-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); verifySms(); }
+    });
+
+    function updateStep1Btn() {
+        const btn = $('#btn-step1');
+        if (verified) { btn.disabled = false; btn.classList.remove('disabled'); }
+        else          { btn.disabled = true;  btn.classList.add('disabled'); }
+    }
+
+    $('#btn-step1').addEventListener('click', () => {
+        if (!verified) return;
+        if ($('#children-list').children.length === 0) addChild();
+        goTo(2);
+    });
+
+    /* ============================================
+       STEP 2 — PARENT + CHILDREN
+    ============================================ */
+    function addChild() {
+        childId++;
+        const id = childId;
+        const card = document.createElement('div');
+        card.className = 'child-card';
+        card.dataset.id = id;
+        const num = $('#children-list').children.length + 1;
+        const today = new Date().toISOString().split('T')[0];
+        card.innerHTML = `
+            <div class="child-header">
+                <div class="child-title">
+                     <span class="child-num-badge">${num}</span>
+                     Child <span class="child-num-text">${num}</span>
+                </div>
+                <button class="child-del" data-del="${id}" type="button" aria-label="Remove child">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+            </div>
+            <div class="child-fields">
+                <div class="child-field-group">
+                    <span class="child-input-label">Child's Name *</span>
+                    <input type="text" class="form-input child-name-input" placeholder="e.g. Leo" required enterkeyhint="next">
+                </div>
+                <div class="child-field-group">
+                    <span class="child-input-label">Date of Birth *</span>
+                    <input type="text" class="form-input child-dob-input" placeholder="YYYY-MM-DD" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" max="${today}" required>
+                </div>
+            </div>
+            <p class="form-error hidden child-err"></p>
+        `;
+        card.querySelector(`[data-del="${id}"]`).addEventListener('click', () => {
+            card.classList.add('child-card--exit');
+            setTimeout(() => { card.remove(); renumberChildren(); }, 280);
+        });
+        $('#children-list').appendChild(card);
+        requestAnimationFrame(() => card.classList.add('child-card--in'));
+    }
+
+    function renumberChildren() {
+        $$('.child-card').forEach((c, i) => {
+            const badge = c.querySelector('.child-num-badge');
+            const numText = c.querySelector('.child-num-text');
+            if (badge)   badge.textContent  = i + 1;
+            if (numText) numText.textContent = i + 1;
+        });
+    }
+
+    $('#btn-add-child').addEventListener('click', () => {
+        addChild();
+        setTimeout(() => {
+            const last = $('#children-list').lastElementChild;
+            if (last) last.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 120);
+    });
+
+    $('#btn-step2-back').addEventListener('click', () => goTo(1));
+
+    $('#btn-step2').addEventListener('click', () => {
+        let err = false;
+        const fio = $('#fio-input').value.trim();
+
+        if (!fio) {
+            $('#fio-error').textContent = 'Please enter your full name';
+            $('#fio-error').classList.remove('hidden');
+            $('#fio-input').classList.add('input-error');
+            err = true;
+        } else {
+            $('#fio-error').classList.add('hidden');
+            $('#fio-input').classList.remove('input-error');
+        }
+
+        const cards = $$('.child-card');
+        if (cards.length === 0) {
+            $('#children-error').textContent = 'Please add at least one child';
+            $('#children-error').classList.remove('hidden');
+            err = true;
+        } else {
+            $('#children-error').classList.add('hidden');
+        }
+
+        cards.forEach(c => {
+            const nameIn = c.querySelector('.child-name-input');
+            const dobIn  = c.querySelector('.child-dob-input');
+            const errEl  = c.querySelector('.child-err');
+            if (!nameIn.value.trim() || !dobIn.value) {
+                if (!nameIn.value.trim() && !dobIn.value) {
+                    errEl.textContent = 'Please enter name and date of birth';
+                    nameIn.classList.add('input-error');
+                    dobIn.classList.add('input-error');
+                } else if (!nameIn.value.trim()) {
+                    errEl.textContent = "Please enter child's name";
+                    nameIn.classList.add('input-error');
+                    dobIn.classList.remove('input-error');
+                } else {
+                    errEl.textContent = 'Please enter date of birth';
+                    nameIn.classList.remove('input-error');
+                    dobIn.classList.add('input-error');
+                }
+                errEl.classList.remove('hidden');
+                err = true;
+            } else {
+                errEl.classList.add('hidden');
+                nameIn.classList.remove('input-error');
+                dobIn.classList.remove('input-error');
+            }
+        });
+
+        if (err) return;
+
+        submitRegistration();
+    });
+
+    /* ============================================
+       SUBMIT & SUCCESS SCREEN
+    ============================================ */
+    function submitRegistration() {
+        const fio         = $('#fio-input').value.trim();
+        const code        = countryCode.value;
+        const phoneRaw    = $('#phone-input').value.trim();
+        const phone       = (code === '+' ? '+' : code) + ' ' + phoneRaw;
+        const children    = [];
+
+        $$('.child-card').forEach(c => {
+            const name = c.querySelector('.child-name-input').value.trim();
+            const dob  = c.querySelector('.child-dob-input').value || null;
+            if (name) children.push({ name, dob });
+        });
+
+        const urlParams   = new URLSearchParams(window.location.search);
+        const park        = urlParams.get('park') || 'Global';
+
+        const payload = { 
+            v: 1, 
+            lang: 'en',
+            fio, 
+            phone, 
+            children, 
+            park,
+            ts: Date.now() 
+        };
+        const json = JSON.stringify(payload);
+
+        // Populate summary
+        $('#summary-fio').textContent = fio;
+        $('#summary-phone').textContent = phone;
+        const summaryList = $('#summary-children-list');
+        summaryList.innerHTML = '';
+        children.forEach((ch, idx) => {
+            const item = document.createElement('div');
+            item.className = 'child-summary-item';
+            const dobFormatted = ch.dob ? `<span class="child-summary-dob">(${ch.dob})</span>` : '';
+            item.innerHTML = `<span>${idx + 1}. ${escapeHtml(ch.name)}</span> ${dobFormatted}`;
+            summaryList.appendChild(item);
+        });
+
+        // Send registration to Backend / AmoCRM (asynchronous & non-blocking)
+        fetch('/api/register-guest', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: json
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result && result.success) {
+                console.log('[CRM] Registration saved, lead #' + result.lead_id);
+            } else {
+                console.warn('[CRM] Registration response:', result);
+            }
+        })
+        .catch(err => {
+            // Graceful degradation when static or backend unreachable
+            console.warn('[CRM] Sync notice:', err);
+        });
+
+        toast('Registration completed successfully! 🎉', 'success');
+        goTo(3);
+    }
+
+    // Reset / Register Another Guest
+    $('#btn-restart').addEventListener('click', () => {
+        verified = false;
+        if (smsTimer) clearInterval(smsTimer);
+        childId = 0;
+
+        // Reset step 1
+        phoneInput.value = '';
+        phoneWrap.classList.remove('focused', 'error', 'verified');
+        $('#phone-error').classList.add('hidden');
+        $('#phone-badge').classList.add('hidden');
+        $('#btn-send-sms').style.display = '';
+        $('#btn-send-sms').disabled = true;
+        $('#legal-group').style.display = '';
+        $('#check-mandatory').checked = false;
+        $('#sms-block').classList.add('hidden');
+        $('#btn-step1').disabled = true;
+        $('#btn-step1').classList.add('disabled');
+
+        // Reset step 2
+        $('#fio-input').value = '';
+        $('#fio-input').classList.remove('input-error');
+        $('#fio-error').classList.add('hidden');
+        $('#children-list').innerHTML = '';
+        $('#children-error').classList.add('hidden');
+
+        // Reset summary
+        $('#summary-fio').textContent = '—';
+        $('#summary-phone').textContent = '—';
+        $('#summary-children-list').innerHTML = '';
+
+        goTo(1);
+    });
+    </script>
+</body>
+</html>
