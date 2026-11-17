@@ -67,6 +67,9 @@
         .phone-country-button:disabled { cursor: default; }
         .phone-country-button:disabled .chevron { display: none; }
         .phone-field { font-family: 'Nunito', system-ui, sans-serif; }
+        /* Birth date: own masked field, so the format follows the form language instead of the phone's settings */
+        .child-dob-input { direction: ltr; font-family: 'Nunito', system-ui, sans-serif; letter-spacing: .02em; }
+        html[dir="rtl"] .child-dob-input { text-align: right; }
 
         /* Country picker */
         .country-popover {
@@ -302,6 +305,7 @@
         $$('[data-i18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
         $$('[data-i18n-placeholder]').forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
         $$('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+        $$('.child-dob-input').forEach((el) => { el.value = formatDob(el.value); });
         $('#consent-text').innerHTML = window.HP_CONSENT.toHtml(window.HP_CONSENT.text(cfg, lang));
         updateProgress();
         if (!$('#phone-error').classList.contains('hidden')) showPhoneError();
@@ -581,7 +585,6 @@
     function addChild() {
         const card = document.createElement('div');
         card.className = 'child-card';
-        const today = new Date().toISOString().split('T')[0];
         card.innerHTML =
             '<div class="child-header">' +
                 '<div class="child-title"><span class="child-num-badge"></span> <span data-i18n="child"></span></div>' +
@@ -593,9 +596,11 @@
                 '<div class="child-field-group"><span class="child-input-label" data-i18n="childName"></span>' +
                     '<input type="text" class="form-input child-name-input" data-i18n-placeholder="childNamePlaceholder" enterkeyhint="next"></div>' +
                 '<div class="child-field-group"><span class="child-input-label" data-i18n="dob"></span>' +
-                    '<input type="date" class="form-input child-dob-input" max="' + today + '" min="1990-01-01"></div>' +
+                    '<input type="text" class="form-input child-dob-input" inputmode="numeric" autocomplete="off" maxlength="10" data-i18n-placeholder="dobPlaceholder"></div>' +
             '</div>' +
             '<p class="form-error hidden child-err"></p>';
+        const dobInput = card.querySelector('.child-dob-input');
+        dobInput.addEventListener('input', () => { dobInput.value = formatDob(dobInput.value); });
         card.querySelector('.child-del').addEventListener('click', () => {
             card.classList.add('child-card--exit');
             setTimeout(() => { card.remove(); renumberChildren(); }, 280);
@@ -605,6 +610,27 @@
         renumberChildren();
         requestAnimationFrame(() => card.classList.add('child-card--in'));
     }
+    /* ---------- birth date ---------- */
+    // Day, month, year in this order for every language; only the separator changes.
+    function formatDob(value) {
+        const d = value.replace(/\D/g, '').slice(0, 8);
+        const sep = I18N[lang]._meta.dateSep || '/';
+        if (d.length <= 2) return d;
+        if (d.length <= 4) return d.slice(0, 2) + sep + d.slice(2);
+        return d.slice(0, 2) + sep + d.slice(2, 4) + sep + d.slice(4);
+    }
+
+    // Returns 'YYYY-MM-DD' for a real, past date not earlier than 1990, otherwise null.
+    function parseDob(value) {
+        const d = value.replace(/\D/g, '');
+        if (d.length !== 8) return null;
+        const day = Number(d.slice(0, 2)), month = Number(d.slice(2, 4)), year = Number(d.slice(4));
+        const date = new Date(year, month - 1, day);
+        if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+        if (year < 1990 || date > new Date()) return null;
+        return d.slice(4) + '-' + d.slice(2, 4) + '-' + d.slice(0, 2);
+    }
+
     function renumberChildren() { $$('.child-card').forEach((c, i) => { c.querySelector('.child-num-badge').textContent = i + 1; }); }
 
     $('#btn-add-child').addEventListener('click', addChild);
@@ -635,16 +661,16 @@
             if (!name && !dobIn.value) key = 'childErrorBoth';
             else if (!name) key = 'childErrorName';
             else if (!dobIn.value) key = 'childErrorDob';
-            else if (!dobIn.validity.valid) key = 'childErrorDobInvalid';
+            else if (!parseDob(dobIn.value)) key = 'childErrorDobInvalid';
             nameIn.classList.toggle('input-error', !name);
             dobIn.classList.toggle('input-error', key !== null && key !== 'childErrorName');
             setFieldError(c.querySelector('.child-err'), key);
-            if (key) hasError = true; else children.push({ name, dob: dobIn.value });
+            if (key) hasError = true; else children.push({ name, dob: parseDob(dobIn.value), shown: dobIn.value });
         });
         if (hasError) return;
 
         const phone = parsedPhone();
-        const payload = { parkId: cfg.id, lang, phone: phone.number, phoneCountry: country, fio, children };
+        const payload = { parkId: cfg.id, lang, phone: phone.number, phoneCountry: country, fio, children: children.map(({ name, dob }) => ({ name, dob })) };
         window.HP_LAST_REGISTRATION = payload;
         console.info('[registration payload]', payload);
 
@@ -652,7 +678,7 @@
         $('#summary-phone').textContent = phone.formatInternational();
         $('#summary-children-list').innerHTML = children.map((ch, i) =>
             '<div class="summary-child"><span class="summary-value">' + (i + 1) + '. ' + escapeHtml(ch.name) +
-            '</span> <small class="ltr-value">(' + escapeHtml(ch.dob) + ')</small></div>').join('');
+            '</span> <small class="ltr-value">(' + escapeHtml(ch.shown) + ')</small></div>').join('');
         toast(t('toastDone'));
         goTo(3);
     });

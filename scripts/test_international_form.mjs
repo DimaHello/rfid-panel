@@ -69,7 +69,15 @@ try {
     out.push('AR error: ' + await page.locator('#fio-error').innerText());
     await page.fill('#fio-input', 'سارة أحمد');
     await page.fill('.child-name-input', 'عمر');
-    await page.fill('.child-dob-input', '2018-04-12');
+    await page.fill('.child-dob-input', '31022018');
+    await page.click('#btn-step2');
+    assert(await page.locator('.child-err').isVisible(), '31 February should be rejected');
+    await page.fill('.child-dob-input', '01012099');
+    await page.click('#btn-step2');
+    assert(await page.locator('.child-err').isVisible(), 'Future date should be rejected');
+    await page.fill('.child-dob-input', '');
+    await page.locator('.child-dob-input').pressSequentially('12042018');
+    assert(await page.inputValue('.child-dob-input') === '12/04/2018', 'Date should be masked as DD/MM/YYYY');
     await page.screenshot({ path: 'output/playwright/intl-dubai-ar-family.png' });
     await page.click('#btn-step2'); await step(3);
     const payload = await page.evaluate(() => window.HP_LAST_REGISTRATION);
@@ -78,6 +86,19 @@ try {
     await page.screenshot({ path: 'output/playwright/intl-dubai-ar-done.png' });
     await page.goto(B + 'international.html?park=dubai');
     assert(await page.locator('html').getAttribute('lang') === 'ar', 'Chosen language should be remembered per park');
+
+    // Birth date placeholder follows the form language, whatever the browser locale is.
+    await page.goto(B + 'international.html?park=lima&lang=es');
+    await page.fill('#phone-input', '912345678'); await page.check('#check-mandatory'); await page.click('#btn-step1'); await step(2);
+    out.push('ES date placeholder: ' + await page.getAttribute('.child-dob-input', 'placeholder'));
+    await page.click('#lang-switch button[lang=en]');
+    out.push('EN date placeholder: ' + await page.getAttribute('.child-dob-input', 'placeholder'));
+    await page.evaluate(() => localStorage.removeItem('hp-lang:lima'));
+    await page.goto(B + 'international.html?park=seligerskaya');
+    await page.fill('#phone-input', '9161234567'); await page.check('#check-mandatory'); await page.click('#btn-step1'); await step(2);
+    await page.locator('.child-dob-input').pressSequentially('12042018');
+    assert(await page.inputValue('.child-dob-input') === '12.04.2018', 'Russian date should use dots');
+    await page.screenshot({ path: 'output/playwright/intl-dob-ru.png' });
 
     // Oman: English by default, Oman code, landlines rejected, pasted +971 switches country.
     await page.goto(B + 'international.html?park=oman&lang=en');

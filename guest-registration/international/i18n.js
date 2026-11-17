@@ -4,7 +4,7 @@
 
 window.HP_I18N = {
     en: {
-        _meta: { native: 'English', short: 'EN', dir: 'ltr', adminName: 'Английский' },
+        _meta: { native: 'English', short: 'EN', dir: 'ltr', adminName: 'Английский', dateSep: '/' },
         pageTitle: 'Hello Park — Guest Registration',
         welcomeTitle: 'Welcome to <span class="text-orange">Hello Park</span>',
         progress: 'Step {n} of 2: {name}',
@@ -34,6 +34,7 @@ window.HP_I18N = {
         childName: "Child's name *",
         childNamePlaceholder: 'e.g. Leo',
         dob: 'Date of birth *',
+        dobPlaceholder: 'DD/MM/YYYY',
         removeChild: 'Remove child',
         addChild: 'Add child',
         childrenError: 'Please add at least one child',
@@ -52,7 +53,7 @@ window.HP_I18N = {
     },
 
     ar: {
-        _meta: { native: 'العربية', short: 'عربي', dir: 'rtl', adminName: 'Арабский' },
+        _meta: { native: 'العربية', short: 'عربي', dir: 'rtl', adminName: 'Арабский', dateSep: '/' },
         pageTitle: 'Hello Park — تسجيل الزوّار',
         welcomeTitle: 'أهلاً بكم في <span class="text-orange">Hello Park</span>',
         progress: 'الخطوة {n} من 2: {name}',
@@ -82,6 +83,7 @@ window.HP_I18N = {
         childName: 'اسم الطفل *',
         childNamePlaceholder: 'مثال: عمر',
         dob: 'تاريخ الميلاد *',
+        dobPlaceholder: '\u200eيوم\u200e/\u200eشهر\u200e/\u200eسنة',
         removeChild: 'حذف الطفل',
         addChild: 'إضافة طفل',
         childrenError: 'يرجى إضافة طفل واحد على الأقل',
@@ -100,7 +102,7 @@ window.HP_I18N = {
     },
 
     es: {
-        _meta: { native: 'Español', short: 'ES', dir: 'ltr', adminName: 'Испанский' },
+        _meta: { native: 'Español', short: 'ES', dir: 'ltr', adminName: 'Испанский', dateSep: '/' },
         pageTitle: 'Hello Park — Registro de visitantes',
         welcomeTitle: 'Bienvenidos a <span class="text-orange">Hello Park</span>',
         progress: 'Paso {n} de 2: {name}',
@@ -130,6 +132,7 @@ window.HP_I18N = {
         childName: 'Nombre del niño *',
         childNamePlaceholder: 'Ej.: Mateo',
         dob: 'Fecha de nacimiento *',
+        dobPlaceholder: 'DD/MM/AAAA',
         removeChild: 'Quitar niño',
         addChild: 'Agregar niño',
         childrenError: 'Agrega al menos un niño',
@@ -148,7 +151,7 @@ window.HP_I18N = {
     },
 
     ru: {
-        _meta: { native: 'Русский', short: 'RU', dir: 'ltr', adminName: 'Русский' },
+        _meta: { native: 'Русский', short: 'RU', dir: 'ltr', adminName: 'Русский', dateSep: '.' },
         pageTitle: 'Hello Park — Регистрация гостя',
         welcomeTitle: 'Добро пожаловать в <span class="text-orange">Hello Park</span>',
         progress: 'Шаг {n} из 2: {name}',
@@ -178,6 +181,7 @@ window.HP_I18N = {
         childName: 'Имя ребёнка *',
         childNamePlaceholder: 'Например, Миша',
         dob: 'Дата рождения *',
+        dobPlaceholder: 'ДД.ММ.ГГГГ',
         removeChild: 'Удалить ребёнка',
         addChild: 'Добавить ребёнка',
         childrenError: 'Добавьте хотя бы одного ребёнка',
