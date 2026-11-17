@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Hello Park — Guest Registration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/gilroy-bold">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body:not(.ready) .app, body:not(.ready) .bottom-nav { visibility: hidden; }
+
+        /* Arabic: font with Arabic glyphs, no Latin-style uppercase tracking */
+        html[lang="ar"] {
+            --font-display: 'Tajawal', system-ui, sans-serif;
+            --font-body: 'Tajawal', system-ui, sans-serif;
+        }
+        html[lang="ar"] .form-label, html[lang="ar"] .divider-label { letter-spacing: 0; text-transform: none; }
+        html[dir="rtl"] .btn-next-arrow svg, html[dir="rtl"] .btn-back svg { transform: scaleX(-1); }
+        html[dir="rtl"] .legal-checkbox-label, html[dir="rtl"] .step-explanation { text-align: right; }
+
+        .progress-glass { gap: 8px; }
+        .progress-tools { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .progress-seg { width: 24px; }
+
+        .lang-switch { display: inline-flex; padding: 2px; gap: 2px; border-radius: var(--radius-pill); background: rgba(0,0,0,.04); border: 1px solid var(--border); }
+        .lang-switch[hidden] { display: none; }
+        .lang-switch button {
+            border: 0; background: transparent; cursor: pointer;
+            font: 800 .72rem/1.2 var(--font-body); color: var(--ink-soft);
+            padding: 4px 9px; border-radius: var(--radius-pill);
+        }
+        .lang-switch button[aria-pressed="true"] { background: var(--surface); color: var(--hp-orange); box-shadow: var(--shadow-soft); }
+        .lang-switch button[lang="ar"] { font-family: 'Tajawal', system-ui, sans-serif; font-size: .8rem; }
+
+        /* Rocky is large and peeks above the card edge */
+        .card-header-hero {
+            display: grid; grid-template-columns: minmax(0, 1fr) clamp(118px, 40vw, 178px);
+            align-items: end; gap: 0; min-height: 0; margin-bottom: 1.25rem;
+        }
+        .card-hero-title { max-width: none; font-size: clamp(1.25rem, 6.2vw, 1.85rem); padding-bottom: 6px; }
+        .card-hero-title .text-orange { display: block; }
+        .card-hero-image {
+            position: static; width: 100%; height: auto;
+            margin-block-start: -64px; margin-inline-end: -14px;
+            filter: drop-shadow(0 10px 18px rgba(0,0,0,.08));
+        }
+
+        /* Consent text is centred against the checkbox */
+        .legal-checkbox-label { align-items: center; }
+        .legal-checkbox-input { margin-top: 0; }
+
+        /* Phone numbers are always written left to right, also inside Arabic UI */
+        .phone-anchor { position: relative; }
+        .phone-wrapper { direction: ltr; }
+        .phone-country-button {
+            display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; align-self: stretch;
+            padding: 0 10px 0 0; margin-right: 10px; border: 0; border-right: 1.5px solid var(--border);
+            background: transparent; cursor: pointer; color: var(--ink);
+            font: 700 1rem 'Nunito', system-ui, sans-serif; white-space: nowrap;
+        }
+        .phone-country-button .flag { font-size: 1.25rem; line-height: 1; }
+        .phone-country-button .chevron { color: var(--ink-soft); transition: transform 160ms var(--ease); }
+        .phone-country-button[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+        .phone-country-button:disabled { cursor: default; }
+        .phone-country-button:disabled .chevron { display: none; }
+        .phone-field { font-family: 'Nunito', system-ui, sans-serif; }
+
+        /* Country picker */
+        .country-popover {
+            position: absolute; inset-inline: 0; top: calc(100% + 8px); z-index: 250;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 22px;
+            box-shadow: 0 18px 50px rgba(26,26,26,.16), 0 2px 8px rgba(0,0,0,.05);
+            overflow: hidden; animation: countryIn 160ms var(--ease);
+        }
+        .country-popover[hidden] { display: none; }
+        @keyframes countryIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+        .country-search { padding: 10px; border-bottom: 1px solid var(--border); }
+        .country-search-box {
+            display: flex; align-items: center; gap: 10px; padding: 0 14px; height: 46px;
+            background: var(--bg); border-radius: var(--radius-pill); color: var(--ink-soft);
+        }
+        .country-search-box:focus-within { box-shadow: var(--shadow-focus); }
+        .country-search input {
+            flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+            font: 600 1rem var(--font-body); color: var(--ink);
+        }
+        .country-search input::-webkit-search-cancel-button { -webkit-appearance: none; }
+        .country-list { position: relative; list-style: none; margin: 0; padding: 6px; overflow-y: auto; max-height: 340px; overscroll-behavior: contain; }
+        .country-option {
+            display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px;
+            cursor: pointer; font-size: 1.02rem; font-weight: 600; color: var(--ink);
+        }
+        .country-option.active { background: var(--bg); }
+        .country-option[aria-selected="true"] { background: rgba(255,96,34,.08); }
+        .country-option .cf { font-size: 1.4rem; line-height: 1; }
+        .country-option .cn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .country-option .cc { color: var(--ink-soft); font: 700 .95rem 'Nunito', system-ui, sans-serif; direction: ltr; unicode-bidi: isolate; }
+        .country-option .check { width: 18px; color: var(--hp-orange); visibility: hidden; flex-shrink: 0; }
+        .country-option[aria-selected="true"] .check { visibility: visible; }
+        .country-group-label { padding: 12px 12px 6px; font-size: .72rem; font-weight: 800; color: var(--ink-muted); text-transform: uppercase; letter-spacing: .06em; }
+        html[lang="ar"] .country-group-label { text-transform: none; letter-spacing: 0; font-size: .8rem; }
+        .country-empty { padding: 20px 12px; color: var(--ink-soft); text-align: center; }
+
+        .registration-summary { display: grid; gap: 20px; margin-top: 24px; }
+        .summary-label { display: block; color: var(--ink-soft); font-size: .8rem; margin-bottom: 4px; }
+        .summary-value { font-weight: 800; overflow-wrap: anywhere; }
+        .summary-child { padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .summary-child:last-child { border-bottom: 0; }
+        .summary-child small { color: var(--ink-soft); font-weight: 500; }
+        .ltr-value { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+        .success-mascot { display: block; width: 110px; height: 110px; object-fit: contain; margin: 0 auto 20px; }
+        .success-title { font: 900 1.8rem/1.15 var(--font-display); text-align: center; margin-bottom: 12px; }
+        .success-copy { text-align: center; color: var(--ink-soft); }
+    </style>
+</head>
+<body>
+    <div class="app" id="app">
+        <div class="progress-container">
+            <div class="progress-glass">
+                <span class="progress-text" id="progress-text"></span>
+                <div class="progress-tools">
+                    <div class="progress-segments">
+                        <div class="progress-seg active" id="seg-1"></div>
+                        <div class="progress-seg" id="seg-2"></div>
+                    </div>
+                    <div class="lang-switch" id="lang-switch" role="group" data-i18n-aria="language" hidden></div>
+                </div>
+            </div>
+        </div>
+
+        <section class="step step-visible" id="step-1">
+            <div class="card">
+                <div class="card-header-hero">
+                    <h1 class="card-hero-title" data-i18n-html="welcomeTitle"></h1>
+                    <img src="fox.webp" alt="" class="card-hero-image">
+                </div>
+
+                <p class="step-explanation" data-i18n="phoneIntro"></p>
+
+                <div class="form-group">
+                    <label for="phone-input" class="form-label" data-i18n="phoneLabel"></label>
+                    <div class="phone-anchor">
+                        <div class="phone-wrapper" id="phone-wrapper">
+                            <button type="button" class="phone-country-button" id="country-button"
+                                aria-haspopup="listbox" aria-expanded="false" aria-controls="country-popover" data-i18n-aria="countryLabel">
+                                <span class="flag" id="country-flag"></span>
+                                <span id="country-code-text"></span>
+                                <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                            </button>
+                            <input type="tel" id="phone-input" class="phone-field" data-i18n-placeholder="phonePlaceholder"
+                                inputmode="tel" autocomplete="tel" enterkeyhint="next">
+                        </div>
+                        <div class="country-popover" id="country-popover" hidden>
+                            <div class="country-search">
+                                <label class="country-search-box">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3.5-3.5"/></svg>
+                                    <input type="search" id="country-search" data-i18n-placeholder="searchCountry" data-i18n-aria="searchCountry"
+                                        autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"
+                                        role="combobox" aria-controls="country-list" aria-expanded="true">
+                                </label>
+                            </div>
+                            <ul class="country-list" id="country-list" role="listbox" data-i18n-aria="countryLabel"></ul>
+                        </div>
+                    </div>
+                    <p class="form-error hidden" id="phone-error"></p>
+                </div>
+
+                <div class="legal-checkbox-group">
+                    <label class="legal-checkbox-label">
+                        <input type="checkbox" class="legal-checkbox-input" id="check-mandatory">
+                        <span id="consent-text"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section class="step" id="step-2">
+            <div class="card">
+                <div class="card-header-hero">
+                    <h1 class="card-hero-title" data-i18n-html="welcomeTitle"></h1>
+                    <img src="fox.webp" alt="" class="card-hero-image">
+                </div>
+                <p class="step-explanation" data-i18n="familyIntro"></p>
+
+                <div class="form-group">
+                    <label for="fio-input" class="form-label" data-i18n="parentLabel"></label>
+                    <input type="text" id="fio-input" class="form-input" data-i18n-placeholder="parentPlaceholder" autocomplete="name" enterkeyhint="next">
+                    <p class="form-error hidden" id="fio-error" data-i18n="parentError"></p>
+                </div>
+
+                <div class="section-divider"><span class="divider-label" data-i18n="children"></span></div>
+                <div class="children-list" id="children-list"></div>
+
+                <button class="btn-add-child" id="btn-add-child" type="button">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    <span data-i18n="addChild"></span>
+                </button>
+                <p class="form-error hidden" id="children-error" data-i18n="childrenError"></p>
+            </div>
+        </section>
+
+        <section class="step" id="step-3">
+            <div class="card">
+                <img src="fox.webp" alt="" class="success-mascot">
+                <h1 class="success-title" data-i18n-html="successTitle"></h1>
+                <p class="success-copy" data-i18n="successCopy"></p>
+                <div class="registration-summary">
+                    <div><span class="summary-label" data-i18n="summaryParent"></span><div class="summary-value" id="summary-fio">—</div></div>
+                    <div><span class="summary-label" data-i18n="summaryPhone"></span><div class="summary-value"><span class="ltr-value" id="summary-phone">—</span></div></div>
+                    <div><span class="summary-label" data-i18n="summaryChildren"></span><div id="summary-children-list"></div></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="bottom-nav" id="bottom-nav">
+        <div class="bottom-nav-inner" id="bottom-bar-1" style="display:flex;">
+            <button class="btn-next disabled" id="btn-step1" type="button" disabled>
+                <span class="btn-next-label" data-i18n="next"></span>
+                <span class="btn-next-arrow"><svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></span>
+            </button>
+        </div>
+        <div class="bottom-nav-inner" id="bottom-bar-2" style="display:none;">
+            <button class="btn-back" id="btn-step2-back" type="button" data-i18n-aria="back">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button class="btn-next" id="btn-step2" type="button">
+                <span class="btn-next-label" data-i18n="complete"></span>
+                <span class="btn-next-arrow"><svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></span>
+            </button>
+        </div>
+        <div class="bottom-nav-inner" id="bottom-bar-3" style="display:none;">
+            <button class="btn-restart" id="btn-restart" type="button">
+                <span class="btn-next-label" data-i18n="restart"></span>
+                <span class="btn-restart-icon"><svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.36-5.36M20 15a9 9 0 01-15.36 5.36"/></svg></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="vendor/libphonenumber-mobile.js"></script>
+    <script src="international/i18n.js"></script>
+    <script src="international/parks.js"></script>
+    <script src="international/consent.js"></script>
+    <script>
+    (() => {
+    const PHONE = window.libphonenumber;
+    const I18N = window.HP_I18N;
+    const PARKS = window.HP_PARKS;
+    const params = new URLSearchParams(location.search);
+    const isPreview = params.has('preview');
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+    let cfg = null;
+    let lang = 'en';
+    let country = 'AE';
+    let step = 1;
+
+    /* ---------- config ---------- */
+    function normalizeConfig(raw) {
+        const supported = Object.keys(I18N);
+        const available = (raw.languages?.available || []).filter((l) => supported.includes(l));
+        if (!available.length) available.push('en');
+        const all = PHONE.getCountries();
+        const allowed = Array.isArray(raw.phone?.allowedCountries) && raw.phone.allowedCountries.length
+            ? raw.phone.allowedCountries.filter((c) => PHONE.isSupportedCountry(c))
+            : all;
+        const defaultCountry = allowed.includes(raw.phone?.defaultCountry) ? raw.phone.defaultCountry : allowed[0];
+        return {
+            ...raw,
+            languages: { available, default: available.includes(raw.languages?.default) ? raw.languages.default : available[0] },
+            phone: {
+                selectable: raw.phone?.selectable !== false,
+                defaultCountry,
+                allowedCountries: allowed,
+                priorityCountries: (raw.phone?.priorityCountries || []).filter((c) => allowed.includes(c))
+            },
+            legal: raw.legal || {},
+            consentText: raw.consentText || {}
+        };
+    }
+
+    /* ---------- i18n ---------- */
+    function t(key, vars = {}) {
+        const s = (I18N[lang] && I18N[lang][key]) ?? I18N.en[key] ?? key;
+        return s.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+    }
+    function escapeHtml(v) { const d = document.createElement('div'); d.textContent = v ?? ''; return d.innerHTML; }
+    function countryName(iso) {
+        try { return new Intl.DisplayNames([lang], { type: 'region' }).of(iso) || iso; } catch { return iso; }
+    }
+    function flag(iso) { return iso.replace(/./g, (c) => String.fromCodePoint(127397 + c.charCodeAt(0))); }
+
+    function applyTexts() {
+        document.title = t('pageTitle');
+        $$('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+        $$('[data-i18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+        $$('[data-i18n-placeholder]').forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+        $$('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+        $('#consent-text').innerHTML = window.HP_CONSENT.toHtml(window.HP_CONSENT.text(cfg, lang));
+        updateProgress();
+        if (!$('#phone-error').classList.contains('hidden')) showPhoneError();
+    }
+
+    function setLanguage(next, remember) {
+        lang = next;
+        document.documentElement.lang = lang;
+        document.documentElement.dir = I18N[lang]._meta.dir;
+        applyTexts();
+        updateCountryButton();
+        if (!popover.hidden) renderCountryList();
+        renderLanguageSwitch();
+        if (remember && !isPreview) {
+            try { localStorage.setItem('hp-lang:' + cfg.id, lang); } catch {}
+            const url = new URL(location.href);
+            url.searchParams.set('lang', lang);
+            history.replaceState(null, '', url);
+        }
+    }
+
+    function renderLanguageSwitch() {
+        const box = $('#lang-switch');
+        box.hidden = cfg.languages.available.length < 2;
+        box.innerHTML = '';
+        cfg.languages.available.forEach((code) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.lang = code;
+            b.textContent = I18N[code]._meta.short;
+            b.title = I18N[code]._meta.native;
+            b.setAttribute('aria-pressed', String(code === lang));
+            b.addEventListener('click', () => { if (code !== lang) setLanguage(code, true); });
+            box.appendChild(b);
+        });
+    }
+
+    /* ---------- phone ---------- */
+    const phoneInput = $('#phone-input');
+    const countryButton = $('#country-button');
+    const popover = $('#country-popover');
+    const searchInput = $('#country-search');
+    const listEl = $('#country-list');
+    const englishNames = new Intl.DisplayNames(['en'], { type: 'region' });
+
+    function updateCountryButton() {
+        $('#country-flag').textContent = flag(country);
+        $('#country-code-text').textContent = '+' + PHONE.getCountryCallingCode(country);
+        countryButton.disabled = !cfg.phone.selectable;
+    }
+
+    function setCountry(next) {
+        country = next;
+        updateCountryButton();
+    }
+
+    /* ---------- country picker ---------- */
+    const normalize = (v) => (v || '').toLocaleLowerCase().normalize('NFD').replace(/\p{M}/gu, '');
+
+    function countryMatches(c, query) {
+        if (!query) return true;
+        const digits = query.replace(/^\+/, '');
+        if (/^\d+$/.test(digits)) return PHONE.getCountryCallingCode(c).startsWith(digits);
+        return normalize(countryName(c)).includes(query) || normalize(englishNames.of(c)).includes(query) || c.toLowerCase() === query;
+    }
+
+    function renderCountryList() {
+        const query = normalize(searchInput.value.trim());
+        const collator = new Intl.Collator(lang);
+        const first = [cfg.phone.defaultCountry, ...cfg.phone.priorityCountries.filter((c) => c !== cfg.phone.defaultCountry)];
+        const rest = cfg.phone.allowedCountries.filter((c) => !first.includes(c))
+            .sort((a, b) => collator.compare(countryName(a), countryName(b)));
+        const top = first.filter((c) => countryMatches(c, query));
+        const others = rest.filter((c) => countryMatches(c, query));
+
+        listEl.innerHTML = '';
+        const option = (c) => {
+            const li = document.createElement('li');
+            li.className = 'country-option';
+            li.id = 'country-opt-' + c;
+            li.setAttribute('role', 'option');
+            li.setAttribute('aria-selected', String(c === country));
+            li.dataset.country = c;
+            li.innerHTML = '<span class="cf"></span><span class="cn"></span><span class="cc"></span>' +
+                '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+            li.querySelector('.cf').textContent = flag(c);
+            li.querySelector('.cn').textContent = countryName(c);
+            li.querySelector('.cc').textContent = '+' + PHONE.getCountryCallingCode(c);
+            listEl.appendChild(li);
+        };
+        const label = (text) => {
+            const li = document.createElement('li');
+            li.className = 'country-group-label';
+            li.setAttribute('role', 'presentation');
+            li.textContent = text;
+            listEl.appendChild(li);
+        };
+        top.forEach(option);
+        if (others.length && top.length && !query) label(t('allCountries'));
+        others.forEach(option);
+        if (!top.length && !others.length) {
+            const li = document.createElement('li');
+            li.className = 'country-empty';
+            li.textContent = t('noCountries');
+            listEl.appendChild(li);
+        }
+        const options = $$('.country-option');
+        const selected = options.findIndex((o) => o.dataset.country === country);
+        setActive(query ? 0 : Math.max(selected, 0), true);
+    }
+
+    function setActive(index, center) {
+        const options = $$('.country-option');
+        options.forEach((o) => o.classList.remove('active'));
+        if (!options.length) { searchInput.removeAttribute('aria-activedescendant'); return; }
+        const next = options[Math.min(Math.max(index, 0), options.length - 1)];
+        next.classList.add('active');
+        searchInput.setAttribute('aria-activedescendant', next.id);
+        // Scroll only the list; scrollIntoView would also move the page.
+        if (center) listEl.scrollTop = next.offsetTop - (listEl.clientHeight - next.offsetHeight) / 2;
+        else if (next.offsetTop < listEl.scrollTop) listEl.scrollTop = next.offsetTop;
+        else if (next.offsetTop + next.offsetHeight > listEl.scrollTop + listEl.clientHeight) listEl.scrollTop = next.offsetTop + next.offsetHeight - listEl.clientHeight;
+    }
+
+    function openCountries() {
+        if (!cfg.phone.selectable || !popover.hidden) return;
+        searchInput.value = '';
+        popover.hidden = false;
+        // Fit the list between the phone field and the bottom buttons; scroll the page up if that space is too small.
+        const searchHeight = popover.querySelector('.country-search').offsetHeight;
+        const space = () => $('#bottom-nav').getBoundingClientRect().top - $('#phone-wrapper').getBoundingClientRect().bottom - 16 - searchHeight - 12;
+        if (space() < 240) window.scrollBy({ top: $('#phone-wrapper').getBoundingClientRect().top - 80, behavior: 'instant' });
+        listEl.style.maxHeight = Math.max(160, Math.min(340, space())) + 'px';
+        countryButton.setAttribute('aria-expanded', 'true');
+        renderCountryList();
+        // On phones the keyboard would cover the list, so search is focused only with a mouse or trackpad.
+        if (matchMedia('(pointer: fine)').matches) searchInput.focus();
+    }
+
+    function closeCountries(returnFocus) {
+        if (popover.hidden) return;
+        popover.hidden = true;
+        countryButton.setAttribute('aria-expanded', 'false');
+        if (returnFocus) countryButton.focus();
+    }
+
+    function chooseCountry(c) {
+        setCountry(c);
+        closeCountries(false);
+        formatPhoneInput();
+        hidePhoneError();
+        updateNext();
+        phoneInput.focus();
+    }
+
+    countryButton.addEventListener('click', () => (popover.hidden ? openCountries() : closeCountries(true)));
+    countryButton.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') { e.preventDefault(); openCountries(); searchInput.focus(); }
+    });
+    searchInput.addEventListener('input', renderCountryList);
+    searchInput.addEventListener('keydown', (e) => {
+        const options = $$('.country-option');
+        const current = options.findIndex((o) => o.classList.contains('active'));
+        if (e.key === 'ArrowDown') { e.preventDefault(); setActive(current + 1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(current - 1); }
+        else if (e.key === 'Enter') { e.preventDefault(); if (options[current]) chooseCountry(options[current].dataset.country); }
+        else if (e.key === 'Escape') { e.preventDefault(); closeCountries(true); }
+    });
+    listEl.addEventListener('click', (e) => {
+        const item = e.target.closest('.country-option');
+        if (item) chooseCountry(item.dataset.country);
+    });
+    document.addEventListener('pointerdown', (e) => {
+        if (!popover.hidden && !popover.contains(e.target) && !countryButton.contains(e.target)) closeCountries(false);
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCountries(true); });
+
+    function parsedPhone() {
+        const value = phoneInput.value.trim();
+        if (!value) return null;
+        const p = PHONE.parsePhoneNumberFromString(value, country);
+        if (!p || !p.isValid()) return null;
+        // +1 and +7 cover several countries, so compare dialling codes instead of country names.
+        if (p.countryCallingCode !== PHONE.getCountryCallingCode(country)) return null;
+        return p;
+    }
+
+    function formatPhoneInput() {
+        const raw = phoneInput.value;
+        if (raw.trim().startsWith('+')) {
+            const p = PHONE.parsePhoneNumberFromString(raw);
+            if (p && p.isValid() && p.country) {
+                if (cfg.phone.selectable && cfg.phone.allowedCountries.includes(p.country)) setCountry(p.country);
+                if (p.countryCallingCode === PHONE.getCountryCallingCode(country)) {
+                    phoneInput.value = p.formatNational();
+                    return;
+                }
+            }
+            phoneInput.value = new PHONE.AsYouType().input('+' + raw.replace(/\D/g, ''));
+            return;
+        }
+        phoneInput.value = new PHONE.AsYouType(country).input(raw.replace(/\D/g, ''));
+    }
+
+    function showPhoneError() {
+        $('#phone-error').textContent = t('phoneInvalid', { country: countryName(country) });
+        $('#phone-error').classList.remove('hidden');
+        $('#phone-wrapper').classList.add('error');
+    }
+    function hidePhoneError() {
+        $('#phone-error').classList.add('hidden');
+        $('#phone-wrapper').classList.remove('error');
+    }
+
+    function updateNext() {
+        const ok = Boolean(parsedPhone()) && $('#check-mandatory').checked;
+        $('#btn-step1').disabled = !ok;
+        $('#btn-step1').classList.toggle('disabled', !ok);
+        return ok;
+    }
+
+    $('#phone-wrapper').addEventListener('click', (e) => { if (!e.target.closest('#country-button')) phoneInput.focus(); });
+    phoneInput.addEventListener('focus', () => $('#phone-wrapper').classList.add('focused'));
+    phoneInput.addEventListener('blur', () => {
+        $('#phone-wrapper').classList.remove('focused');
+        if (phoneInput.value.trim() && !parsedPhone()) showPhoneError();
+    });
+    phoneInput.addEventListener('input', () => { formatPhoneInput(); hidePhoneError(); updateNext(); });
+    $('#check-mandatory').addEventListener('change', updateNext);
+
+    function continueToFamily() {
+        if (!updateNext()) { if (phoneInput.value.trim() && !parsedPhone()) showPhoneError(); return; }
+        if (!$('#children-list').children.length) addChild();
+        goTo(2);
+    }
+    $('#btn-step1').addEventListener('click', continueToFamily);
+    phoneInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); continueToFamily(); } });
+
+    /* ---------- steps ---------- */
+    function updateProgress() {
+        const names = { 1: t('stepPhone'), 2: t('stepFamily') };
+        $('#progress-text').textContent = step === 3 ? t('progressDone') : t('progress', { n: step, name: names[step] });
+        [1, 2].forEach((i) => {
+            const seg = $('#seg-' + i);
+            seg.classList.remove('active', 'done');
+            if (step === 3 || i < step) seg.classList.add('done');
+            else if (i === step) seg.classList.add('active');
+        });
+    }
+
+    function goTo(target) {
+        if (target === step) return;
+        const oldEl = $('#step-' + step);
+        const newEl = $('#step-' + target);
+        step = target;
+        updateProgress();
+        [1, 2, 3].forEach((i) => { $('#bottom-bar-' + i).style.display = i === step ? 'flex' : 'none'; });
+        oldEl.style.transition = 'opacity 180ms ease, transform 180ms ease';
+        oldEl.style.opacity = '0';
+        oldEl.style.transform = 'translateY(-12px)';
+        setTimeout(() => {
+            oldEl.classList.remove('step-visible');
+            oldEl.removeAttribute('style');
+            newEl.style.opacity = '0';
+            newEl.style.transform = 'translateY(12px)';
+            newEl.classList.add('step-visible');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            newEl.offsetHeight;
+            newEl.style.transition = 'opacity 220ms ease, transform 220ms ease';
+            newEl.style.opacity = '1';
+            newEl.style.transform = 'translateY(0)';
+            setTimeout(() => newEl.removeAttribute('style'), 250);
+        }, 180);
+    }
+
+    /* ---------- children ---------- */
+    function addChild() {
+        const card = document.createElement('div');
+        card.className = 'child-card';
+        const today = new Date().toISOString().split('T')[0];
+        card.innerHTML =
+            '<div class="child-header">' +
+                '<div class="child-title"><span class="child-num-badge"></span> <span data-i18n="child"></span></div>' +
+                '<button class="child-del" type="button" data-i18n-aria="removeChild">' +
+                    '<svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>' +
+                '</button>' +
+            '</div>' +
+            '<div class="child-fields">' +
+                '<div class="child-field-group"><span class="child-input-label" data-i18n="childName"></span>' +
+                    '<input type="text" class="form-input child-name-input" data-i18n-placeholder="childNamePlaceholder" enterkeyhint="next"></div>' +
+                '<div class="child-field-group"><span class="child-input-label" data-i18n="dob"></span>' +
+                    '<input type="date" class="form-input child-dob-input" max="' + today + '" min="1990-01-01"></div>' +
+            '</div>' +
+            '<p class="form-error hidden child-err"></p>';
+        card.querySelector('.child-del').addEventListener('click', () => {
+            card.classList.add('child-card--exit');
+            setTimeout(() => { card.remove(); renumberChildren(); }, 280);
+        });
+        $('#children-list').appendChild(card);
+        applyTexts();
+        renumberChildren();
+        requestAnimationFrame(() => card.classList.add('child-card--in'));
+    }
+    function renumberChildren() { $$('.child-card').forEach((c, i) => { c.querySelector('.child-num-badge').textContent = i + 1; }); }
+
+    $('#btn-add-child').addEventListener('click', addChild);
+    $('#btn-step2-back').addEventListener('click', () => goTo(1));
+
+    function setFieldError(el, key) {
+        if (key) { el.dataset.i18n = key; el.textContent = t(key); el.classList.remove('hidden'); }
+        else { delete el.dataset.i18n; el.classList.add('hidden'); }
+    }
+
+    $('#btn-step2').addEventListener('click', () => {
+        let hasError = false;
+        const fio = $('#fio-input').value.trim();
+        $('#fio-error').classList.toggle('hidden', Boolean(fio));
+        $('#fio-input').classList.toggle('input-error', !fio);
+        if (!fio) hasError = true;
+
+        const cards = $$('.child-card');
+        $('#children-error').classList.toggle('hidden', cards.length > 0);
+        if (!cards.length) hasError = true;
+
+        const children = [];
+        cards.forEach((c) => {
+            const nameIn = c.querySelector('.child-name-input');
+            const dobIn = c.querySelector('.child-dob-input');
+            const name = nameIn.value.trim();
+            let key = null;
+            if (!name && !dobIn.value) key = 'childErrorBoth';
+            else if (!name) key = 'childErrorName';
+            else if (!dobIn.value) key = 'childErrorDob';
+            else if (!dobIn.validity.valid) key = 'childErrorDobInvalid';
+            nameIn.classList.toggle('input-error', !name);
+            dobIn.classList.toggle('input-error', key !== null && key !== 'childErrorName');
+            setFieldError(c.querySelector('.child-err'), key);
+            if (key) hasError = true; else children.push({ name, dob: dobIn.value });
+        });
+        if (hasError) return;
+
+        const phone = parsedPhone();
+        const payload = { parkId: cfg.id, lang, phone: phone.number, phoneCountry: country, fio, children };
+        window.HP_LAST_REGISTRATION = payload;
+        console.info('[registration payload]', payload);
+
+        $('#summary-fio').textContent = fio;
+        $('#summary-phone').textContent = phone.formatInternational();
+        $('#summary-children-list').innerHTML = children.map((ch, i) =>
+            '<div class="summary-child"><span class="summary-value">' + (i + 1) + '. ' + escapeHtml(ch.name) +
+            '</span> <small class="ltr-value">(' + escapeHtml(ch.dob) + ')</small></div>').join('');
+        toast(t('toastDone'));
+        goTo(3);
+    });
+
+    $('#btn-restart').addEventListener('click', () => {
+        phoneInput.value = '';
+        hidePhoneError();
+        $('#check-mandatory').checked = false;
+        setCountry(cfg.phone.defaultCountry);
+        $('#fio-input').value = '';
+        $('#fio-input').classList.remove('input-error');
+        $('#fio-error').classList.add('hidden');
+        $('#children-list').innerHTML = '';
+        $('#children-error').classList.add('hidden');
+        updateNext();
+        goTo(1);
+    });
+
+    function toast(message) {
+        const el = document.createElement('div');
+        el.className = 'toast toast--success';
+        el.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span></span>';
+        el.querySelector('span').textContent = message;
+        $('#toast-container').appendChild(el);
+        requestAnimationFrame(() => el.classList.add('toast--show'));
+        setTimeout(() => { el.classList.remove('toast--show'); el.classList.add('toast--hide'); setTimeout(() => el.remove(), 300); }, 3000);
+    }
+
+    /* ---------- start ---------- */
+    function start(rawConfig, previewLang) {
+        const previousDefault = cfg && cfg.languages.default;
+        cfg = normalizeConfig(rawConfig);
+        let saved = null;
+        if (!isPreview) { try { saved = localStorage.getItem('hp-lang:' + cfg.id); } catch {} }
+        // In the settings preview keep the language on screen unless the default language itself changed.
+        const kept = isPreview && previousDefault === cfg.languages.default ? lang : null;
+        const nextLang = [previewLang, params.get('lang'), saved, kept, cfg.languages.default].find((l) => cfg.languages.available.includes(l));
+        country = cfg.phone.defaultCountry;
+        closeCountries(false);
+        setLanguage(nextLang, false);
+        formatPhoneInput();
+        hidePhoneError();
+        updateNext();
+        document.body.classList.add('ready');
+    }
+
+    function showNotFound() {
+        lang = 'en';
+        $('#app').innerHTML = '<div class="card" style="margin-top:24px;text-align:center"><img src="fox.webp" alt="" class="success-mascot">' +
+            '<h1 class="success-title">' + t('notFoundTitle') + '</h1><p class="success-copy">' + t('notFoundCopy') + '</p></div>';
+        $('#bottom-nav').remove();
+        document.body.classList.add('ready');
+    }
+
+    if (isPreview) {
+        // The settings page sends a draft config; nothing is saved from here.
+        window.addEventListener('message', (e) => {
+            if (e.origin !== location.origin || e.data?.type !== 'hp-preview-config') return;
+            start(e.data.config, e.data.lang);
+        });
+        parent.postMessage({ type: 'hp-preview-ready' }, location.origin);
+    } else {
+        const parkId = params.get('park') || window.HP_DEFAULT_PARK;
+        if (Object.prototype.hasOwnProperty.call(PARKS, parkId)) start(PARKS[parkId]); else showNotFound();
+    }
+    })();
+    </script>
+</body>
+</html>
+

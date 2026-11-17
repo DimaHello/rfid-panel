@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Park — примеры международной формы</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --orange: #FF6022; --ink: #1A1A1A; --soft: #747474; --border: #E5E5E5; }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Nunito', system-ui, sans-serif; color: var(--ink); background: #F7F7F7; }
+        main { max-width: 760px; margin: 0 auto; padding: 40px 20px 60px; }
+        header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+        header img { width: 84px; height: 84px; object-fit: contain; }
+        h1 { font-size: 1.7rem; line-height: 1.15; margin: 0 0 6px; }
+        h1 span { color: var(--orange); }
+        .lead { margin: 0; color: var(--soft); line-height: 1.5; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+        .card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 18px; }
+        .card h2 { font-size: 1.1rem; margin: 0 0 4px; }
+        .meta { color: var(--soft); font-size: .85rem; margin: 0 0 14px; line-height: 1.45; }
+        .links { display: flex; flex-wrap: wrap; gap: 8px; }
+        .links a {
+            text-decoration: none; font-weight: 800; font-size: .9rem; color: var(--orange);
+            background: rgba(255,96,34,.08); padding: 8px 14px; border-radius: 999px;
+        }
+        .links a:hover { background: var(--orange); color: #fff; }
+        .settings { margin-top: 14px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .settings .links a { background: var(--orange); color: #fff; }
+        .note { margin-top: 24px; color: var(--soft); font-size: .85rem; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <img src="fox.webp" alt="">
+            <div>
+                <h1>Международная форма <span>Hello Park</span></h1>
+                <p class="lead">Одна форма для всех стран: телефон → данные семьи → готово. Язык и код страны задаются настройками парка.</p>
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h2>🇦🇪 Дубай</h2>
+                <p class="meta">Английский по умолчанию, можно арабский. Код ОАЭ +971, можно сменить.</p>
+                <div class="links">
+                    <a href="international.html?park=dubai&lang=en">English</a>
+                    <a href="international.html?park=dubai&lang=ar">العربية</a>
+                </div>
+            </div>
+            <div class="card">
+                <h2>🇴🇲 Оман</h2>
+                <p class="meta">Английский по умолчанию, можно арабский. Код Омана +968, можно сменить.</p>
+                <div class="links">
+                    <a href="international.html?park=oman&lang=en">English</a>
+                    <a href="international.html?park=oman&lang=ar">العربية</a>
+                </div>
+            </div>
+            <div class="card">
+                <h2>🇵🇪 Лима</h2>
+                <p class="meta">Испанский по умолчанию, можно английский. Код Перу +51, можно сменить.</p>
+                <div class="links">
+                    <a href="international.html?park=lima&lang=es">Español</a>
+                    <a href="international.html?park=lima&lang=en">English</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card settings">
+            <div>
+                <h2>⚙️ Настройки формы</h2>
+                <p class="meta" style="margin:0">Языки, код страны и текст согласия с живым предпросмотром.</p>
+            </div>
+            <div class="links"><a href="international-settings.html">Открыть настройки</a></div>
+        </div>
+
+        <p class="note">Это демо: подтверждения номера нет, данные никуда не отправляются. Для проверки подойдёт любой настоящий по формату мобильный номер, например 050 123 4567 для ОАЭ, 9212 3456 для Омана, 912 345 678 для Перу.</p>
+    </main>
+</body>
+</html>
+

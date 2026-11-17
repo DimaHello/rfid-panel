@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки международной формы — Hello Park</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --orange: #FF6022; --ink: #1A1A1A; --soft: #747474; --border: #E5E5E5; --bg: #F3F3F3; }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Nunito', system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+        .layout { display: grid; grid-template-columns: minmax(320px, 440px) 410px; gap: 32px; justify-content: center; padding: 32px 24px; align-items: start; }
+        h1 { font-size: 1.5rem; margin: 0 0 6px; }
+        .lead { color: var(--soft); margin: 0 0 24px; line-height: 1.5; }
+        .panel { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .panel h2 { font-size: 1rem; margin: 0 0 14px; }
+        label.row { display: flex; align-items: center; gap: 10px; padding: 7px 0; cursor: pointer; }
+        .field { display: grid; gap: 6px; margin-top: 12px; }
+        .field span { font-size: .8rem; color: var(--soft); font-weight: 700; }
+        select { font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); background: #fff; width: 100%; }
+        input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--orange); }
+        .hint { font-size: .8rem; color: var(--soft); margin: 8px 0 0; line-height: 1.45; }
+        .native { color: var(--soft); }
+        pre { margin: 0; background: #1E1E24; color: #F5F5F5; padding: 16px; border-radius: 14px; font-size: .75rem; overflow: auto; max-height: 360px; }
+        .preview { position: sticky; top: 24px; }
+        .phone { width: 410px; height: 820px; border: 10px solid #1A1A1A; border-radius: 44px; overflow: hidden; background: #F7F7F7; box-shadow: 0 20px 60px rgba(0,0,0,.18); }
+        iframe { width: 100%; height: 100%; border: 0; }
+        .guest-link { display: inline-block; margin-top: 12px; color: var(--orange); font-weight: 800; }
+        .guest-link[hidden] { display: none; }
+        .consent-block { padding: 14px 0; border-top: 1px solid var(--border); }
+        .consent-block:first-of-type { border-top: 0; padding-top: 0; }
+        .consent-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: 800; }
+        .consent-head .state { font-size: .75rem; font-weight: 700; color: var(--soft); }
+        .consent-head .state.custom { color: var(--orange); }
+        textarea { width: 100%; min-height: 92px; font: 500 .9rem/1.45 'Nunito', system-ui, sans-serif; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border); resize: vertical; }
+        textarea:focus, input[type="url"]:focus { outline: 2px solid rgba(255,96,34,.3); border-color: var(--orange); }
+        .link-row { display: flex; gap: 8px; margin-top: 8px; }
+        .link-row input { flex: 1; min-width: 0; font: inherit; font-size: .85rem; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); }
+        .btn { font: 800 .8rem 'Nunito', system-ui, sans-serif; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: #fff; cursor: pointer; white-space: nowrap; }
+        .btn:hover { border-color: var(--orange); color: var(--orange); }
+        .btn-reset { margin-top: 8px; border: 0; padding: 4px 0; background: none; color: var(--soft); text-decoration: underline; }
+        @media (max-width: 920px) { .layout { grid-template-columns: 1fr; } .preview { position: static; } .phone { margin: 0 auto; } }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <div>
+            <h1>Настройки международной формы</h1>
+            <p class="lead">Выберите парк и поменяйте настройки: справа сразу видно, что увидит гость. Здесь изменения применяются только к предпросмотру; в рабочей версии их сохраняет админка.</p>
+
+            <div class="panel">
+                <h2>Парк</h2>
+                <select id="park"></select>
+                <a class="guest-link" id="guest-link" target="_blank">Открыть форму гостя ↗</a>
+            </div>
+
+            <div class="panel">
+                <h2>Языки</h2>
+                <div id="languages"></div>
+                <div class="field">
+                    <span>Язык по умолчанию</span>
+                    <select id="default-lang"></select>
+                </div>
+                <p class="hint">Если включено больше одного языка, у гостя появляется переключатель в шапке формы.</p>
+            </div>
+
+            <div class="panel">
+                <h2>Код страны</h2>
+                <label class="row"><input type="checkbox" id="selectable"> Гость может выбрать другую страну</label>
+                <div class="field">
+                    <span>Страна по умолчанию</span>
+                    <select id="default-country"></select>
+                </div>
+                <p class="hint">Номер проверяется по правилам выбранной страны: принимаются только мобильные номера.</p>
+            </div>
+
+            <div class="panel">
+                <h2>Текст согласия</h2>
+                <div id="consents"></div>
+                <p class="hint">Ссылка в тексте пишется так: <code>[правила парка](https://адрес)</code>. Можно выделить слова и нажать «Сделать ссылкой». Пустое поле или «Вернуть по умолчанию» — гость видит стандартный текст.</p>
+            </div>
+
+            <div class="panel">
+                <h2>Конфиг парка</h2>
+                <pre id="json"></pre>
+            </div>
+        </div>
+
+        <div class="preview">
+            <div class="phone"><iframe id="frame" src="international.html?preview=1" title="Предпросмотр формы"></iframe></div>
+        </div>
+    </div>
+
+    <script src="vendor/libphonenumber-mobile.js"></script>
+    <script src="international/i18n.js"></script>
+    <script src="international/parks.js"></script>
+    <script src="international/consent.js"></script>
+    <script>
+    (() => {
+        const PHONE = window.libphonenumber;
+        const I18N = window.HP_I18N;
+        const PARKS = window.HP_PARKS;
+        const $ = (s) => document.querySelector(s);
+        const frame = $('#frame');
+        let draft = null;
+        let frameReady = false;
+        let previewLang = null;
+
+        const ruName = new Intl.DisplayNames(['ru'], { type: 'region' });
+        const flag = (iso) => iso.replace(/./g, (c) => String.fromCodePoint(127397 + c.charCodeAt(0)));
+
+        Object.values(PARKS).forEach((p) => $('#park').add(new Option(p.adminName || p.id, p.id)));
+        PHONE.getCountries()
+            .sort((a, b) => ruName.of(a).localeCompare(ruName.of(b), 'ru'))
+            .forEach((c) => $('#default-country').add(new Option(flag(c) + ' ' + ruName.of(c) + ' (+' + PHONE.getCountryCallingCode(c) + ')', c)));
+
+        function loadPark(id) {
+            draft = JSON.parse(JSON.stringify(PARKS[id]));
+            previewLang = null;
+            $('#guest-link').href = 'international.html?park=' + encodeURIComponent(id);
+            render();
+        }
+
+        function render() {
+            const box = $('#languages');
+            box.innerHTML = '';
+            Object.entries(I18N).forEach(([code, dict]) => {
+                const row = document.createElement('label');
+                row.className = 'row';
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = draft.languages.available.includes(code);
+                cb.addEventListener('change', () => {
+                    const list = Object.keys(I18N).filter((c) => c === code ? cb.checked : draft.languages.available.includes(c));
+                    if (!list.length) { cb.checked = true; return; }
+                    draft.languages.available = list;
+                    if (!list.includes(draft.languages.default)) draft.languages.default = list[0];
+                    render();
+                });
+                row.append(cb, ' ' + dict._meta.adminName + ' ');
+                const native = document.createElement('span');
+                native.className = 'native';
+                native.textContent = '· ' + dict._meta.native;
+                row.append(native);
+                box.appendChild(row);
+            });
+
+            const def = $('#default-lang');
+            def.innerHTML = '';
+            draft.languages.available.forEach((code) => def.add(new Option(I18N[code]._meta.adminName, code)));
+            def.value = draft.languages.default;
+
+            renderConsents();
+            $('#selectable').checked = draft.phone.selectable !== false;
+            $('#default-country').value = draft.phone.defaultCountry;
+            refreshOutput();
+        }
+
+        function refreshOutput() {
+            $('#json').textContent = JSON.stringify(draft, null, 2);
+            const changed = JSON.stringify(draft) !== JSON.stringify(PARKS[draft.id]);
+            $('#guest-link').hidden = changed;
+            send();
+        }
+
+        function renderConsents() {
+            const box = $('#consents');
+            box.innerHTML = '';
+            draft.languages.available.forEach((code) => {
+                const block = document.createElement('div');
+                block.className = 'consent-block';
+                block.innerHTML =
+                    '<div class="consent-head"><span></span><span class="state"></span></div>' +
+                    '<textarea></textarea>' +
+                    '<div class="link-row"><input type="url" placeholder="https://адрес ссылки"><button type="button" class="btn btn-link">Сделать ссылкой</button></div>' +
+                    '<button type="button" class="btn btn-reset">Вернуть по умолчанию</button>';
+                const area = block.querySelector('textarea');
+                const state = block.querySelector('.state');
+                const reset = block.querySelector('.btn-reset');
+                block.querySelector('.consent-head span').textContent = I18N[code]._meta.adminName + ' · ' + I18N[code]._meta.native;
+                area.dir = I18N[code]._meta.dir;
+                area.value = window.HP_CONSENT.text(draft, code);
+
+                const sync = () => {
+                    const value = area.value.trim();
+                    const custom = value && value !== window.HP_CONSENT.defaultText(draft, code);
+                    draft.consentText = draft.consentText || {};
+                    if (custom) draft.consentText[code] = area.value; else delete draft.consentText[code];
+                    if (!Object.keys(draft.consentText).length) delete draft.consentText;
+                    state.textContent = custom ? 'свой текст' : 'по умолчанию';
+                    state.classList.toggle('custom', Boolean(custom));
+                    reset.hidden = !custom;
+                    refreshOutput();
+                };
+                area.addEventListener('input', sync);
+                area.addEventListener('focus', () => { previewLang = code; send(); });
+                reset.addEventListener('click', () => { area.value = window.HP_CONSENT.defaultText(draft, code); sync(); });
+                block.querySelector('.btn-link').addEventListener('click', () => {
+                    const url = block.querySelector('input[type="url"]').value.trim();
+                    if (!/^(https?:\/\/|mailto:|tel:)/i.test(url)) { block.querySelector('input[type="url"]').focus(); return; }
+                    const { selectionStart: a, selectionEnd: b, value } = area;
+                    const label = value.slice(a, b) || 'текст ссылки';
+                    area.value = value.slice(0, a) + '[' + label + '](' + url + ')' + value.slice(b);
+                    area.focus();
+                    sync();
+                });
+                box.appendChild(block);
+                state.textContent = draft.consentText && draft.consentText[code] ? 'свой текст' : 'по умолчанию';
+                state.classList.toggle('custom', Boolean(draft.consentText && draft.consentText[code]));
+                reset.hidden = !(draft.consentText && draft.consentText[code]);
+            });
+        }
+
+        function send() {
+            if (frameReady && draft) frame.contentWindow.postMessage({ type: 'hp-preview-config', config: draft, lang: previewLang }, location.origin);
+        }
+
+        $('#park').addEventListener('change', (e) => loadPark(e.target.value));
+        $('#default-lang').addEventListener('change', (e) => { draft.languages.default = e.target.value; previewLang = null; render(); });
+        $('#selectable').addEventListener('change', (e) => { draft.phone.selectable = e.target.checked; render(); });
+        $('#default-country').addEventListener('change', (e) => {
+            draft.phone.defaultCountry = e.target.value;
+            draft.phone.priorityCountries = [e.target.value, ...(draft.phone.priorityCountries || []).filter((c) => c !== e.target.value)];
+            render();
+        });
+        window.addEventListener('message', (e) => {
+            if (e.origin === location.origin && e.data?.type === 'hp-preview-ready') { frameReady = true; send(); }
+        });
+        // The frame can finish loading before this script runs, so also check its state directly.
+        const markReady = () => { frameReady = true; send(); };
+        frame.addEventListener('load', markReady);
+        if (frame.contentDocument && frame.contentDocument.readyState === 'complete' && frame.contentWindow.location.href !== 'about:blank') markReady();
+
+        loadPark(new URLSearchParams(location.search).get('park') || window.HP_DEFAULT_PARK);
+    })();
+    </script>
+</body>
+</html>
+
