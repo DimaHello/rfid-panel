@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналитика - Hello Park</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <script>
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            orange: '#ff5a28',
+                            orangeHover: '#e64a1c',
+                            purple: '#5123d4',
+                            purpleHover: '#3f19a8',
+                            blue: '#1ba0f2',
+                            bg: '#f4f5f9'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Hanken Grotesk', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                        mono: ['DM Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f4f5f9;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .filter-pill {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+            border-radius: 9999px;
+            background-color: #ffffff;
+            color: #4b5563;
+            border: 2px solid #f3f4f6;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .filter-pill:hover {
+            background-color: #f3f4f6;
+            border-color: #e5e7eb;
+            color: #1f2937;
+        }
+        .filter-pill.active {
+            background-color: #ff5a28;
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(255, 90, 40, 0.25);
+        }
+        .dark .filter-pill {
+            background-color: #1f2937;
+            color: #d1d5db;
+            border-color: #374151;
+        }
+        .dark .filter-pill:hover {
+            background-color: #374151;
+            color: #ffffff;
+        }
+        .dark .filter-pill.active {
+            background-color: #ff5a28;
+            color: #ffffff;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body class="text-gray-900 dark:text-gray-100 dark:bg-slate-900">
+
+    
+
+    <!-- Main Content Container -->
+    <main class="container mt-8 space-y-8">
+        <!-- Заголовок и фильтр периода -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white font-heading tracking-tight">Панель аналитики RFID</h1>
+                <p class="text-xs text-gray-400 font-medium mt-1">Игровая активность, время пребывания в парке и рейтинги аватаров</p>
+            </div>
+
+            <!-- Filter Period Pills and Export Button -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-[11px] font-extrabold text-gray-400 dark:text-gray-500 tracking-wider mr-1 uppercase">ПЕРИОД:</span>
+                    <button onclick="setTimeframe('day')" id="tf-day" class="filter-pill">День</button>
+                    <button onclick="setTimeframe('week')" id="tf-week" class="filter-pill">Неделя</button>
+                    <button onclick="setTimeframe('month')" id="tf-month" class="filter-pill active">Месяц</button>
+                    <button onclick="setTimeframe('custom')" id="tf-custom" class="filter-pill">Выбор периода</button>
+
+                    <!-- Date Picker for Custom Period -->
+                    <div id="custom-date-box" class="hidden flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm text-xs font-bold">
+                        <input type="date" id="date-from" value="2026-10-11" class="bg-transparent focus:outline-none dark:text-white">
+                        <span class="text-gray-400">—</span>
+                        <input type="date" id="date-to" value="2026-11-10" class="bg-transparent focus:outline-none dark:text-white">
+                        <button onclick="applyCustom()" class="bg-brand-orange text-white px-3 py-1 rounded-full text-xs font-bold hover:bg-brand-orangeHover transition-colors">OK</button>
+                    </div>
+                </div>
+
+                <!-- Кнопка Экспорт -->
+                <button onclick="openExportModal()" class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-extrabold text-gray-800 dark:text-white hover:border-brand-orange hover:text-brand-orange dark:hover:border-brand-orange transition-all shadow-sm">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span>Экспорт</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Показатели за выбранный период. Демонстрационные данные. -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- 1. Кол-во созданных детей -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700">
+                <span class="text-[11px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-2">Количество созданных детей</span>
+                <div class="text-[38px] font-extrabold text-gray-900 dark:text-white font-heading tracking-tight" id="val-registered-children">530</div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-2">Сколько детей заведено в RFID-панели за выбранный период.</p>
+            </div>
+
+            <!-- 2. Кол-во привязанных браслетов -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700">
+                <span class="text-[11px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-2">Количество привязанных браслетов</span>
+                <div class="text-[38px] font-extrabold text-gray-900 dark:text-white font-heading tracking-tight" id="val-assigned-bracelets">1 420</div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-2">Сколько браслетов привязано к детям в RFID-панели за выбранный период.</p>
+            </div>
+
+            <!-- 3. Кол-во созданных аватаров -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700">
+                <span class="text-[11px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-2">Количество созданных аватаров</span>
+                <div class="text-[38px] font-extrabold text-gray-900 dark:text-white font-heading tracking-tight" id="val-created-avatars">485</div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-2">Сколько аватаров создано в квест-портале за выбранный период.</p>
+            </div>
+        </div>
+
+        <!-- Время пребывания и очистка браслетов -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Среднее время пребывания в парке -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700">
+                <span class="text-[11px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-2">
+                    Среднее время пребывания в парке
+                </span>
+                <div class="text-[38px] font-extrabold text-gray-900 dark:text-white font-heading tracking-tight" id="val-avg-time">
+                    2 ч 18 мин
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-2">
+                    Рассчитывается: начало от привязки аватара к браслету и заканчивается когда браслет был приложен к кнопке «Очистить браслет».
+                </p>
+            </div>
+
+            <!-- Количество браслетов при кнопке «Очистить браслет» -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700">
+                <span class="text-[11px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-2">
+                    Количество браслетов при кнопке «Очистить браслет»
+                </span>
+                <div class="text-[38px] font-extrabold text-gray-900 dark:text-white font-heading tracking-tight" id="val-cleared-count">
+                    1 342
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-2">
+                    Общее количество браслетов, которые были приложены к считывателю при кнопке «Очистить браслет».
+                </p>
+            </div>
+
+        </div>
+
+        <!-- 2. Воронки -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Воронка повторных посещений (Когортная) -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700 flex flex-col justify-between">
+                <div>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-gray-900 dark:text-white">Воронка повторных посещений</h3>
+                            
+                        </div>
+                        
+                        <!-- Выбор базиса когорты (период первого визита) -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Базис когорты:</span>
+                            <div class="relative inline-block">
+                                <select id="cohort-basis-select" onchange="changeCohortBasis(this.value)" class="appearance-none bg-gray-100 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-full px-3.5 py-1.5 pr-8 text-xs font-extrabold text-gray-800 dark:text-white focus:outline-none cursor-pointer">
+                                    <option value="last_month" selected id="opt-last-month">Прошлый месяц</option>
+                                    <option value="current_month" id="opt-current-month">Текущий месяц</option>
+                                    <option value="custom">Выбор периода</option>
+                                </select>
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 dark:text-gray-400 text-[10px]">▼</span>
+                            </div>
+
+                            <!-- Поля дат для самостоятельного выбора когорты -->
+                            <div id="cohort-custom-box" class="hidden flex items-center gap-1.5 bg-gray-50 dark:bg-slate-700/60 px-3 py-1 rounded-full border border-gray-200 dark:border-slate-600 text-xs font-bold">
+                                <input type="date" id="cohort-date-from" value="2026-09-01" class="bg-transparent focus:outline-none dark:text-white text-[11px]">
+                                <span class="text-gray-400">—</span>
+                                <input type="date" id="cohort-date-to" value="2026-09-30" class="bg-transparent focus:outline-none dark:text-white text-[11px]">
+                                <button onclick="applyCohortCustom()" class="bg-brand-orange text-white px-2 py-0.5 rounded-full text-[10px] font-bold hover:bg-brand-orangeHover transition-colors">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3.5" id="retention-container">
+                        <!-- Заполняется JS: База когорты + Шаг 1..3 -->
+                    </div>
+                </div>
+
+                <div class="pt-5 mt-5 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-400 font-medium">
+                    Базис: дети с первым визитом в когорте. Возвраты фиксируются за выбранный период.
+                </div>
+            </div>
+
+            <!-- Воронка полученных призов (1..10) -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-1">Воронка полученных призов</h3>
+                    <p class="text-[11px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">Шаги от 1 до 10 призов</p>
+                    
+                    <div class="space-y-1.5" id="prizes-funnel-container">
+                        <!-- 1 приз ... 10 призов -->
+                    </div>
+                </div>
+
+                <div class="pt-4 mt-4 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-400 font-medium">
+                    Получили 10 призов: <b class="text-gray-900 dark:text-white" id="prizes-top-count">9 чел.</b>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 3. Рейтинг призов и Рейтинг аватаров -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Рейтинг полученных призов -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700">
+                <h3 class="text-lg font-extrabold text-gray-900 dark:text-white mb-6">Рейтинг полученных призов</h3>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="text-gray-400 dark:text-gray-500 uppercase tracking-widest text-[11px] font-extrabold border-b border-gray-100 dark:border-slate-700">
+                                <th class="pb-3 px-4">НАЗВАНИЕ ПРИЗА</th>
+                                <th class="pb-3 px-4 text-right">СКОЛЬКО ПОЛУЧИЛИ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50 dark:divide-slate-700" id="prizes-rating-tbody">
+                            <!-- Заполняется JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Рейтинг аватаров -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-[32px] shadow-sm border border-gray-100 dark:border-slate-700 flex flex-col justify-between">
+                <div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-extrabold text-gray-900 dark:text-white">Рейтинг аватаров</h3>
+                            <span class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Кликните на строку для контактов</span>
+                        </div>
+                        
+                        <!-- 4 Рейтинга (Сортировки) -->
+                        <div class="inline-flex p-1 bg-gray-100 dark:bg-slate-700 rounded-full text-[11px] font-extrabold flex-wrap gap-1">
+                            <button onclick="setSort('total_points')" id="sort-total_points" class="px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 text-brand-orange shadow-sm transition-all">Всего плюсиков</button>
+                            <button onclick="setSort('points_growth')" id="sort-points_growth" class="px-3 py-1.5 rounded-full text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">Прирост плюсиков</button>
+                            <button onclick="setSort('total_level')" id="sort-total_level" class="px-3 py-1.5 rounded-full text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">Макс. уровень</button>
+                            <button onclick="setSort('level_growth')" id="sort-level_growth" class="px-3 py-1.5 rounded-full text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all">Прирост уровня</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead id="avatars-thead">
+                                <!-- Рендерится JS в зависимости от плюсиков или уровней -->
+                            </thead>
+                            <tbody class="divide-y divide-gray-50 dark:divide-slate-700 cursor-pointer" id="avatars-tbody">
+                                <!-- Заполняется JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Пагинация по 10 -->
+                <div class="flex items-center justify-between pt-4 mt-4 border-t border-gray-100 dark:border-gray-700 text-xs">
+                    <span class="text-gray-400 font-medium" id="page-info">Показано 1–10 из 25</span>
+                    <div class="flex items-center gap-1.5 font-extrabold">
+                        <button onclick="changePage(-1)" id="btn-prev-page" class="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all">Назад</button>
+                        <div id="page-numbers-container" class="flex items-center gap-1"></div>
+                        <button onclick="changePage(1)" id="btn-next-page" class="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all">Вперед</button>
+                    </div>
+                </div>
+            </div></div>
+
+        </div>
+
+    </main>
+
+    <script>
+        const dataSets = {
+            day: {
+                avgTime: "2 ч 14 мин",
+                clearedCount: 184,
+                avatarsTotal: 68,
+                registeredChildren: 72,
+                assignedBracelets: 195,
+                prizesFunnel: [
+                    { step: 1, count: 74 },
+                    { step: 2, count: 48 },
+                    { step: 3, count: 32 },
+                    { step: 4, count: 21 },
+                    { step: 5, count: 14 },
+                    { step: 6, count: 9 },
+                    { step: 7, count: 5 },
+                    { step: 8, count: 3 },
+                    { step: 9, count: 2 },
+                    { step: 10, count: 1 }
+                ],
+                prizesRating: [
+                    { name: "Брелок Hello Park", count: 28 },
+                    { name: "Стикерпак", count: 19 },
+                    { name: "Попкорн", count: 12 },
+                    { name: "Светящийся браслет", count: 8 },
+                    { name: "Мягкая игрушка", count: 4 },
+                    { name: "Футболка", count: 3 }
+                ]
+            },
+            week: {
+                avgTime: "2 ч 22 мин",
+                clearedCount: 610,
+                avatarsTotal: 215,
+                registeredChildren: 238,
+                assignedBracelets: 645,
+                prizesFunnel: [
+                    { step: 1, count: 285 },
+                    { step: 2, count: 186 },
+                    { step: 3, count: 127 },
+                    { step: 4, count: 88 },
+                    { step: 5, count: 59 },
+                    { step: 6, count: 37 },
+                    { step: 7, count: 23 },
+                    { step: 8, count: 15 },
+                    { step: 9, count: 9 },
+                    { step: 10, count: 4 }
+                ],
+                prizesRating: [
+                    { name: "Брелок Hello Park", count: 110 },
+                    { name: "Стикерпак", count: 75 },
+                    { name: "Попкорн", count: 44 },
+                    { name: "Светящийся браслет", count: 28 },
+                    { name: "Мягкая игрушка", count: 16 },
+                    { name: "Футболка", count: 12 }
+                ]
+            },
+            month: {
+                avgTime: "2 ч 18 мин",
+                clearedCount: 1342,
+                avatarsTotal: 485,
+                registeredChildren: 530,
+                assignedBracelets: 1420,
+                prizesFunnel: [
+                    { step: 1, count: 628 },
+                    { step: 2, count: 410 },
+                    { step: 3, count: 280 },
+                    { step: 4, count: 195 },
+                    { step: 5, count: 130 },
+                    { step: 6, count: 82 },
+                    { step: 7, count: 51 },
+                    { step: 8, count: 34 },
+                    { step: 9, count: 19 },
+                    { step: 10, count: 9 }
+                ],
+                prizesRating: [
+                    { name: "Брелок Hello Park", count: 240 },
+                    { name: "Стикерпак", count: 165 },
+                    { name: "Попкорн", count: 95 },
+                    { name: "Светящийся браслет", count: 62 },
+                    { name: "Мягкая игрушка", count: 38 },
+                    { name: "Футболка", count: 28 }
+                ]
+            }
+        };
+
+        // Когортные наборы данных (базис первого визита)
+        function getCohortMonthNames() {
+            const now = new Date();
+            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            const curMonth = monthNames[now.getMonth()] + " " + now.getFullYear();
+            const prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const prevMonth = monthNames[prevDate.getMonth()] + " " + prevDate.getFullYear();
+            return { curMonth, prevMonth };
+        }
+
+        const cohortData = {
+            last_month: {
+                baseCount: 1250,
+                steps: [
+                    { step: "Шаг 1: вернулись второй раз", count: 580, pct: 46 },
+                    { step: "Шаг 2: вернулись третий раз", count: 295, pct: 24 },
+                    { step: "Шаг 3: вернулись четвертый раз", count: 162, pct: 13 }
+                ]
+            },
+            current_month: {
+                baseCount: 485,
+                steps: [
+                    { step: "Шаг 1: вернулись второй раз", count: 145, pct: 30 },
+                    { step: "Шаг 2: вернулись третий раз", count: 48, pct: 10 },
+                    { step: "Шаг 3: вернулись четвертый раз", count: 14, pct: 3 }
+                ]
+            },
+            custom: {
+                title: "Выбранный период",
+                baseCount: 960,
+                steps: [
+                    { step: "Шаг 1: вернулись второй раз", count: 480, pct: 50 },
+                    { step: "Шаг 2: вернулись третий раз", count: 268, pct: 28 },
+                    { step: "Шаг 3: вернулись четвертый раз", count: 154, pct: 16 }
+                ]
+            }
+        };
+
+        let currentCohort = 'last_month';
+
+        function initCohortLabels() {
+            const { curMonth, prevMonth } = getCohortMonthNames();
+            const optLast = document.getElementById('opt-last-month');
+            const optCur = document.getElementById('opt-current-month');
+            if (optLast) optLast.textContent = "Прошлый месяц (" + prevMonth + ")";
+            if (optCur) optCur.textContent = "Текущий месяц (" + curMonth + ")";
+            cohortData.last_month.title = prevMonth;
+            cohortData.current_month.title = curMonth;
+        }
+
+        function changeCohortBasis(val) {
+            currentCohort = val;
+            const customBox = document.getElementById('cohort-custom-box');
+            if (val === 'custom') {
+                if (customBox) customBox.classList.remove('hidden');
+            } else {
+                if (customBox) customBox.classList.add('hidden');
+            }
+            renderRetentionFunnel();
+        }
+
+        function applyCohortCustom() {
+            const dFrom = document.getElementById('cohort-date-from').value;
+            const dTo = document.getElementById('cohort-date-to').value;
+            cohortData.custom.title = dFrom + " — " + dTo;
+            renderRetentionFunnel();
+        }
+
+        function renderRetentionFunnel() {
+            initCohortLabels();
+            const cohort = cohortData[currentCohort] || cohortData.last_month;
+            const retBox = document.getElementById('retention-container');
+            if (!retBox) return;
+            retBox.innerHTML = '';
+
+            // Шаг 0: База когорты (100%)
+            retBox.innerHTML += '<div>' +
+                '<div class="flex justify-between text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">' +
+                    '<span>База когорты (первый визит: ' + cohort.title + ')</span>' +
+                    '<span class="font-extrabold text-gray-900 dark:text-white font-mono">' + cohort.baseCount.toLocaleString('ru-RU') + ' чел. (100%)</span>' +
+                '</div>' +
+                '<div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">' +
+                    '<div class="bg-slate-400 h-full rounded-full w-full"></div>' +
+                '</div>' +
+            '</div>';
+
+            // Шаги 1, 2, 3
+            cohort.steps.forEach(r => {
+                retBox.innerHTML += '<div>' +
+                    '<div class="flex justify-between text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">' +
+                        '<span>' + r.step + '</span>' +
+                        '<span class="font-extrabold text-brand-orange font-mono">' + r.count.toLocaleString('ru-RU') + ' чел. (' + r.pct + '%)</span>' +
+                    '</div>' +
+                    '<div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">' +
+                        '<div class="bg-brand-orange h-full rounded-full transition-all duration-300" style="width: ' + r.pct + '%;"></div>' +
+                    '</div>' +
+                '</div>';
+            });
+        }
+
+        // 25 Игроков: Имя аватара (в таблице) + Имя ребенка и контакты родителя (в карточке)
+        const avatarsData = [
+            { id: 1, avatarName: "Лис-ракета", childName: "Тимур", parent: "Магомедова Амина", phone: "+7 928 345-12-88", totalPoints: 4850, growthPoints: 850, totalLevel: 12, growthLevel: 2 },
+            { id: 2, avatarName: "Единорог Люми", childName: "София", parent: "Иванова Екатерина", phone: "+7 918 441-90-23", totalPoints: 5200, growthPoints: 420, totalLevel: 14, growthLevel: 1 },
+            { id: 3, avatarName: "Космо-Барсик", childName: "Артем", parent: "Гаджиев Руслан", phone: "+7 988 775-01-44", totalPoints: 3100, growthPoints: 1100, totalLevel: 8, growthLevel: 5 },
+            { id: 4, avatarName: "Лисичка Алиса", childName: "Алиса", parent: "Петрова Ольга", phone: "+7 928 901-14-55", totalPoints: 4400, growthPoints: 610, totalLevel: 11, growthLevel: 2 },
+            { id: 5, avatarName: "Дракончик Гоша", childName: "Даниял", parent: "Алиев Мурад", phone: "+7 989 332-21-99", totalPoints: 2900, growthPoints: 780, totalLevel: 7, growthLevel: 3 },
+            { id: 6, avatarName: "Робот Бип", childName: "Милана", parent: "Зайцева Наталья", phone: "+7 905 617-30-12", totalPoints: 2650, growthPoints: 920, totalLevel: 6, growthLevel: 4 },
+            { id: 7, avatarName: "Кот-астронавт", childName: "Максим", parent: "Смирнов Алексей", phone: "+7 918 820-19-87", totalPoints: 3800, growthPoints: 340, totalLevel: 9, growthLevel: 1 },
+            { id: 8, avatarName: "Зайка-ниндзя", childName: "Залина", parent: "Омарова Патимат", phone: "+7 928 154-43-21", totalPoints: 2400, growthPoints: 650, totalLevel: 6, growthLevel: 3 },
+            { id: 9, avatarName: "Пингвин-пират", childName: "Матвей", parent: "Кузнецов Денис", phone: "+7 988 678-90-34", totalPoints: 2150, growthPoints: 510, totalLevel: 5, growthLevel: 2 },
+            { id: 10, avatarName: "Совенок Ухти", childName: "Ева", parent: "Морозова Дарья", phone: "+7 915 221-88-76", totalPoints: 3400, growthPoints: 280, totalLevel: 8, growthLevel: 1 },
+            { id: 11, avatarName: "Тигренок Рэй", childName: "Рустам", parent: "Исмаилов Тарлан", phone: "+7 928 559-01-33", totalPoints: 1950, growthPoints: 890, totalLevel: 5, growthLevel: 3 },
+            { id: 12, avatarName: "Мишка Бублик", childName: "Полина", parent: "Федорова Елена", phone: "+7 988 043-32-11", totalPoints: 1820, growthPoints: 820, totalLevel: 4, growthLevel: 2 },
+            { id: 13, avatarName: "Кибер-Волк", childName: "Кирилл", parent: "Волков Сергей", phone: "+7 918 312-45-67", totalPoints: 2750, growthPoints: 460, totalLevel: 7, growthLevel: 1 },
+            { id: 14, avatarName: "Панда По", childName: "Амина", parent: "Юсупова Зарема", phone: "+7 928 776-54-32", totalPoints: 3300, growthPoints: 710, totalLevel: 8, growthLevel: 2 },
+            { id: 15, avatarName: "Супер-Ёжик", childName: "Илья", parent: "Николаев Андрей", phone: "+7 905 123-98-76", totalPoints: 1600, growthPoints: 590, totalLevel: 4, growthLevel: 2 },
+            { id: 16, avatarName: "Лунный Кролик", childName: "Камила", parent: "Абдуллаева Фатима", phone: "+7 989 443-21-00", totalPoints: 2200, growthPoints: 730, totalLevel: 5, growthLevel: 3 },
+            { id: 17, avatarName: "Звездный Барс", childName: "Марк", parent: "Попов Дмитрий", phone: "+7 918 654-32-10", totalPoints: 4100, growthPoints: 390, totalLevel: 10, growthLevel: 1 },
+            { id: 18, avatarName: "Радужная Птица", childName: "Ясмина", parent: "Магомедов Шамиль", phone: "+7 928 887-65-43", totalPoints: 1450, growthPoints: 670, totalLevel: 4, growthLevel: 2 },
+            { id: 19, avatarName: "Громовой Лев", childName: "Лев", parent: "Ковалев Игорь", phone: "+7 915 876-54-32", totalPoints: 2850, growthPoints: 540, totalLevel: 7, growthLevel: 2 },
+            { id: 20, avatarName: "Астро-Хомяк", childName: "Сафия", parent: "Ибрагимова Лейла", phone: "+7 988 321-09-87", totalPoints: 3600, growthPoints: 480, totalLevel: 9, growthLevel: 1 },
+            { id: 21, avatarName: "Турбо-Черепаха", childName: "Давид", parent: "Григорьев Роман", phone: "+7 918 789-01-23", totalPoints: 1250, growthPoints: 620, totalLevel: 3, growthLevel: 2 },
+            { id: 22, avatarName: "Неоновый Слон", childName: "Виктория", parent: "Семенова Ирина", phone: "+7 928 234-56-78", totalPoints: 3950, growthPoints: 310, totalLevel: 9, growthLevel: 1 },
+            { id: 23, avatarName: "Огненный Феникс", childName: "Хабиб", parent: "Нурмагомедов Али", phone: "+7 989 987-65-43", totalPoints: 2500, growthPoints: 810, totalLevel: 6, growthLevel: 3 },
+            { id: 24, avatarName: "Капитан Панда", childName: "Диана", parent: "Павлова Анна", phone: "+7 905 543-21-09", totalPoints: 1700, growthPoints: 450, totalLevel: 4, growthLevel: 1 },
+            { id: 25, avatarName: "Робо-Пёс", childName: "Амир", parent: "Сулейманов Рашид", phone: "+7 928 456-78-90", totalPoints: 3050, growthPoints: 660, totalLevel: 7, growthLevel: 2 }
+        ];
+
+        let currentTf = 'month';
+        let currentSort = 'total_points';
+        let currentPage = 1;
+        const pageSize = 10;
+
+        function setSort(sortKey) {
+            currentSort = sortKey;
+            currentPage = 1;
+            const buttons = document.querySelectorAll('#sort-total_points, #sort-points_growth, #sort-total_level, #sort-level_growth');
+            buttons.forEach(b => {
+                b.className = "px-3 py-1.5 rounded-full text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all";
+            });
+            const activeBtn = document.getElementById('sort-' + sortKey);
+            if (activeBtn) {
+                activeBtn.className = "px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 text-brand-orange shadow-sm transition-all";
+            }
+            renderAvatars();
+        }
+
+        function changePage(delta) {
+            const sortedList = getSortedAvatars();
+            const totalPages = Math.ceil(sortedList.length / pageSize);
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderAvatars();
+            }
+        }
+
+        function goToPage(p) {
+            currentPage = p;
+            renderAvatars();
+        }
+
+        function getSortedAvatars() {
+            const list = [...avatarsData];
+            if (currentSort === 'total_points') {
+                list.sort((a, b) => b.totalPoints - a.totalPoints);
+            } else if (currentSort === 'points_growth') {
+                list.sort((a, b) => b.growthPoints - a.growthPoints || b.totalPoints - a.totalPoints);
+            } else if (currentSort === 'total_level') {
+                list.sort((a, b) => b.totalLevel - a.totalLevel || b.totalPoints - a.totalPoints);
+            } else if (currentSort === 'level_growth') {
+                list.sort((a, b) => b.growthLevel - a.growthLevel || b.growthPoints - a.growthPoints);
+            }
+            return list;
+        }
+
+        function openAvatarModal(id) {
+            const item = avatarsData.find(a => a.id === id);
+            if (!item) return;
+            document.getElementById('m-child-name').textContent = item.childName;
+            document.getElementById('m-avatar-name').textContent = "Аватар: " + item.avatarName;
+            document.getElementById('m-parent-fio').textContent = item.parent;
+            document.getElementById('m-parent-phone').textContent = item.phone;
+            document.getElementById('avatar-modal').classList.remove('hidden');
+        }
+
+        function closeAvatarModal() {
+            document.getElementById('avatar-modal').classList.add('hidden');
+        }
+
+        // Рендерит только нужную колонку под каждый таб:
+        // 1. Всего плюсиков -> только ВСЕГО ПЛЮСИКОВ (без прироста)
+        // 2. Прирост плюсиков -> только ПРИРОСТ ПЛЮСИКОВ
+        // 3. Макс. уровень -> только МАКС. УРОВЕНЬ (без прироста, без плюсиков)
+        // 4. Прирост уровня -> только ПРИРОСТ УРОВНЯ (без плюсиков)
+        function renderAvatars() {
+            const sortedList = getSortedAvatars();
+            const totalItems = sortedList.length;
+            const totalPages = Math.ceil(totalItems / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, totalItems);
+            const pageItems = sortedList.slice(startIndex, endIndex);
+
+            // Текст пагинации
+            const pageInfo = document.getElementById('page-info');
+            if (pageInfo) pageInfo.textContent = "Показано " + (startIndex + 1) + "–" + endIndex + " из " + totalItems;
+
+            // Кнопки страниц
+            const btnPrev = document.getElementById('btn-prev-page');
+            const btnNext = document.getElementById('btn-next-page');
+            if (btnPrev) btnPrev.disabled = (currentPage === 1);
+            if (btnNext) btnNext.disabled = (currentPage === totalPages);
+
+            const pageNumContainer = document.getElementById('page-numbers-container');
+            if (pageNumContainer) {
+                pageNumContainer.innerHTML = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    btn.onclick = () => goToPage(i);
+                    if (i === currentPage) {
+                        btn.className = "w-7 h-7 rounded-full bg-brand-orange text-white text-xs font-extrabold flex items-center justify-center shadow-sm";
+                    } else {
+                        btn.className = "w-7 h-7 rounded-full bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 text-xs font-bold hover:bg-gray-200 dark:hover:bg-slate-600 flex items-center justify-center transition-all";
+                    }
+                    pageNumContainer.appendChild(btn);
+                }
+            }
+
+            // Динамический thead: ровно 3 колонки (№, АВАТАР, и показатель выбранного рейтинга)
+            const thead = document.getElementById('avatars-thead');
+            if (thead) {
+                let colTitle = "ВСЕГО ПЛЮСИКОВ";
+                let align = "text-right";
+                if (currentSort === 'total_points') {
+                    colTitle = "ВСЕГО ПЛЮСИКОВ";
+                    align = "text-right";
+                } else if (currentSort === 'points_growth') {
+                    colTitle = "ПРИРОСТ ПЛЮСИКОВ";
+                    align = "text-right";
+                } else if (currentSort === 'total_level') {
+                    colTitle = "МАКС. УРОВЕНЬ";
+                    align = "text-center";
+                } else if (currentSort === 'level_growth') {
+                    colTitle = "ПРИРОСТ УРОВНЯ";
+                    align = "text-center";
+                }
+
+                thead.innerHTML = '<tr class="text-gray-400 dark:text-gray-500 uppercase tracking-widest text-[11px] font-extrabold border-b border-gray-100 dark:border-slate-700">' +
+                    '<th class="pb-3 px-4 w-16">№</th>' +
+                    '<th class="pb-3 px-4">АВАТАР</th>' +
+                    '<th class="pb-3 px-4 ' + align + ' text-brand-orange">' + colTitle + '</th>' +
+                '</tr>';
+            }
+
+            // Рендер строк: имя аватара + ровно 1 показатель без лишних колонок
+            const tbody = document.getElementById('avatars-tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                pageItems.forEach((item, idx) => {
+                    const rank = startIndex + idx + 1;
+                    let valCell = '';
+
+                    if (currentSort === 'total_points') {
+                        valCell = '<td class="py-3.5 px-4 text-right font-extrabold text-brand-orange font-mono">' + item.totalPoints.toLocaleString('ru-RU') + '</td>';
+                    } else if (currentSort === 'points_growth') {
+                        valCell = '<td class="py-3.5 px-4 text-right font-extrabold text-brand-orange font-mono">+' + item.growthPoints.toLocaleString('ru-RU') + '</td>';
+                    } else if (currentSort === 'total_level') {
+                        valCell = '<td class="py-3.5 px-4 text-center font-extrabold text-brand-purple dark:text-purple-300 font-mono">Ур. ' + item.totalLevel + '</td>';
+                    } else if (currentSort === 'level_growth') {
+                        valCell = '<td class="py-3.5 px-4 text-center font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">+' + item.growthLevel + '</td>';
+                    }
+
+                    tbody.innerHTML += '<tr onclick="openAvatarModal(' + item.id + ')" class="hover:bg-gray-50/70 dark:hover:bg-slate-700/40 transition-colors">' +
+                        '<td class="py-3.5 px-4 text-gray-400 font-mono font-bold text-xs">' + rank + '</td>' +
+                        '<td class="py-3.5 px-4 font-extrabold text-gray-900 dark:text-white underline decoration-dotted decoration-gray-300 dark:decoration-gray-600 underline-offset-4">' + item.avatarName + '</td>' +
+                        valCell +
+                    '</tr>';
+                });
+            }
+        }
+
+        function setTimeframe(tf) {
+            currentTf = tf;
+            document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+
+            const customBox = document.getElementById('custom-date-box');
+            if (tf === 'custom') {
+                document.getElementById('tf-custom').classList.add('active');
+                if (customBox) customBox.classList.remove('hidden');
+            } else {
+                if (customBox) customBox.classList.add('hidden');
+                const btn = document.getElementById('tf-' + tf);
+                if (btn) btn.classList.add('active');
+            }
+            render();
+        }
+
+        function applyCustom() {
+            render();
+        }
+
+        function render() {
+            const data = dataSets[currentTf] || dataSets.month;
+
+            // Метрики в начале
+            const elAvg = document.getElementById('val-avg-time');
+            if (elAvg) elAvg.textContent = data.avgTime;
+            
+            const elCleared = document.getElementById('val-cleared-count');
+            if (elCleared) elCleared.textContent = data.clearedCount.toLocaleString();
+
+            const elCreated = document.getElementById('val-created-avatars');
+            if (elCreated) elCreated.textContent = data.avatarsTotal.toLocaleString('ru-RU');
+            
+            const elReg = document.getElementById('val-registered-children');
+            if (elReg) elReg.textContent = data.registeredChildren.toLocaleString('ru-RU');
+            
+            const elAssigned = document.getElementById('val-assigned-bracelets');
+            if (elAssigned) elAssigned.textContent = data.assignedBracelets.toLocaleString('ru-RU');
+
+            // Воронка повторных посещений (Когортная)
+            renderRetentionFunnel();
+
+            // Воронка призов (1..10)
+            const pBox = document.getElementById('prizes-funnel-container');
+            if (pBox) {
+                pBox.innerHTML = '';
+                const baseCount = data.prizesFunnel[0].count;
+                data.prizesFunnel.forEach(item => {
+                    const pct = Math.round((item.count / baseCount) * 100);
+                    pBox.innerHTML += '<div class="flex items-center justify-between py-1.5 border-b border-gray-100/60 dark:border-gray-700/60 last:border-0 text-xs">' +
+                        '<span class="font-bold text-gray-700 dark:text-gray-300">' + item.step + ' ' + (item.step === 1 ? 'приз' : (item.step < 5 ? 'приза' : 'призов')) + '</span>' +
+                        '<div class="flex items-center gap-3">' +
+                            '<span class="font-extrabold text-gray-900 dark:text-white font-mono">' + item.count + ' чел.</span>' +
+                            '<span class="text-[11px] font-bold text-gray-400 w-8 text-right">' + pct + '%</span>' +
+                        '</div>' +
+                    '</div>';
+                });
+                const topCountEl = document.getElementById('prizes-top-count');
+                if (topCountEl) topCountEl.textContent = data.prizesFunnel[9].count + " чел.";
+            }
+
+            // Рейтинг призов
+            const prTbody = document.getElementById('prizes-rating-tbody');
+            if (prTbody) {
+                prTbody.innerHTML = '';
+                data.prizesRating.forEach(p => {
+                    prTbody.innerHTML += '<tr>' +
+                        '<td class="py-3.5 px-4 font-bold text-gray-800 dark:text-gray-200">' + p.name + '</td>' +
+                        '<td class="py-3.5 px-4 text-right font-extrabold text-gray-900 dark:text-white font-mono">' + p.count + ' шт.</td>' +
+                    '</tr>';
+                });
+            }
+
+            renderAvatars();
+        }
+
+        
+        function openExportModal() {
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+
+        function executeExport() {
+            const typeRadio = document.querySelector('input[name="export-type"]:checked');
+            const formatRadio = document.querySelector('input[name="export-format"]:checked');
+            const exportType = typeRadio ? typeRadio.value : 'all';
+            const exportFormat = formatRadio ? formatRadio.value : 'xlsx';
+
+            const data = dataSets[currentTf] || dataSets.month;
+            const cohort = cohortData[currentCohort] || cohortData.last_month;
+            const dateStr = new Date().toISOString().slice(0, 10);
+
+            if (exportFormat === 'xlsx' && typeof XLSX !== 'undefined') {
+                const wb = XLSX.utils.book_new();
+
+                if (exportType === 'all' || exportType === 'avatars') {
+                    const avatarsRows = avatarsData.map((a, i) => ({
+                        "№": i + 1,
+                        "Аватар": a.avatarName,
+                        "Имя ребенка": a.childName,
+                        "Родитель": a.parent,
+                        "Телефон": a.phone,
+                        "Всего плюсиков": a.totalPoints,
+                        "Прирост плюсиков": a.growthPoints,
+                        "Макс. уровень": a.totalLevel,
+                        "Прирост уровня": a.growthLevel
+                    }));
+                    const wsAvatars = XLSX.utils.json_to_sheet(avatarsRows);
+                    XLSX.utils.book_append_sheet(wb, wsAvatars, "Рейтинг аватаров");
+                }
+
+                if (exportType === 'all' || exportType === 'prizes') {
+                    const prizesRows = data.prizesRating.map(p => ({
+                        "Название приза": p.name,
+                        "Сколько получили (шт)": p.count
+                    }));
+                    const wsPrizes = XLSX.utils.json_to_sheet(prizesRows);
+                    XLSX.utils.book_append_sheet(wb, wsPrizes, "Выданные призы");
+                }
+
+                if (exportType === 'all') {
+                    const summaryRows = [
+                        ["Показатель", "Значение"],
+                        ["Период отчета", currentTf === 'day' ? 'День' : (currentTf === 'week' ? 'Неделя' : 'Месяц')],
+                        ["Количество созданных детей", data.registeredChildren],
+                        ["Количество привязанных браслетов", data.assignedBracelets],
+                        ["Количество созданных аватаров", data.avatarsTotal],
+                        ["Среднее время пребывания в парке", data.avgTime],
+                        ["Количество браслетов при кнопке «Очистить браслет»", data.clearedCount],
+                        ["", ""],
+                        ["Воронка повторных посещений", ""],
+                        ["Базис когорты", cohort.title],
+                        ["База когорты (1-й визит)", cohort.baseCount + " чел. (100%)"]
+                    ];
+                    cohort.steps.forEach(s => {
+                        summaryRows.push([s.step, s.count + " чел. (" + s.pct + "%)"]);
+                    });
+                    summaryRows.push(["", ""]);
+                    summaryRows.push(["Воронка полученных призов", "Количество детей"]);
+                    data.prizesFunnel.forEach(pf => {
+                        summaryRows.push([pf.step + (pf.step === 1 ? ' приз' : (pf.step < 5 ? ' приза' : ' призов')), pf.count + " чел."]);
+                    });
+
+                    const wsSummary = XLSX.utils.aoa_to_sheet(summaryRows);
+                    wb.SheetNames.unshift("Сводка и воронки");
+                    wb.Sheets["Сводка и воронки"] = wsSummary;
+                }
+
+                const filename = "HelloPark_Analytics_" + exportType + "_" + dateStr + ".xlsx";
+                XLSX.writeFile(wb, filename);
+            } else {
+                let lines = [];
+                let filename = "HelloPark_Analytics_" + exportType + "_" + dateStr + ".csv";
+
+                if (exportType === 'avatars') {
+                    lines.push("№;Аватар;Имя ребенка;Родитель;Телефон;Всего плюсиков;Прирост плюсиков;Макс уровень;Прирост уровня");
+                    avatarsData.forEach((a, i) => {
+                        lines.push([i+1, a.avatarName, a.childName, a.parent, a.phone, a.totalPoints, a.growthPoints, a.totalLevel, a.growthLevel].join(";"));
+                    });
+                } else if (exportType === 'prizes') {
+                    lines.push("Название приза;Сколько получили (шт)");
+                    data.prizesRating.forEach(p => {
+                        lines.push(p.name + ";" + p.count);
+                    });
+                } else {
+                    lines.push("СВОДНЫЙ ОТЧЕТ АНАЛИТИКИ HELLO PARK");
+                    lines.push("Период;" + (currentTf === 'day' ? 'День' : (currentTf === 'week' ? 'Неделя' : 'Месяц')));
+                    lines.push("Количество созданных детей;" + data.registeredChildren);
+                    lines.push("Количество привязанных браслетов;" + data.assignedBracelets);
+                    lines.push("Количество созданных аватаров;" + data.avatarsTotal);
+                    lines.push("Среднее время пребывания в парке;" + data.avgTime);
+                    lines.push("Количество браслетов при кнопке «Очистить браслет»;" + data.clearedCount);
+                    lines.push("");
+                    lines.push("ВОРОНКА ПОВТОРНЫХ ПОСЕЩЕНИЙ (" + cohort.title + ")");
+                    cohort.steps.forEach(s => {
+                        lines.push(s.step + ";" + s.count + " чел. (" + s.pct + "%)");
+                    });
+                    lines.push("");
+                    lines.push("ТОП АВАТАРОВ");
+                    lines.push("№;Аватар;Имя ребенка;Родитель;Телефон;Всего плюсиков;Прирост плюсиков;Макс уровень;Прирост уровня");
+                    avatarsData.forEach((a, i) => {
+                        lines.push([i+1, a.avatarName, a.childName, a.parent, a.phone, a.totalPoints, a.growthPoints, a.totalLevel, a.growthLevel].join(";"));
+                    });
+                }
+
+                const csvContent = String.fromCharCode(0xFEFF) + lines.join(String.fromCharCode(10));
+                const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            closeExportModal();
+        }
+
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            render();
+        });
+        // also call immediately in case DOM is already parsed
+        render();
+    </script>
+
+    <!-- Modal: Карточка аватара -->
+    <div id="avatar-modal" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" onclick="closeAvatarModal()">
+        <div class="bg-white dark:bg-slate-800 rounded-[32px] max-w-md w-full p-8 shadow-2xl border border-gray-100 dark:border-slate-700 relative" onclick="event.stopPropagation()">
+            <button onclick="closeAvatarModal()" class="absolute right-6 top-6 text-gray-400 hover:text-gray-700 dark:hover:text-white p-2 rounded-full focus:outline-none">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-2">Карточка гостя</span>
+
+            <!-- Имя ребенка -->
+            <div class="mb-5">
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Имя ребенка</span>
+                <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white mt-0.5" id="m-child-name">Тимур</h3>
+                <p class="text-xs text-brand-orange font-bold mt-1" id="m-avatar-name">Аватар: Лис-ракета</p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-gray-100 dark:border-slate-700">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Родитель</span>
+                    <p class="text-sm font-extrabold text-gray-900 dark:text-white mt-1" id="m-parent-fio">Магомедова Амина</p>
+                </div>
+
+                <div class="bg-gray-50 dark:bg-slate-700/50 p-4 rounded-2xl border border-gray-100 dark:border-slate-700">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Номер телефона</span>
+                    <p class="text-sm font-mono font-extrabold text-gray-900 dark:text-white mt-1" id="m-parent-phone">+7 928 345-12-88</p>
+                </div>
+            </div>
+
+            <button onclick="closeAvatarModal()" class="w-full mt-6 py-3.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-800 dark:text-white rounded-2xl font-bold text-xs uppercase tracking-wider transition-colors">
+                Закрыть
+            </button>
+        </div>
+    </div>
+    <!-- Modal: Экспорт отчета -->
+    <div id="export-modal" class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" onclick="closeExportModal()">
+        <div class="bg-white dark:bg-slate-800 rounded-[32px] max-w-md w-full p-8 shadow-2xl border border-gray-100 dark:border-slate-700 relative" onclick="event.stopPropagation()">
+            <button onclick="closeExportModal()" class="absolute right-6 top-6 text-gray-400 hover:text-gray-700 dark:hover:text-white p-2 rounded-full focus:outline-none">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-gray-400 dark:text-gray-500 block mb-2">Выгрузка данных</span>
+            <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-6">Экспорт отчета</h3>
+
+            <!-- 1. Что экспортировать -->
+            <div class="mb-5">
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Состав отчета</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-slate-700/40 border border-gray-200 dark:border-slate-600 cursor-pointer hover:border-brand-orange transition-colors">
+                        <input type="radio" name="export-type" value="all" checked class="text-brand-orange focus:ring-brand-orange w-4 h-4">
+                        <div>
+                            <div class="text-xs font-extrabold text-gray-900 dark:text-white">Полная сводка за период</div>
+                            <div class="text-[11px] text-gray-400">Все показатели, воронки, рейтинг призов и аватаров</div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-slate-700/40 border border-gray-200 dark:border-slate-600 cursor-pointer hover:border-brand-orange transition-colors">
+                        <input type="radio" name="export-type" value="avatars" class="text-brand-orange focus:ring-brand-orange w-4 h-4">
+                        <div>
+                            <div class="text-xs font-extrabold text-gray-900 dark:text-white">Только рейтинг аватаров</div>
+                            <div class="text-[11px] text-gray-400">Имена детей, аватаров, телефоны родителей, плюсики, уровни</div>
+                        </div>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-3.5 rounded-2xl bg-gray-50 dark:bg-slate-700/40 border border-gray-200 dark:border-slate-600 cursor-pointer hover:border-brand-orange transition-colors">
+                        <input type="radio" name="export-type" value="prizes" class="text-brand-orange focus:ring-brand-orange w-4 h-4">
+                        <div>
+                            <div class="text-xs font-extrabold text-gray-900 dark:text-white">Только выданные призы</div>
+                            <div class="text-[11px] text-gray-400">Список призов и количество выданных штук</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 2. Формат -->
+            <div class="mb-6">
+                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Формат файла</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="flex items-center justify-center gap-2.5 p-3 rounded-2xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700/40 cursor-pointer hover:border-brand-orange text-xs font-extrabold text-gray-900 dark:text-white transition-colors">
+                        <input type="radio" name="export-format" value="xlsx" checked class="text-brand-orange focus:ring-brand-orange">
+                        <span>Excel (.xlsx)</span>
+                    </label>
+                    <label class="flex items-center justify-center gap-2.5 p-3 rounded-2xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-700/40 cursor-pointer hover:border-brand-orange text-xs font-extrabold text-gray-900 dark:text-white transition-colors">
+                        <input type="radio" name="export-format" value="csv" class="text-brand-orange focus:ring-brand-orange">
+                        <span>CSV (.csv)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Кнопка Скачать -->
+            <button onclick="executeExport()" class="w-full py-4 bg-brand-orange hover:bg-brand-orangeHover text-white rounded-2xl font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-brand-orange/30 transition-all active:scale-[0.99] flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span>Скачать отчет</span>
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
